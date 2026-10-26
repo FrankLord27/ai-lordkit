@@ -1,0 +1,37 @@
+{
+  "name": "ai-lordkit",
+  "description": "Catalog of third-party skills ai-lordkit enables. Each entry points to the upstream repository; nothing is copied here.",
+  "owner": {
+    "name": "ai-lordkit",
+    "url": "https://github.com/FrankLord27/ai-lordkit"
+  },
+  "plugins": [
+    {
+      "name": "react-best-practices",
+      "description": "Vercel's React and Next.js performance rules (vercel-labs/agent-skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "vercel-labs/agent-skills",
+        "path": "skills/react-best-practices"
+      }
+    },
+    {
+      "name": "composition-patterns",
+      "description": "Vercel's React composition patterns: compound components, context, React 19 APIs (vercel-labs/agent-skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "vercel-labs/agent-skills",
+        "path": "skills/composition-patterns"
+      }
+    },
+    {
+      "name": "web-design-guidelines",
+      "description": "Review UI code against Vercel's Web Interface Guidelines (vercel-labs/agent-skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "vercel-labs/agent-skills",
+        "path": "skills/web-design-guidelines"
+      }
+    }
+  ]
+}

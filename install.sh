@@ -18,6 +18,7 @@
 #   ./install.sh graphify     → instala graphify (grafo de conocimiento del código)
 #   ./install.sh claudemem    → instala claude-mem (memoria persistente entre sesiones)
 #   ./install.sh mcp          → registra los servidores MCP de mcp/servers.json (+ los de tu capa privada)
+#   ./install.sh plugins      → registra los marketplaces e instala los plugins de settings.json
 #   ./install.sh verify       → verifica integridad del bundle
 #   ./install.sh doctor       → diagnostica pre-requisitos (git, gh, pnpm, node, jq, uv, docker)
 #
@@ -130,9 +131,66 @@ do_verify() {
     ok "agents sin IDs de modelo hardcodeados"
   fi
 
+  verify_plugins || errors=$((errors+1))
+
   echo ""
   if (( errors > 0 )); then err "Verificación FALLÓ: $errors errores"; return 1; fi
   ok "Bundle íntegro"
+}
+
+# ─── plugins de settings.json: coherencia del bundle + qué cargó en esta máquina ─
+# claude-mem@thedotmack no se revisa aquí: lo instala su propio paso (./install.sh claudemem).
+PLUGINS_OWN_STEP='@thedotmack$'
+
+verify_plugins() {
+  command -v jq &>/dev/null || return 0
+  local f="$SCRIPT_DIR/settings.json" bad=0 dup id
+  jq -e . "$f" >/dev/null 2>&1 || return 0   # el JSON inválido ya se reportó arriba
+
+  # 1. Cada plugin habilitado viene de un marketplace declarado en extraKnownMarketplaces
+  while read -r id; do
+    err "plugin $id: su marketplace no está en extraKnownMarketplaces"; bad=1
+  done < <(jq -r --arg skip "$PLUGINS_OWN_STEP" '(.extraKnownMarketplaces // {} | keys) as $m
+    | .enabledPlugins // {} | to_entries[] | select(.value == true) | .key
+    | select(test($skip) | not) | select((split("@")[1]) as $k | $m | index($k) | not)' "$f")
+
+  # 2. Sin duplicados: el mismo plugin en dos marketplaces, o un plugin que repite
+  #    una skill del bundle o un servidor de mcp/servers.json
+  dup="$(jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | split("@")[0]' "$f" | sort | uniq -d)"
+  [[ -n "$dup" ]] && { err "plugins duplicados en dos marketplaces: $(tr '\n' ' ' <<<"$dup")"; bad=1; }
+  while read -r id; do
+    [[ -d "$SCRIPT_DIR/skills/$id" ]] && { err "plugin $id repite la skill skills/$id del bundle: deja uno"; bad=1; }
+    if [[ -f "$SCRIPT_DIR/mcp/servers.json" ]] && jq -e --arg n "$id" '.mcpServers | has($n)' "$SCRIPT_DIR/mcp/servers.json" >/dev/null; then
+      err "plugin $id repite el servidor MCP $id de mcp/servers.json: deja uno"; bad=1
+    fi
+  done < <(jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | split("@")[0]' "$f")
+  (( bad == 0 )) && ok "plugins de settings.json: marketplaces declarados y sin duplicados"
+
+  # 3. En esta máquina: ¿cargaron? Solo avisa, porque verify corre antes de instalarlos.
+  if command -v claude &>/dev/null && [[ -f "$CLAUDE_DIR/settings.json" ]]; then
+    local list want missing=() broken=() total=0
+    list="$(claude plugin list --json 2>/dev/null || echo '[]')"
+    while read -r want; do
+      total=$((total+1))
+      if ! jq -e --arg id "$want" 'any(.[]; .id == $id and .enabled == true)' <<<"$list" >/dev/null; then
+        missing+=("$want")
+      elif jq -e --arg id "$want" 'any(.[]; .id == $id and ((.errors // []) | length) > 0)' <<<"$list" >/dev/null; then
+        broken+=("$want")
+      fi
+    done < <(merged_settings | jq -r --arg skip "$PLUGINS_OWN_STEP" \
+      '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | select(test($skip) | not)')
+    if (( ${#missing[@]} == 0 && ${#broken[@]} == 0 )); then
+      ok "plugins cargados en esta máquina: $total/$total"
+    else
+      if (( ${#missing[@]} == total )); then
+        warn "plugins: ninguno de los $total instalado todavía → ./install.sh plugins"
+      elif (( ${#missing[@]} )); then
+        warn "plugins sin instalar o apagados (${#missing[@]}/$total): ${missing[*]} → ./install.sh plugins"
+      fi
+      (( ${#broken[@]} )) && warn "plugins con errores de carga: ${broken[*]} → claude plugin list"
+    fi
+  fi
+  return $bad
 }
 
 # ─── backup: config viva → bundle público + capa privada ─────────────────────
@@ -368,10 +426,10 @@ apply_config() {
     rm -f "$CLAUDE_DIR/docs" && warn "Enlace viejo ~/.claude/docs eliminado (ahora se usa Context7)"
   fi
 
-  # Migración: skills retiradas del bundle (Expo/EAS y Auth0 vienen de plugins oficiales;
-  # fullstack-standard/v2/v3 se unificaron en `fullstack`)
+  # Migración: skills retiradas del bundle (Expo/EAS, Auth0 y skill-creator vienen de plugins
+  # oficiales; fullstack-standard/v2/v3 se unificaron en `fullstack`)
   local old
-  for old in "$CLAUDE_DIR/skills/"expo-* "$CLAUDE_DIR/skills/"eas-* "$CLAUDE_DIR/skills/auth0" "$CLAUDE_DIR/skills/"fullstack-{standard,v2,v3}; do
+  for old in "$CLAUDE_DIR/skills/"expo-* "$CLAUDE_DIR/skills/"eas-* "$CLAUDE_DIR/skills/auth0" "$CLAUDE_DIR/skills/"fullstack-{standard,v2,v3} "$CLAUDE_DIR/skills/skill-creator"; do
     [[ -d "$old" && ! -d "$SCRIPT_DIR/skills/$(basename "$old")" ]] || continue
     rm -rf "$old" && warn "skill retirada: $(basename "$old")"
   done
@@ -585,6 +643,47 @@ do_mcp() {
 }
 do_context7() { do_mcp; }
 
+# ─── plugins: marketplaces + plugins declarados en settings.json (+ capa privada) ─
+# Claude Code registra extraKnownMarketplaces al abrir una sesión, pero `claude plugin`
+# desde la terminal no: por eso se agregan aquí y luego se instala cada plugin habilitado.
+do_plugins() {
+  step "Plugins"
+  command -v claude &>/dev/null || { warn "claude no está en PATH — reintenta: ./install.sh plugins"; return 0; }
+  command -v jq &>/dev/null || { warn "jq no instalado — reintenta: ./install.sh plugins"; return 0; }
+  local settings known installed name repo sparse id
+  settings="$(merged_settings)"
+  known="$(claude plugin marketplace list --json 2>/dev/null | jq -r '.[].name' || true)"
+  while IFS=$'\t' read -r name repo sparse; do
+    if grep -qx "$name" <<<"$known"; then ok "marketplace $name ya estaba"; continue; fi
+    # shellcheck disable=SC2086  # sparse: lista de carpetas separadas por espacio
+    if claude plugin marketplace add "$repo" ${sparse:+--sparse $sparse} >/dev/null 2>&1; then
+      ok "marketplace $name agregado ($repo)"
+    else
+      warn "No se pudo agregar el marketplace $name ($repo) — reintenta: claude plugin marketplace add $repo"
+    fi
+  done < <(jq -r '.extraKnownMarketplaces // {} | to_entries[]
+    | select(.value.source.source == "github")
+    | [.key, .value.source.repo, ((.value.source.sparsePaths // []) | join(" "))] | @tsv' <<<"$settings")
+  # `marketplace add` reescribe la entrada en ~/.claude/settings.json sin autoUpdate ni
+  # sparsePaths: se restauran las del bundle para que sigan actualizándose solas.
+  if [[ -f "$CLAUDE_DIR/settings.json" ]]; then
+    jq --argjson m "$(jq -c '.extraKnownMarketplaces // {}' <<<"$settings")" \
+      '.extraKnownMarketplaces = ((.extraKnownMarketplaces // {}) + $m)' "$CLAUDE_DIR/settings.json" \
+      > "$CLAUDE_DIR/settings.json.tmp" && mv "$CLAUDE_DIR/settings.json.tmp" "$CLAUDE_DIR/settings.json"
+  fi
+
+  installed="$(claude plugin list --json 2>/dev/null | jq -r '.[].id' || true)"
+  while read -r id; do
+    if grep -qx "$id" <<<"$installed"; then ok "$id ya estaba"; continue; fi
+    if claude plugin install "$id" >/dev/null 2>&1; then
+      ok "$id instalado"
+    else
+      warn "No se pudo instalar $id — reintenta: claude plugin install $id"
+    fi
+  done < <(jq -r --arg skip "$PLUGINS_OWN_STEP" \
+    '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | select(test($skip) | not)' <<<"$settings")
+}
+
 # ─── sync: backup → escaneo → commit → push ──────────────────────────────────
 # Público: solo rutas del bundle (nunca `git add -A`), escaneo completo, y si estás en
 # main se sube a una rama sync/<fecha> para que entre por PR.
@@ -743,11 +842,12 @@ case "${1:-all}" in
   deps)      do_deps ;;
   install)   do_install ;;
   restore)   do_restore; print_summary ;;
-  update)    do_update; do_mcp; do_doctor; print_summary ;;
+  update)    do_update; do_mcp; do_plugins; do_doctor; print_summary ;;
   harden)    do_harden ;;
   graphify)  do_graphify ;;
   claudemem) do_claudemem ;;
   context7|mcp) do_mcp ;;
+  plugins)   do_plugins ;;
   sync)      do_sync ;;
   private-init) do_private_init ;;
   scan)      shift; do_scan "$@" ;;
@@ -764,11 +864,12 @@ case "${1:-all}" in
     do_graphify  || warn "graphify falló — reintenta: ./install.sh graphify"
     do_claudemem || warn "claude-mem falló — reintenta: ./install.sh claudemem"
     do_mcp       || warn "mcp falló — reintenta: ./install.sh mcp"
+    do_plugins   || warn "plugins falló — reintenta: ./install.sh plugins"
     do_doctor    || true
     print_summary
     ;;
   *)
-    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|harden|graphify|claudemem|mcp|sync|private-init|scan|doctor]"
+    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|harden|graphify|claudemem|mcp|plugins|sync|private-init|scan|doctor]"
     echo ""
     echo "  all       → instalación completa desde cero (máquina formateada): deps + install + restore + harden + graphify + claudemem"
     echo "  deps      → instala pre-requisitos del sistema (git, gh, jq, Node 24, pnpm, uv)"

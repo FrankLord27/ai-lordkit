@@ -51,6 +51,11 @@ jobs:
           n=$(ls ~/.claude/agents/*.md | wc -l); test "$n" -ge 9
           ~/.local/bin/claude --version
           node --version
+          # Los plugins del marketplace oficial quedaron instalados y activos.
+          # (Los de `ai-lordkit` salen de main, así que en un PR que los agrega todavía no existen.)
+          want=$(jq -r '.enabledPlugins | to_entries[] | select(.value) | .key | select(endswith("@claude-plugins-official"))' settings.json)
+          have=$(~/.local/bin/claude plugin list --json | jq -r '.[] | select(.enabled) | .id')
+          for id in $want; do grep -qx "$id" <<<"$have" || { echo "falta el plugin $id"; exit 1; }; done
 
       - name: Segunda corrida (idempotente, toma el camino update)
         run: |
