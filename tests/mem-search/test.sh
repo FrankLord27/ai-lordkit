@@ -9,21 +9,21 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 export CLAUDE_CONFIG_DIR="$tmp"
 
-erp="$tmp/projects/-home-dev-erp"
-web="$tmp/projects/-home-dev-tienda"
+erp="$tmp/projects/-srv-erp"
+web="$tmp/projects/-srv-tienda"
 mkdir -p "$erp" "$web"
 
 cat > "$erp/aaaa1111.jsonl" <<'JSONL'
-{"type":"user","sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:00:00.000Z","message":{"role":"user","content":"¿Cómo aislamos el tenantId en Prisma?"}}
-{"type":"assistant","sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:00:05.000Z","message":{"role":"assistant","content":[{"type":"thinking","thinking":"tenantId secreto del razonamiento"},{"type":"text","text":"Usa una extensión de Prisma que inyecte el tenantId en cada query."},{"type":"tool_use","id":"t1","name":"Bash","input":{"command":"echo tenantId"}}]}}
-{"type":"user","sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:00:06.000Z","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"t1","content":"TOKEN_FALSO tenantId"}]}}
-{"type":"user","isMeta":true,"sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:00:07.000Z","message":{"role":"user","content":"<system-reminder>tenantId meta</system-reminder>"}}
-{"type":"assistant","isSidechain":true,"sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:00:08.000Z","message":{"role":"assistant","content":[{"type":"text","text":"tenantId desde un subagent"}]}}
-{"type":"user","sessionId":"aaaa1111","cwd":"/home/dev/erp","timestamp":"2026-10-20T10:01
+{"type":"user","sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:00:00.000Z","message":{"role":"user","content":"¿Cómo aislamos el tenantId en Prisma?"}}
+{"type":"assistant","sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:00:05.000Z","message":{"role":"assistant","content":[{"type":"thinking","thinking":"tenantId secreto del razonamiento"},{"type":"text","text":"Usa una extensión de Prisma que inyecte el tenantId en cada query."},{"type":"tool_use","id":"t1","name":"Bash","input":{"command":"echo tenantId"}}]}}
+{"type":"user","sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:00:06.000Z","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"t1","content":"TOKEN_FALSO tenantId"}]}}
+{"type":"user","isMeta":true,"sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:00:07.000Z","message":{"role":"user","content":"<system-reminder>tenantId meta</system-reminder>"}}
+{"type":"assistant","isSidechain":true,"sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:00:08.000Z","message":{"role":"assistant","content":[{"type":"text","text":"tenantId desde un subagent"}]}}
+{"type":"user","sessionId":"aaaa1111","cwd":"/srv/erp","timestamp":"2026-10-20T10:01
 JSONL
 
 cat > "$web/bbbb2222.jsonl" <<'JSONL'
-{"type":"user","sessionId":"bbbb2222","cwd":"/home/dev/tienda","timestamp":"2026-10-25T09:00:00.000Z","message":{"role":"user","content":"Decidimos usar MinIO para las fotos de los productos"}}
+{"type":"user","sessionId":"bbbb2222","cwd":"/srv/tienda","timestamp":"2026-10-25T09:00:00.000Z","message":{"role":"user","content":"Decidimos usar MinIO para las fotos de los productos"}}
 JSONL
 
 fail=0
