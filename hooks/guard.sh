@@ -42,7 +42,8 @@ block '\bdocker\s+run\b[^|;&]*(--privileged|-v\s*/:|--volume[= ]/:)' "docker run
 
 # ── Secretos ───────────────────────────────────────────────────────────────
 # Leer o enviar archivos .env (los .env.example/.sample/.template sí se permiten).
-scrubbed=$(sed -E 's/\.env\.(example|sample|template|dist)\b//g' <<<"$cmd")
+# sed -E sin \b ni \s: BSD sed (macOS) no los entiende.
+scrubbed=$(sed -E 's/\.env\.(example|sample|template|dist)([^A-Za-z0-9_]|$)/\2/g' <<<"$cmd")
 if grep -Eq '\b(cat|less|more|head|tail|bat|nl|grep|egrep|rg|ag|awk|sed|cut|sort|strings|xxd|od|base64|source|curl|wget|scp|rsync|nc)\b[^|;&]*(^|[[:space:]/"'"'"'=@])\.env(\.[A-Za-z0-9_-]+)?([[:space:]"'"'"']|$)' <<<"$scrubbed" \
    || grep -Eq '(^|[;&|]\s*)\.\s+[^|;&]*\.env\b' <<<"$scrubbed"; then
   deny "lectura o envío de un archivo .env (usa .env.example para ver los nombres de variables)"
@@ -57,7 +58,7 @@ block 'git\s+reset\s+--hard\s+origin/'                                      "git
 
 # `git push` sin refspec estando en main/master también empuja a main.
 if grep -Eq '(^|[;&|]\s*)git\s+push\b' <<<"$cmd"; then
-  args=$(grep -Eo 'git\s+push\b[^|;&]*' <<<"$cmd" | head -1 | sed -E 's/^git\s+push//')
+  args=$(grep -Eo 'git\s+push\b[^|;&]*' <<<"$cmd" | head -1 | sed -E 's/^git[[:space:]]+push//')
   positional=$(tr ' ' '\n' <<<"$args" | grep -Ev '^(-|$)' | wc -l)
   if (( positional <= 1 )); then
     branch=$(git -C "${cwd:-.}" symbolic-ref --short HEAD 2>/dev/null || true)
