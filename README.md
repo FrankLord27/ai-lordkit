@@ -72,9 +72,10 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | Command                     | What it does                                                          |
 | --------------------------- | --------------------------------------------------------------------- |
 | `./install.sh update`       | Applies the kit (and your private layer) to `~/.claude`, with backup  |
-| `./install.sh verify`       | Checks structure, runs the hook tests and the leak scanner            |
+| `./install.sh verify`       | Checks structure, runs the hook tests and the leak scanner, and checks the plugins loaded |
 | `./install.sh doctor`       | Checks git, gh, Node 24, pnpm, jq, docker                             |
 | `./install.sh mcp`          | Registers the MCP servers from `mcp/servers.json` and your private layer |
+| `./install.sh plugins`      | Adds the plugin marketplaces and installs the plugins `settings.json` enables |
 | `./install.sh private-init` | Creates your private layer in `~/ai-lordkit-private`                  |
 | `./install.sh sync`         | Sends your live changes back: public via a PR branch, private directly |
 | `./install.sh scan`         | Looks for tokens, real emails, personal paths and your private terms  |
@@ -85,7 +86,8 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | ------------------- | --------------------------------------------------------------------- |
 | `CLAUDE.md`         | Global instructions (short on purpose: it loads in every session)     |
 | `WORKFLOW.md`       | Detailed flow for medium/high-risk tasks                              |
-| `settings.json`     | Permissions, hooks, model                                             |
+| `settings.json`     | Permissions, hooks, model, plugin marketplaces and enabled plugins    |
+| `.claude-plugin/`   | A catalog that points to third-party skills upstream (nothing copied) |
 | `agents/`           | 13 subagents                                                          |
 | `skills/`           | Stack and domain skills (`fullstack`, `nestjs-security-hardening`, `erp-saas-core`…) |
 | `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `test-guard.sh` |
@@ -128,6 +130,42 @@ This repo is **generic**: no clients, project names, emails or tokens. Your own 
 Private MCP servers (your hosting provider, for example) go in your private layer's `mcp.json`, same format. The token value only ends up in that machine's `~/.claude.json`, which `sync` never touches.
 
 **claude.ai connectors** (Gmail, Drive, Notion, Slack…) can't be exported: they belong to each account. Connect your own in claude.ai under Settings → Connectors.
+
+## Plugins
+
+The kit doesn't copy other people's skills. `settings.json` declares the marketplaces under `extraKnownMarketplaces` and turns plugins on under `enabledPlugins`, so every machine downloads them from their source and they keep updating (`autoUpdate: true`).
+
+| Plugin | Marketplace | What it adds |
+| ------ | ----------- | ------------ |
+| `prisma` | `claude-plugins-official` | Prisma MCP servers (local and Prisma Postgres) |
+| `typescript-lsp` | `claude-plugins-official` | TypeScript language server: go to definition, diagnostics. Needs `typescript-language-server` in your `PATH` |
+| `security-guidance` | `claude-plugins-official` | Hooks that warn about insecure patterns while Claude edits |
+| `pr-review-toolkit` | `claude-plugins-official` | Specialized PR review agents and `/review-pr` |
+| `commit-commands` | `claude-plugins-official` | `/commit`, `/commit-push-pr`, `/clean_gone` |
+| `hookify` | `claude-plugins-official` | Turn "don't do X again" into hooks |
+| `claude-md-management` | `claude-plugins-official` | Audit and improve `CLAUDE.md` files |
+| `playwright` | `claude-plugins-official` | Playwright MCP: drive a real browser |
+| `sentry` | `claude-plugins-official` | Sentry MCP and skills for issues and alerts |
+| `vercel` | `claude-plugins-official` | Vercel MCP, skills and hooks |
+| `hostinger` | `claude-plugins-official` | Hostinger MCP and hosting skills |
+| `superpowers` | `claude-plugins-official` | [obra/superpowers](https://github.com/obra/superpowers): brainstorm, plan, TDD, systematic debugging |
+| `skill-creator` | `claude-plugins-official` | Anthropic's skill for writing and testing skills ([anthropics/skills](https://github.com/anthropics/skills)) |
+| `react-best-practices` | `ai-lordkit` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills): React and Next.js performance rules |
+| `composition-patterns` | `ai-lordkit` | vercel-labs/agent-skills: React composition patterns |
+| `web-design-guidelines` | `ai-lordkit` | vercel-labs/agent-skills: review UI against the Web Interface Guidelines |
+| `claude-mem` | `thedotmack` | Memory across sessions. Installed by `./install.sh claudemem` |
+
+Where each one comes from:
+
+- **`claude-plugins-official`** ([anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)) is Anthropic's marketplace. It already lists `superpowers`, `context7` and `skill-creator`, so the kit uses those entries instead of adding `obra/superpowers`, `upstash/context7` or `anthropics/skills` as separate marketplaces.
+- **`ai-lordkit`** is [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) in this repo. `vercel-labs/agent-skills` isn't a Claude Code marketplace, so this catalog points to each skill's folder upstream (a `git-subdir` source). Only that file is cloned (`sparsePaths`).
+- **Context7** is not enabled as a plugin because `mcp/servers.json` already installs the same server. Two copies would only duplicate tools.
+
+`./install.sh plugins` (also part of `all` and `update`) adds the marketplaces and installs whatever is missing. Claude Code would register the marketplaces by itself at the next interactive session, but not from scripts, so the installer does it. `./install.sh verify` fails if a plugin's marketplace isn't declared or if a plugin repeats another plugin, a bundled skill or an MCP server, and on a machine with Claude Code it warns about plugins that aren't installed, are turned off or failed to load.
+
+More plugins are not better: every enabled plugin adds tools and skill descriptions to each session, and Claude picks worse with too many. To add your own or turn one off, use your private layer's `settings.json`, which is merged on top: `"vercel@claude-plugins-official": false` under `enabledPlugins` turns it off on your machines. `claude plugin disable` alone doesn't last, because `update` writes `settings.json` again.
+
+In cloud sessions (claude.ai/code) plugins from settings files don't load; this list applies to your machines.
 
 ## Security model
 
