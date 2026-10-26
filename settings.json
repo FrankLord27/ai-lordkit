@@ -128,7 +128,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "notify-send 'Claude Code' 'Necesita tu atención' 2>/dev/null || true"
+            "command": "notify-send 'Claude Code' 'Necesita tu atención' 2>/dev/null || osascript -e 'display notification \"Necesita tu atención\" with title \"Claude Code\"' 2>/dev/null || true"
           }
         ]
       }

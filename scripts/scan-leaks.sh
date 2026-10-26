@@ -62,6 +62,13 @@ list_blobs() {
         printf '%s\t:%s\n' "$path" "$path"
       done ;;
     *)
+      # Sin git (kit bajado con get.sh): se revisan todos los archivos del directorio.
+      if ! git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        (cd "$ROOT" && find . -type f ! -path './.git/*' | sed 's|^\./||') | sort | while read -r path; do
+          printf '%s\t@%s\n' "$path" "$path"
+        done
+        return 0
+      fi
       { git -C "$ROOT" ls-files; git -C "$ROOT" diff --cached --name-only --diff-filter=ACMR; } | sort -u \
         | while read -r path; do
             [[ -f "$ROOT/$path" ]] && printf '%s\t@%s\n' "$path" "$path"

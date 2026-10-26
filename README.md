@@ -14,19 +14,62 @@ What you get:
 - **Safety hooks**: `guard.sh` blocks destructive commands, reading env files and keys, `curl | sh`, force pushes and pushes to `main`.
 - **MCP servers** defined in the repo, with tokens read from environment variables.
 - **A private layer** for everything personal, applied on top, so this repo stays generic.
-- **An installer** (Linux / apt) that takes a freshly formatted machine to a working setup.
+- **A one-command installer** for Linux (apt) and macOS (Homebrew) that takes a freshly formatted machine to a working setup.
 
 > Instructions and skills are written in **Spanish**. Issues and PRs in English or Spanish are welcome.
 
 ## Install
 
+One command, no clone needed (Linux and macOS):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh | bash
+```
+
+`get.sh` downloads the kit to `~/.ai-lordkit` and runs its installer:
+
+- **No `~/.claude` yet** → full setup: dependencies (apt on Linux, Homebrew on macOS), Claude Code, the config, pnpm hardening and the MCP servers.
+- **`~/.claude` already exists** → `update`: only applies the config, backing up your current files first.
+
+When it finishes, open a new terminal, run `claude` and log in. Running the same command again updates the kit (the previous copy is kept in `~/.ai-lordkit.prev`).
+
+Options:
+
+```bash
+# A different installer command (doctor, verify, mcp…)
+curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh | bash -s -- doctor
+
+# A fixed version: a tag, or better, a commit SHA (it can't change under you)
+curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/<sha>/get.sh | AI_LORDKIT_REF=<sha> bash
+```
+
+| Variable          | Default                  | What it does                                              |
+| ----------------- | ------------------------ | --------------------------------------------------------- |
+| `AI_LORDKIT_REF`  | `main`                   | Branch, tag or commit SHA to install                      |
+| `AI_LORDKIT_DIR`  | `~/.ai-lordkit`          | Where the kit lives. If it is a git clone, it isn't touched |
+| `CLAUDE_YES`      | unset                    | `1` confirms the cleanup step on machines without a terminal |
+
+### Review before you run it
+
+Piping a script into `bash` means trusting it. To read it first:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh -o get.sh
+less get.sh        # ~85 lines: downloads a tarball and runs install.sh
+bash get.sh
+```
+
+`get.sh` only downloads the kit and runs `install.sh`, so review that one too ([install.sh](install.sh)). The whole script is wrapped in a function, so a cut download never runs half of it.
+
+### Install from a clone
+
+If you want to contribute or use `backup` / `sync` (they need a git repo):
+
 ```bash
 git clone https://github.com/FrankLord27/ai-lordkit ~/ai-lordkit && ~/ai-lordkit/install.sh
 ```
 
-This installs the dependencies, Claude Code, the config, pnpm hardening and the MCP servers. Your current `~/.claude` is **moved** to `~/.claude-backups/` first (nothing is deleted). When it finishes, run `claude` and log in.
-
-Already have Claude Code and only want the config? Run `./install.sh update` (it backs up first).
+The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first (nothing is deleted). Already have Claude Code and only want the config? Run `./install.sh update` (it backs up first).
 
 | Command                     | What it does                                                          |
 | --------------------------- | --------------------------------------------------------------------- |

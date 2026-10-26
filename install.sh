@@ -46,6 +46,9 @@ CLAUDE_SHARE="$HOME/.local/share/claude"
 BACKUP_ROOT="$HOME/.claude-backups"
 TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_ROOT/$TS"
+OS="$(uname -s)"
+# Sugerencia de instalación según el sistema (para mensajes de doctor)
+if [[ "$OS" == Darwin ]]; then PKG_HINT="brew install"; else PKG_HINT="sudo apt install"; fi
 PRIVATE_DIR="${CLAUDE_PRIVATE_DIR:-$HOME/ai-lordkit-private}"
 # Línea que separa, dentro de ~/.claude/CLAUDE.md, la parte pública de la privada.
 PRIVATE_MARK="<!-- capa-privada: todo lo de abajo viene de \$CLAUDE_PRIVATE_DIR/CLAUDE.md, no lo edites aquí -->"
@@ -208,6 +211,12 @@ do_backup() {
 # ─── clean: mueve ~/.claude a backup (reversible), borra binarios ────────────
 do_clean() {
   step "Limpieza segura de Claude Code"
+  # Máquina limpia: no hay nada que mover ni borrar, así que no hace falta preguntar
+  # (y `all` funciona sin terminal, por ejemplo con curl | bash en CI).
+  if [[ ! -e "$CLAUDE_DIR" && ! -e "$CLAUDE_BIN" && ! -e "$CLAUDE_SHARE" ]]; then
+    ok "Nada que limpiar (sin ~/.claude ni binario previo)"
+    return 0
+  fi
   echo -e "  ~/.claude se MOVERÁ a: ${YELLOW}$BACKUP_DIR/claude-dir${NC} (nada se destruye)"
   echo -e "  Se eliminarán binarios: ${RED}$CLAUDE_BIN${NC}, ${RED}$CLAUDE_SHARE${NC}"
   echo ""
@@ -246,28 +255,45 @@ do_install() {
 do_deps() {
   step "Bootstrap de dependencias del sistema"
 
-  local apt_pkgs=()
-  command -v git  >/dev/null || apt_pkgs+=(git)
-  command -v gh   >/dev/null || apt_pkgs+=(gh)
-  command -v jq   >/dev/null || apt_pkgs+=(jq)
-  command -v curl >/dev/null || apt_pkgs+=(curl)
-  if (( ${#apt_pkgs[@]} )); then
-    if command -v apt-get >/dev/null; then
-      warn "Instalando vía apt (requiere sudo): ${apt_pkgs[*]}"
-      sudo apt-get update -qq && sudo apt-get install -y "${apt_pkgs[@]}"
+  # macOS: Homebrew (sin sudo). Linux: apt (con sudo). Otros: a mano.
+  if [[ "$OS" == Darwin ]] && ! command -v brew >/dev/null; then
+    err "Falta Homebrew. Instálalo desde https://brew.sh y vuelve a correr: ./install.sh deps"
+    return 1
+  fi
+
+  local pkgs=()
+  command -v git  >/dev/null || pkgs+=(git)
+  command -v gh   >/dev/null || pkgs+=(gh)
+  command -v jq   >/dev/null || pkgs+=(jq)
+  command -v curl >/dev/null || pkgs+=(curl)
+  if (( ${#pkgs[@]} )); then
+    if [[ "$OS" == Darwin ]]; then
+      warn "Instalando vía brew: ${pkgs[*]}"
+      brew install "${pkgs[@]}"
+    elif command -v apt-get >/dev/null; then
+      warn "Instalando vía apt (requiere sudo): ${pkgs[*]}"
+      sudo apt-get update -qq && sudo apt-get install -y "${pkgs[@]}"
     else
-      warn "Sin apt — instala manualmente: ${apt_pkgs[*]}"
+      warn "Sin apt ni brew — instala manualmente: ${pkgs[*]}"
     fi
   else
     ok "git, gh, jq, curl presentes"
   fi
 
-  # Node 24 LTS (NodeSource oficial)
+  # Node 24 LTS: brew en macOS, NodeSource oficial en Linux con apt
   local nv=0
   command -v node >/dev/null && nv=$(node --version | sed 's/v//' | cut -d. -f1)
   if (( nv < 24 )); then
-    warn "Instalando Node 24 LTS (NodeSource, requiere sudo)"
-    curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt-get install -y nodejs
+    if [[ "$OS" == Darwin ]]; then
+      warn "Instalando Node 24 LTS (brew node@24)"
+      brew install node@24 && brew link --overwrite --force node@24
+    elif command -v apt-get >/dev/null; then
+      warn "Instalando Node 24 LTS (NodeSource, requiere sudo)"
+      curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt-get install -y nodejs
+    else
+      warn "Instala Node 24 LTS a mano (https://nodejs.org) y vuelve a correr: ./install.sh deps"
+    fi
+    hash -r 2>/dev/null || true
   fi
   ok "node: $(node --version 2>/dev/null || echo 'reabre la terminal')"
 
@@ -560,7 +586,7 @@ do_mcp() {
     while read -r name; do
       if grep -q "^$name:" <<<"$existing"; then ok "$name ya estaba"; continue; fi
       cfg="$(jq -c --arg n "$name" '.mcpServers[$n]' "$file")"
-      missing="$(grep -oE '\$\{[A-Za-z_][A-Za-z0-9_]*\}' <<<"$cfg" | tr -d '${}' | sort -u \
+      missing="$({ grep -oE '\$\{[A-Za-z_][A-Za-z0-9_]*\}' <<<"$cfg" || true; } | tr -d '${}' | sort -u \
         | while read -r v; do [[ -n "${!v:-}" ]] || printf '%s ' "$v"; done)"
       if [[ -n "$missing" ]]; then
         warn "$name saltado: falta $missing(exporta la variable y corre ./install.sh mcp)"
@@ -653,7 +679,7 @@ do_doctor() {
     ok "gh CLI: $(gh --version | head -1)"
     gh auth status &>/dev/null && ok "gh autenticado" || warn "gh NO autenticado: gh auth login"
   else
-    err "gh CLI NO instalado (sudo apt install gh)"
+    err "gh CLI NO instalado ($PKG_HINT gh)"
   fi
 
   local gu ge gk gs
@@ -679,7 +705,7 @@ do_doctor() {
     err "pnpm NO instalado"
   fi
 
-  command -v jq &>/dev/null && ok "jq: $(jq --version)" || err "jq NO instalado — los hooks (guard/prettier) lo necesitan: sudo apt install jq"
+  command -v jq &>/dev/null && ok "jq: $(jq --version)" || err "jq NO instalado — los hooks (guard/prettier) lo necesitan: $PKG_HINT jq"
   command -v docker &>/dev/null && ok "docker: $(docker --version | cut -d, -f1)" || warn "docker NO instalado"
   command -v uv &>/dev/null && ok "uv: $(uv --version)" || warn "uv NO instalado (necesario para graphify)"
   command -v graphify &>/dev/null && ok "graphify: $(graphify --version 2>/dev/null | head -1)" || warn "graphify NO instalado: ./install.sh graphify"

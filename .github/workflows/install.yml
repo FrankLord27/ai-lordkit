@@ -1,0 +1,67 @@
+name: install
+
+# Prueba el instalador de un solo comando (get.sh) en Linux y macOS, como lo correría
+# un usuario: script por pipe a bash, sin terminal y sin clonar el repo.
+on:
+  pull_request:
+    paths:
+      - get.sh
+      - install.sh
+      - settings.json
+      - hooks/**
+      - scripts/**
+      - .github/workflows/install.yml
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      # El commit que se está probando (en un PR, la cabeza de la rama).
+      AI_LORDKIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sintaxis con el bash del sistema (3.2 en macOS)
+        run: /bin/bash -n get.sh && /bin/bash -n install.sh && /bin/bash -n hooks/guard.sh
+
+      - name: Tests del hook guard.sh
+        run: ./hooks/test-guard.sh
+
+      - name: Instalación limpia (curl | bash, sin terminal)
+        run: cat get.sh | bash
+
+      - name: Comprueba la instalación
+        run: |
+          set -euo pipefail
+          test -f ~/.ai-lordkit/install.sh
+          test "$(cat ~/.ai-lordkit/.ai-lordkit-ref)" = "$AI_LORDKIT_REF"
+          test -x ~/.claude/hooks/guard.sh
+          jq empty ~/.claude/settings.json
+          n=$(ls ~/.claude/agents/*.md | wc -l); test "$n" -ge 9
+          ~/.local/bin/claude --version
+          node --version
+
+      - name: Segunda corrida (idempotente, toma el camino update)
+        run: |
+          set -euo pipefail
+          cat get.sh | bash
+          test -d ~/.ai-lordkit.prev
+          test -x ~/.claude/hooks/guard.sh
+
+      - name: Versión inexistente falla sin romper lo instalado
+        run: |
+          if cat get.sh | AI_LORDKIT_REF=no-existe-esta-version bash; then
+            echo "debió fallar"; exit 1
+          fi
+          test -f ~/.ai-lordkit/install.sh
