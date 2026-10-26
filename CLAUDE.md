@@ -111,6 +111,6 @@ Contratos tipados → tests rojos (`qa-engineer`) → implementación que los pa
 ### Memoria
 
 - La memoria automática de Claude Code está activa; no la desactives.
-- claude-mem guarda observaciones entre sesiones: si te pregunto por algo de una sesión anterior, busca con `mem-search` antes de decir que no sabes.
+- Si te pregunto por algo de una sesión anterior y no está en tu memoria, busca con la skill `mem-search` antes de decir que no sabes.
 - Al cerrar una sesión significativa en un repo con Memory Bank, actualiza `activeContext.md` y `progress.md` con "Lecciones aprendidas".
 - Si detectas un procedimiento que se repite en cada sesión, propón convertirlo en skill con `skill-creator`.

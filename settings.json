@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "cleanupPeriodDays": 30,
+  "cleanupPeriodDays": 365,
   "env": {
     "BASH_DEFAULT_TIMEOUT_MS": "120000",
     "BASH_MAX_TIMEOUT_MS": "600000"
@@ -28,6 +28,7 @@
       "Bash(mv *)",
       "Bash(cd *)",
       "Bash(tree *)",
+      "Bash(~/.claude/skills/mem-search/scripts/mem-search.sh *)",
       "Bash(playwright *)",
       "Bash(jest *)",
       "WebFetch(domain:*)",
@@ -154,7 +155,6 @@
     }
   },
   "enabledPlugins": {
-    "claude-mem@thedotmack": true,
     "prisma@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
