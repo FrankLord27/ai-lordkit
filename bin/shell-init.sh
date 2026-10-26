@@ -15,3 +15,9 @@ claude() {
     *)         command claude "$@" ;;
   esac
 }
+
+# El instalador oficial deja `claude` (y el kit, `claude-kimi`) en ~/.local/bin.
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac

@@ -7,6 +7,8 @@
 #                               + restore + harden + graphify + doctor
 #   ./install.sh deps         → instala pre-requisitos (git, gh, jq, Node 24, pnpm, uv)
 #   ./install.sh update       → aplica el bundle a ~/.claude SIN reinstalar Claude (con backup)
+#   ./install.sh rollback     → vuelve a la config de antes del último update (o: rollback <carpeta>)
+#   ./install.sh uninstall    → quita lo que puso el kit (con backup; no toca credenciales ni historial)
 #   ./install.sh restore      → igual que update pero pensado para post-instalación
 #   ./install.sh backup       → copia la config viva de ~/.claude al bundle público y a tu capa privada
 #   ./install.sh sync         → backup + escaneo + commit + push (público en rama aparte, privado directo)
@@ -105,7 +107,7 @@ do_verify() {
   (( n >= 1 )) && ok "commands: $n" || warn "sin commands (opcional)"
 
   local h
-  for h in guard.sh format.sh; do
+  for h in guard.sh format.sh notify.sh; do
     if [[ -x "$SCRIPT_DIR/hooks/$h" ]]; then
       ok "hooks/$h presente y ejecutable"
     else
@@ -391,7 +393,7 @@ do_deps() {
 apply_config() {
   mkdir -p "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/skills" "$CLAUDE_DIR/hooks"
 
-  for f in CLAUDE.md WORKFLOW.md settings.json; do
+  for f in CLAUDE.md WORKFLOW.md; do
     cp "$SCRIPT_DIR/$f" "$CLAUDE_DIR/$f" && ok "$f instalado"
   done
 
@@ -455,6 +457,11 @@ apply_config() {
   if [[ -f "$SCRIPT_DIR/bin/shell-init.sh" ]]; then
     cp "$SCRIPT_DIR/bin/shell-init.sh" "$CLAUDE_DIR/shell-init.sh"
     local rc
+    # Un Mac nuevo no trae ~/.zshrc: sin él, `claude --kimi` y el PATH no quedarían listos.
+    case "$(basename "${SHELL:-}")" in
+      zsh)  [[ -f "$HOME/.zshrc" ]]  || { touch "$HOME/.zshrc"  && ok "creado ~/.zshrc"; } ;;
+      bash) [[ -f "$HOME/.bashrc" ]] || { touch "$HOME/.bashrc" && ok "creado ~/.bashrc"; } ;;
+    esac
     for rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
       [[ -f "$rc" ]] || continue
       grep -q 'claude/shell-init.sh' "$rc" && continue
@@ -470,6 +477,30 @@ RC
   fi
 
   apply_private
+  write_settings
+}
+
+# ─── write_settings: el kit manda en lo que declara, lo tuyo se queda ───────────
+# Las claves que el kit (público + privado) declara se escriben encima: los objetos se
+# funden clave por clave y los arrays y valores del kit reemplazan a los tuyos (así un
+# permiso que el kit quitó no se queda pegado). Todo lo que el kit no declara (tu
+# statusLine, tus variables en "env", un plugin que instalaste a mano) se conserva.
+write_settings() {
+  local live="$CLAUDE_DIR/settings.json"
+  if ! command -v jq &>/dev/null; then
+    cp "$SCRIPT_DIR/settings.json" "$live" && warn "jq no instalado: settings.json copiado tal cual (sin capa privada ni tus cambios)"
+    return 0
+  fi
+  if [[ -f "$live" ]] && jq -e 'type == "object"' "$live" >/dev/null 2>&1; then
+    jq -s 'def m($a; $b): reduce ($b | keys_unsorted[]) as $k ($a;
+             if (.[$k] | type) == "object" and ($b[$k] | type) == "object" then .[$k] = m(.[$k]; $b[$k])
+             else .[$k] = $b[$k] end);
+           m(.[0]; .[1])' "$live" <(merged_settings) > "$live.tmp" \
+      && mv "$live.tmp" "$live" && ok "settings.json actualizado (se conservan tus claves propias)"
+  else
+    [[ -f "$live" ]] && warn "Tu settings.json no era JSON válido: se reemplaza (la copia queda en el backup)"
+    merged_settings > "$live.tmp" && mv "$live.tmp" "$live" && ok "settings.json instalado"
+  fi
 }
 
 # ─── settings mezclados: público + privado (objetos se funden, arrays se suman) ─
@@ -497,14 +528,7 @@ apply_private() {
     cat "$PRIVATE_DIR/CLAUDE.md" >> "$CLAUDE_DIR/CLAUDE.md"
     ok "CLAUDE.md privado agregado"
   fi
-  if [[ -f "$PRIVATE_DIR/settings.json" ]]; then
-    if command -v jq &>/dev/null; then
-      merged_settings > "$CLAUDE_DIR/settings.json.tmp" && mv "$CLAUDE_DIR/settings.json.tmp" "$CLAUDE_DIR/settings.json" \
-        && ok "settings.json privado mezclado"
-    else
-      warn "jq no instalado: no se mezcló settings.json privado"
-    fi
-  fi
+  [[ -f "$PRIVATE_DIR/settings.json" ]] && ok "settings.json privado: se mezcla al escribir settings.json"
   local d f s
   for d in agents commands; do
     for f in "$PRIVATE_DIR/$d/"*.md; do
@@ -551,8 +575,15 @@ do_update() {
   [[ -d "$CLAUDE_DIR" ]] || { err "No existe ~/.claude. Ejecuta: ./install.sh"; exit 1; }
   do_verify || { err "Bundle inválido — abortando"; exit 1; }
 
+  backup_config
+  apply_config
+}
+
+# ─── backup_config: copia lo que el kit toca (la usan update, rollback y uninstall) ─
+backup_config() {
   step "Backup previo en $BACKUP_DIR"
   mkdir -p "$BACKUP_DIR"
+  local f d
   for f in CLAUDE.md WORKFLOW.md settings.json; do
     [[ -f "$CLAUDE_DIR/$f" ]] && cp "$CLAUDE_DIR/$f" "$BACKUP_DIR/"
   done
@@ -560,8 +591,95 @@ do_update() {
     [[ -d "$CLAUDE_DIR/$d" ]] && cp -r "$CLAUDE_DIR/$d" "$BACKUP_DIR/$d"
   done
   ok "Backup listo"
+}
 
-  apply_config
+confirm() { # $1 = pregunta. CLAUDE_YES=1 la contesta que sí.
+  local reply=""
+  if [[ "${CLAUDE_YES:-0}" == "1" ]]; then echo "  → auto-confirmado (CLAUDE_YES=1)"; return 0; fi
+  read -r -p "  $1 [s/N] " reply < /dev/tty || true; echo ""
+  [[ "$reply" =~ ^[SsYy] ]]
+}
+
+# ─── rollback: vuelve a la config que había antes del último update ──────────
+# Usa el backup más reciente de update (o el que le pases). Antes respalda lo actual,
+# así que un segundo rollback deshace el primero.
+do_rollback() {
+  step "Rollback de la configuración"
+  local src="${1:-}" all d i
+  if [[ -z "$src" ]]; then
+    all=( "$BACKUP_ROOT"/*/ )
+    for (( i=${#all[@]}-1; i>=0; i-- )); do
+      d="${all[$i]%/}"
+      [[ -f "$d/settings.json" || -f "$d/CLAUDE.md" ]] && { src="$d"; break; }
+    done
+  fi
+  [[ -n "$src" && -d "$src" ]] || { err "No hay backups de update en $BACKUP_ROOT"; return 1; }
+  echo -e "  Se restaurará: ${YELLOW}$src${NC} (CLAUDE.md, WORKFLOW.md, settings.json, agents, commands, hooks, skills)"
+  confirm "¿Confirmar?" || { err "Cancelado"; return 1; }
+  backup_config
+  local f
+  for f in CLAUDE.md WORKFLOW.md settings.json; do
+    if [[ -f "$src/$f" ]]; then cp "$src/$f" "$CLAUDE_DIR/$f"; else rm -f "$CLAUDE_DIR/$f"; fi
+  done
+  for d in agents commands hooks skills; do
+    rm -rf "${CLAUDE_DIR:?}/$d"
+    [[ -d "$src/$d" ]] && cp -r "$src/$d" "$CLAUDE_DIR/$d"
+  done
+  ok "Configuración restaurada desde $src"
+  ok "Lo que tenías justo antes quedó en $BACKUP_DIR (otro rollback lo devuelve)"
+}
+
+# ─── uninstall: quita lo que puso el kit, con backup ─────────────────────────
+# No toca el binario de Claude, tus credenciales, el historial ni tus proyectos.
+do_uninstall() {
+  step "Desinstalar ai-lordkit"
+  [[ -d "$CLAUDE_DIR" ]] || { ok "No existe ~/.claude: nada que quitar"; return 0; }
+  echo "  Se quitan los agents, commands, hooks y skills del kit, CLAUDE.md, WORKFLOW.md,"
+  echo "  las claves que el kit pone en settings.json, claude-kimi y la línea de tu .zshrc/.bashrc."
+  confirm "¿Confirmar? (todo queda en un backup)" || { err "Cancelado"; return 1; }
+  backup_config
+
+  local f name d
+  for d in agents commands hooks; do
+    for f in "$SCRIPT_DIR/$d/"*; do
+      [[ -f "$f" ]] && rm -f "$CLAUDE_DIR/$d/$(basename "$f")"
+    done
+  done
+  for f in "$SCRIPT_DIR/skills/"*/; do
+    name="$(basename "$f")"
+    rm -rf "${CLAUDE_DIR:?}/skills/$name"
+  done
+  rm -f "$CLAUDE_DIR/CLAUDE.md" "$CLAUDE_DIR/WORKFLOW.md" "$CLAUDE_DIR/shell-init.sh" "$HOME/.local/bin/claude-kimi"
+  ok "agents, commands, hooks, skills, CLAUDE.md y claude-kimi quitados"
+
+  if [[ -f "$CLAUDE_DIR/settings.json" ]] && command -v jq &>/dev/null; then
+    jq --argjson kit "$(merged_settings | jq 'del(."$schema")')" 'def strip($a; $b): reduce ($b | keys_unsorted[]) as $k ($a;
+        if (.[$k] | type) == "object" and ($b[$k] | type) == "object"
+        then .[$k] = strip(.[$k]; $b[$k]) | (if .[$k] == {} then del(.[$k]) else . end)
+        else del(.[$k]) end);
+      strip(.; $kit)' \
+      "$CLAUDE_DIR/settings.json" > "$CLAUDE_DIR/settings.json.tmp" \
+      && mv "$CLAUDE_DIR/settings.json.tmp" "$CLAUDE_DIR/settings.json" \
+      && ok "settings.json: quitadas las claves del kit (las tuyas se quedan)"
+  fi
+
+  local rc
+  for rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
+    [[ -f "$rc" ]] && grep -q 'claude/shell-init.sh' "$rc" || continue
+    grep -vxF -e '# Claude Code: `claude` = Anthropic, `claude --kimi` = backend Kimi.' \
+      -e '# NO exportes ANTHROPIC_BASE_URL ni ANTHROPIC_API_KEY globalmente: rompe el login oficial.' \
+      -e '[ -f "$HOME/.claude/shell-init.sh" ] && . "$HOME/.claude/shell-init.sh"' "$rc" > "$rc.tmp" \
+      && cat "$rc.tmp" > "$rc" && rm -f "$rc.tmp" && ok "quitado de $(basename "$rc")"
+  done
+
+  echo ""
+  ok "Listo. Backup en $BACKUP_DIR (para volver: ./install.sh rollback)"
+  echo "  Los plugins y servidores MCP siguen instalados. Para quitarlos:"
+  if command -v jq &>/dev/null; then
+    merged_settings | jq -r '.enabledPlugins // {} | to_entries[] | select(.value) | "    claude plugin uninstall \(.key)"'
+    jq -r '.mcpServers | keys[] | "    claude mcp remove --scope user \(.)"' "$SCRIPT_DIR/mcp/servers.json"
+  fi
+  echo "  El kit descargado sigue en $SCRIPT_DIR: bórralo a mano si ya no lo quieres."
 }
 
 # ─── harden: seguridad supply-chain de pnpm + Node 24 ────────────────────────
@@ -845,6 +963,8 @@ case "${1:-all}" in
   private-init) do_private_init ;;
   scan)      shift; do_scan "$@" ;;
   doctor)    do_doctor ;;
+  rollback)  shift; do_rollback "$@" ;;
+  uninstall) do_uninstall ;;
   all)
     # verify/clean/install/restore son críticos (abortan si fallan);
     # harden/graphify/doctor son mejoras: si una falla, el resto continúa.
@@ -861,7 +981,7 @@ case "${1:-all}" in
     print_summary
     ;;
   *)
-    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|harden|graphify|mcp|plugins|sync|private-init|scan|doctor]"
+    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|rollback|uninstall|harden|graphify|mcp|plugins|sync|private-init|scan|doctor]"
     echo ""
     echo "  all       → instalación completa desde cero (máquina formateada): deps + install + restore + harden + graphify"
     echo "  deps      → instala pre-requisitos del sistema (git, gh, jq, Node 24, pnpm, uv)"
