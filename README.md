@@ -182,11 +182,13 @@ In cloud sessions (claude.ai/code) plugins from settings files don't load; this 
 
 Claude Code runs in `auto` mode, so there are three layers:
 
-1. **`permissions.allow`:** only specific dev commands (`pnpm`, `git`, `gh`, `docker compose`, `npx prisma`…). Nothing generic that reads arbitrary files (`cat`, `grep`) or runs downloaded packages (`npx *`, `docker *`).
+1. **`permissions.allow`:** only specific dev commands (`pnpm`, `git`, `gh`, `docker compose`, `npx prisma`…). Nothing generic that reads arbitrary files (`cat`, `grep`), runs arbitrary code (`node *`, `python *`), copies files (`cp *`, `mv *`) or runs downloaded packages (`npx *`, `docker *`).
 2. **`permissions.ask`:** always asks before `curl`, `docker run`, `pnpm dlx`, `rm -rf`, `git reset --hard`, `prisma migrate reset`.
-3. **`hooks/guard.sh`:** the last net, which blocks even if something was approved: deleting `/` or `$HOME`, reading or sending env files and keys, full `printenv`, `curl | sh`, `docker run --privileged`, force pushes and pushes to `main` (including a bare `git push` while on main). It fails closed if `jq` is missing.
+3. **`hooks/guard.sh`:** the last net, which blocks even if something was approved: deleting `/` or `$HOME`, any mention of an env file (whatever program reads it: `cat`, `node -e`, `python -c`…; writing one, `-f .env` and `--env-file` stay allowed), reading or sending keys, full `printenv`, `curl | sh`, `docker run --privileged`, force pushes and pushes to `main` (including a bare `git push` while on main, and `git -C <dir> push`). It fails closed if `jq` is missing.
 
 If you change `guard.sh`, run `./hooks/test-guard.sh`. `./install.sh verify` runs it too.
+
+`guard.sh` compares text, so a determined trick (building the file name from pieces, for example) can still get past it. That is why interpreters are not in `allow`: the real protection is that Claude has to ask before running arbitrary code.
 
 Left out on purpose:
 
