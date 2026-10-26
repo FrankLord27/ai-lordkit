@@ -4,7 +4,7 @@
 #
 # Uso:
 #   ./install.sh              → TODO (máquina formateada): verify + deps + clean(seguro) + install
-#                               + restore + harden + graphify + claudemem + doctor
+#                               + restore + harden + graphify + doctor
 #   ./install.sh deps         → instala pre-requisitos (git, gh, jq, Node 24, pnpm, uv)
 #   ./install.sh update       → aplica el bundle a ~/.claude SIN reinstalar Claude (con backup)
 #   ./install.sh restore      → igual que update pero pensado para post-instalación
@@ -16,7 +16,6 @@
 #   ./install.sh install      → solo descarga e instala Claude Code
 #   ./install.sh harden       → endurece pnpm (supply chain) y verifica Node 24
 #   ./install.sh graphify     → instala graphify (grafo de conocimiento del código)
-#   ./install.sh claudemem    → instala claude-mem (memoria persistente entre sesiones)
 #   ./install.sh mcp          → registra los servidores MCP de mcp/servers.json (+ los de tu capa privada)
 #   ./install.sh plugins      → registra los marketplaces e instala los plugins de settings.json
 #   ./install.sh verify       → verifica integridad del bundle
@@ -94,6 +93,14 @@ do_verify() {
   done
   (( missing == 0 )) && ok "todas las skills tienen SKILL.md"
 
+  # Memoria entre sesiones = auto-memory nativa + skill mem-search (busca en el historial)
+  local ms="$SCRIPT_DIR/skills/mem-search/scripts/mem-search.sh"
+  if [[ -x "$ms" ]] && bash -n "$ms"; then
+    ok "mem-search ejecutable"
+  else
+    err "skills/mem-search/scripts/mem-search.sh falta, no es ejecutable o tiene errores de sintaxis"; errors=$((errors+1))
+  fi
+
   n=$(ls "$SCRIPT_DIR/commands/"*.md 2>/dev/null | wc -l)
   (( n >= 1 )) && ok "commands: $n" || warn "sin commands (opcional)"
 
@@ -139,9 +146,6 @@ do_verify() {
 }
 
 # ─── plugins de settings.json: coherencia del bundle + qué cargó en esta máquina ─
-# claude-mem@thedotmack no se revisa aquí: lo instala su propio paso (./install.sh claudemem).
-PLUGINS_OWN_STEP='@thedotmack$'
-
 verify_plugins() {
   command -v jq &>/dev/null || return 0
   local f="$SCRIPT_DIR/settings.json" bad=0 dup id
@@ -150,9 +154,9 @@ verify_plugins() {
   # 1. Cada plugin habilitado viene de un marketplace declarado en extraKnownMarketplaces
   while read -r id; do
     err "plugin $id: su marketplace no está en extraKnownMarketplaces"; bad=1
-  done < <(jq -r --arg skip "$PLUGINS_OWN_STEP" '(.extraKnownMarketplaces // {} | keys) as $m
+  done < <(jq -r '(.extraKnownMarketplaces // {} | keys) as $m
     | .enabledPlugins // {} | to_entries[] | select(.value == true) | .key
-    | select(test($skip) | not) | select((split("@")[1]) as $k | $m | index($k) | not)' "$f")
+    | select((split("@")[1]) as $k | $m | index($k) | not)' "$f")
 
   # 2. Sin duplicados: el mismo plugin en dos marketplaces, o un plugin que repite
   #    una skill del bundle o un servidor de mcp/servers.json
@@ -177,8 +181,7 @@ verify_plugins() {
       elif jq -e --arg id "$want" 'any(.[]; .id == $id and ((.errors // []) | length) > 0)' <<<"$list" >/dev/null; then
         broken+=("$want")
       fi
-    done < <(merged_settings | jq -r --arg skip "$PLUGINS_OWN_STEP" \
-      '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | select(test($skip) | not)')
+    done < <(merged_settings | jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key')
     if (( ${#missing[@]} == 0 && ${#broken[@]} == 0 )); then
       ok "plugins cargados en esta máquina: $total/$total"
     else
@@ -603,19 +606,6 @@ do_graphify() {
   echo "  Uso: dentro de Claude Code escribe:  /graphify ."
 }
 
-# ─── claudemem: memoria persistente entre sesiones ───────────────────────────
-do_claudemem() {
-  step "Instalando claude-mem (memoria persistente entre sesiones)"
-  command -v npx >/dev/null || { warn "npx no disponible — corre primero: ./install.sh deps"; return 0; }
-  if npx -y claude-mem install --silent; then
-    ok "claude-mem instalado (plugin claude-mem@thedotmack)"
-    npx -y claude-mem start >/dev/null 2>&1 && ok "worker de claude-mem arrancado" \
-      || warn "worker no arrancó — corre a mano: npx claude-mem start"
-  else
-    warn "claude-mem no se pudo instalar — reintenta: npx claude-mem install"
-  fi
-}
-
 # ─── mcp: registra los servidores de mcp/servers.json (+ mcp.json privado) ───
 # Los ${VAR} se rellenan con tu entorno al instalar. Si falta una variable, ese
 # servidor se salta. El valor queda solo en ~/.claude.json de esta máquina.
@@ -680,8 +670,7 @@ do_plugins() {
     else
       warn "No se pudo instalar $id — reintenta: claude plugin install $id"
     fi
-  done < <(jq -r --arg skip "$PLUGINS_OWN_STEP" \
-    '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key | select(test($skip) | not)' <<<"$settings")
+  done < <(jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' <<<"$settings")
 }
 
 # ─── sync: backup → escaneo → commit → push ──────────────────────────────────
@@ -795,6 +784,11 @@ do_doctor() {
   command -v uv &>/dev/null && ok "uv: $(uv --version)" || warn "uv NO instalado (necesario para graphify)"
   command -v graphify &>/dev/null && ok "graphify: $(graphify --version 2>/dev/null | head -1)" || warn "graphify NO instalado: ./install.sh graphify"
   command -v claude &>/dev/null && ok "claude: $(claude --version 2>/dev/null || echo instalado)" || warn "claude NO en PATH (hash -r)"
+  # claude-mem salió del kit (su observer ahora es de pago o gasta tu plan). Si quedó de antes, avisa.
+  if command -v claude &>/dev/null && claude plugin list --json 2>/dev/null \
+       | jq -e 'any(.[]; .id == "claude-mem@thedotmack")' >/dev/null 2>&1; then
+    warn "claude-mem sigue instalado y el kit ya no lo usa: claude plugin uninstall claude-mem@thedotmack"
+  fi
 
   [[ -x "$CLAUDE_DIR/hooks/guard.sh" ]] && ok "guard.sh activo (bloqueo de comandos destructivos)" || warn "guard.sh NO instalado — corre: ./install.sh update"
 }
@@ -819,7 +813,7 @@ print_summary() {
   echo -e "      force-push, push a main y lectura de archivos de entorno o llaves"
   echo -e "    • pnpm: cuarentena de 7 días para paquetes nuevos + scripts bloqueados"
   echo ""
-  echo -e "  ${BOLD}Memoria:${NC} claude-mem + graphify (/graphify .) + memory-bank + auto-memory"
+  echo -e "  ${BOLD}Memoria:${NC} auto-memory + mem-search (historial) + graphify (/graphify .) + memory-bank"
   echo ""
   echo -e "  ${BOLD}Skills:${NC} $(ls -d "$CLAUDE_DIR/skills/"*/ 2>/dev/null | wc -l) en ~/.claude/skills/ (nativas, sin plugin)"
   echo ""
@@ -845,7 +839,6 @@ case "${1:-all}" in
   update)    do_update; do_mcp; do_plugins; do_doctor; print_summary ;;
   harden)    do_harden ;;
   graphify)  do_graphify ;;
-  claudemem) do_claudemem ;;
   context7|mcp) do_mcp ;;
   plugins)   do_plugins ;;
   sync)      do_sync ;;
@@ -854,7 +847,7 @@ case "${1:-all}" in
   doctor)    do_doctor ;;
   all)
     # verify/clean/install/restore son críticos (abortan si fallan);
-    # harden/graphify/claudemem/doctor son mejoras: si una falla, el resto continúa.
+    # harden/graphify/doctor son mejoras: si una falla, el resto continúa.
     do_verify
     do_deps    || warn "deps incompleto — revisa arriba y reintenta: ./install.sh deps"
     do_clean
@@ -862,16 +855,15 @@ case "${1:-all}" in
     do_restore
     do_harden    || warn "harden falló — reintenta: ./install.sh harden"
     do_graphify  || warn "graphify falló — reintenta: ./install.sh graphify"
-    do_claudemem || warn "claude-mem falló — reintenta: ./install.sh claudemem"
     do_mcp       || warn "mcp falló — reintenta: ./install.sh mcp"
     do_plugins   || warn "plugins falló — reintenta: ./install.sh plugins"
     do_doctor    || true
     print_summary
     ;;
   *)
-    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|harden|graphify|claudemem|mcp|plugins|sync|private-init|scan|doctor]"
+    echo "Uso: $0 [all|verify|backup|clean|deps|install|restore|update|harden|graphify|mcp|plugins|sync|private-init|scan|doctor]"
     echo ""
-    echo "  all       → instalación completa desde cero (máquina formateada): deps + install + restore + harden + graphify + claudemem"
+    echo "  all       → instalación completa desde cero (máquina formateada): deps + install + restore + harden + graphify"
     echo "  deps      → instala pre-requisitos del sistema (git, gh, jq, Node 24, pnpm, uv)"
     echo "  update    → aplica el bundle a ~/.claude sin reinstalar (con backup)"
     echo "  backup    → sincroniza la config viva HACIA el bundle (espejo)"

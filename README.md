@@ -118,6 +118,18 @@ This repo is **generic**: no clients, project names, emails or tokens. Your own 
 - The public side is pushed to a `sync/<date>` branch so it goes through a PR, never straight to `main`.
 - The private side is scanned too: names are fine there, tokens are not.
 
+## Memory across sessions
+
+No extra memory server, no worker and no API cost. Three pieces:
+
+- **Claude Code auto memory** (built in, on by default): Claude keeps notes per repo in `MEMORY.md` and loads only the first 200 lines each session. Open `/memory` to see or edit them.
+- **`mem-search` skill**: searches your past sessions (`~/.claude/projects/*/*.jsonl`) with `rg`/`grep` + `jq`. It only reads what you wrote and Claude's replies, skipping tool output and thinking, and costs nothing until Claude runs it. Try it yourself: `~/.claude/skills/mem-search/scripts/mem-search.sh -p my-repo "tenantId|multi.?tenant"`.
+- **Session history kept for a year:** `cleanupPeriodDays` is 365 in `settings.json` (Claude Code's default is 30), so there is something to search. Lower it in your private layer if disk space matters.
+
+For project state, the `memory-bank-context` skill and `graphify` cover the rest.
+
+**Coming from claude-mem?** The kit no longer installs it: its hosted observer is now a paid subscription, and without it compression runs on your own Claude plan. Remove it with `claude plugin uninstall claude-mem@thedotmack`. Its data stays in `~/.claude-mem/` until you delete it. `./install.sh doctor` warns if it is still installed.
+
 ## MCP servers and connectors
 
 `mcp/servers.json` lists the MCP servers installed for everyone. Tokens never live in the file: they are written as `${VARIABLE}` and read from your environment when you run `./install.sh mcp`. If a variable is missing, that server is skipped.
@@ -153,7 +165,6 @@ The kit doesn't copy other people's skills. `settings.json` declares the marketp
 | `react-best-practices` | `ai-lordkit` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills): React and Next.js performance rules |
 | `composition-patterns` | `ai-lordkit` | vercel-labs/agent-skills: React composition patterns |
 | `web-design-guidelines` | `ai-lordkit` | vercel-labs/agent-skills: review UI against the Web Interface Guidelines |
-| `claude-mem` | `thedotmack` | Memory across sessions. Installed by `./install.sh claudemem` |
 
 Where each one comes from:
 
