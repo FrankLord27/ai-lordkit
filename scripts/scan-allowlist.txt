@@ -1,0 +1,10 @@
+# Excepciones del escáner (regex extendida por línea, contra "archivo: coincidencia").
+# Solo ejemplos de documentación. Nunca agregues aquí un token o un email real.
+
+# URLs de BD de ejemplo en docs (clave de mentira)
+://[A-Za-z]+:(PASSWORD[A-Z_]*|password|testpass|devpassword)@
+# Emails de ejemplo en docs
+@(acme\.com|ex\.com|email\.com|db\.host)$
+: %@gmail\.com$
+: git@github\.com$
+: \.\.\.@sentry\.io$

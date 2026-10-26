@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 30,
+  "env": {
+    "BASH_DEFAULT_TIMEOUT_MS": "120000",
+    "BASH_MAX_TIMEOUT_MS": "600000"
+  },
+  "includeGitInstructions": true,
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash(pnpm *)",
+      "Bash(node *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(docker compose *)",
+      "Bash(prisma *)",
+      "Bash(turbo *)",
+      "Bash(tsc *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(cd *)",
+      "Bash(tree *)",
+      "Bash(playwright *)",
+      "Bash(jest *)",
+      "WebFetch(domain:*)",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(npx jest *)",
+      "Bash(npx playwright *)",
+      "Bash(npx eslint *)",
+      "Bash(npx prettier *)",
+      "Bash(docker ps*)",
+      "Bash(docker logs *)",
+      "Bash(docker images*)",
+      "Bash(docker exec * psql *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(sudo rm *)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(shutdown *)",
+      "Bash(reboot *)",
+      "Bash(chmod 777 *)",
+      "Bash(curl * | bash)",
+      "Bash(curl * | sh)",
+      "Bash(wget * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(git push * main*)",
+      "Bash(git push * master*)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard origin/main*)",
+      "Bash(git reset --hard origin/master*)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.gnupg/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(~/.claude/kimi.key)",
+      "Bash(pnpm config set minimumReleaseAge*)",
+      "Bash(pnpm config delete minimumReleaseAge*)"
+    ],
+    "defaultMode": "auto",
+    "ask": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(docker run *)",
+      "Bash(docker rm *)",
+      "Bash(docker volume rm *)",
+      "Bash(docker system prune*)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm add -g *)",
+      "Bash(npm install -g *)",
+      "Bash(npm exec *)",
+      "Bash(rm -rf *)",
+      "Bash(git clean *)",
+      "Bash(git reset --hard*)",
+      "Bash(prisma migrate reset*)",
+      "Bash(npx prisma migrate reset*)",
+      "Bash(pnpm prisma migrate reset*)"
+    ]
+  },
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/guard.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/format.sh\""
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' 'Necesita tu atención' 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "claude-mem@thedotmack": true
+  },
+  "alwaysThinkingEnabled": true
+}

@@ -1,0 +1,16 @@
+{
+  "_comentario": "Servidores MCP que install.sh registra con `claude mcp add-json --scope user`. Los ${VARIABLES} se leen de tu entorno al instalar: si falta alguna, ese servidor se salta. Nunca pongas un token aquí.",
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_MCP_TOKEN}"
+      }
+    }
+  }
+}

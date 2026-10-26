@@ -1,0 +1,4 @@
+# Una palabra o frase por línea (no distingue mayúsculas).
+# Si alguna aparece en el repo público, `install.sh verify`, `sync` y el escáner fallan.
+# Pon nombres de clientes, de tus productos privados, de colegios, tu email personal.
+cliente-ejemplo

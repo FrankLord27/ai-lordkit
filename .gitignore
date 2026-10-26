@@ -1,0 +1,21 @@
+# Credenciales y secretos: nunca entran al bundle
+.credentials.json
+settings.local.json
+kimi.key
+*.key
+*.pem
+*.p12
+id_rsa*
+id_ed25519*
+.env
+.env.*
+!.env.example
+
+# Basura local
+node_modules/
+.DS_Store
+__pycache__/
+
+# Capa privada (si alguien la crea dentro del repo por error)
+private/
+ai-lordkit-private/

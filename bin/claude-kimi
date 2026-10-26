@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# claude-kimi — Claude Code (CLI oficial) usando los modelos de Kimi / Moonshot AI.
+#
+# Por qué existe:
+#   Claude Code tiene UN backend por sesión y su menú /model está hardcodeado
+#   (Opus / Sonnet / Haiku). No se pueden registrar proveedores externos.
+#   Lo que SÍ se puede: redirigir el backend al endpoint Anthropic-compatible de
+#   Kimi y remapear qué modelo real resuelve cada alias. Resultado: el menú sigue
+#   diciendo Opus/Sonnet/Haiku, pero cada entrada ejecuta un modelo de Kimi, y los
+#   13 subagents del bundle (que usan aliases) funcionan sin tocar un solo archivo.
+#
+# Aislamiento:
+#   Las variables se exportan SOLO en este proceso. El comando `claude` normal
+#   sigue entrando con tu suscripción Anthropic (OAuth) sin ningún cambio.
+#   Nunca exportes ANTHROPIC_BASE_URL / ANTHROPIC_API_KEY en .zshrc: eso rompe
+#   el login oficial.
+#
+# API key (en este orden):
+#   1) $KIMI_API_KEY   2) ~/.claude/kimi.key (chmod 600, NUNCA se commitea)
+#
+# Uso:
+#   claude-kimi                      → sesión con el alias por defecto (opus → K3)
+#   claude-kimi --model k3-256k      → fuerza un modelo de Kimi por su nombre real
+#   claude-kimi -p "..."             → modo no interactivo
+#   KIMI_MODEL_OPUS=k3-256k claude-kimi   → remapea un alias puntualmente
+
+set -euo pipefail
+
+KIMI_BASE_URL="${KIMI_BASE_URL:-https://api.kimi.com/coding}"
+KEY_FILE="$HOME/.claude/kimi.key"
+
+key="${KIMI_API_KEY:-}"
+if [[ -z "$key" && -r "$KEY_FILE" ]]; then
+  key="$(tr -d ' \t\n\r' < "$KEY_FILE")"
+fi
+
+if [[ -z "$key" ]]; then
+  cat >&2 <<'MSG'
+[✗] No hay API key de Kimi.
+    Solución:  printf '%s' 'sk-kimi-...' > ~/.claude/kimi.key && chmod 600 ~/.claude/kimi.key
+    (o exporta KIMI_API_KEY en tu shell). Obtén la key en https://www.kimi.com/code
+MSG
+  exit 1
+fi
+
+# Backend
+export ANTHROPIC_BASE_URL="$KIMI_BASE_URL"
+export ANTHROPIC_AUTH_TOKEN="$key"
+unset ANTHROPIC_API_KEY
+
+# Alias → modelo real de Kimi
+export ANTHROPIC_DEFAULT_OPUS_MODEL="${KIMI_MODEL_OPUS:-k3}"
+export ANTHROPIC_DEFAULT_SONNET_MODEL="${KIMI_MODEL_SONNET:-kimi-for-coding}"
+export ANTHROPIC_DEFAULT_HAIKU_MODEL="${KIMI_MODEL_HAIKU:-kimi-for-coding-highspeed}"
+export ANTHROPIC_SMALL_FAST_MODEL="$ANTHROPIC_DEFAULT_HAIKU_MODEL"
+
+# Los 4 modelos de Kimi son de 256k. Claude Code no los conoce y asumiría 200k,
+# recortando contexto de más (auto-compact prematuro).
+export CLAUDE_CODE_MAX_CONTEXT_TOKENS="${KIMI_CONTEXT_TOKENS:-256000}"
+
+# Un backend de terceros no atiende los endpoints internos de Anthropic
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+if [[ -t 2 ]]; then
+  printf '\033[0;34m▶ Claude Code sobre Kimi\033[0m  (%s)\n' "$KIMI_BASE_URL" >&2
+  printf '  /model opus   → %s\n' "$ANTHROPIC_DEFAULT_OPUS_MODEL"   >&2
+  printf '  /model sonnet → %s\n' "$ANTHROPIC_DEFAULT_SONNET_MODEL" >&2
+  printf '  /model haiku  → %s\n' "$ANTHROPIC_DEFAULT_HAIKU_MODEL"  >&2
+fi
+
+exec claude "$@"
