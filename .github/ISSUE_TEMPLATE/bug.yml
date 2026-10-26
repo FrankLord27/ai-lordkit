@@ -1,0 +1,37 @@
+name: Bug
+description: Something in the installer, a hook or a skill doesn't work
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you ran and what you saw. Paste the installer output if it applies.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: System
+      placeholder: "Ubuntu 24.04 / macOS 15 / Windows 11 + WSL"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Kit version
+      description: "cat ~/.ai-lordkit/.ai-lordkit-ref"
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of ./install.sh doctor
+      render: text
+  - type: markdown
+    attributes:
+      value: "Remove tokens, emails and private paths before posting. Security problems go through [private reporting](https://github.com/FrankLord27/ai-lordkit/security/advisories/new), not here."

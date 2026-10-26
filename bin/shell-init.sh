@@ -1,4 +1,5 @@
 # ai-lordkit/bin/shell-init.sh
+# shellcheck shell=bash
 # Se instala en ~/.claude/shell-init.sh y se carga desde .zshrc / .bashrc.
 #
 # Un solo comando: `claude`.
