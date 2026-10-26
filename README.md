@@ -128,6 +128,7 @@ The map works offline. It bundles its own TypeScript 6 (TypeScript 7 no longer s
 ai-lordkit is free and MIT-licensed. If it saves you time, you can help keep it going:
 
 - **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: the Sponsor button at the top of this repo.
+- **[PayPal](https://www.paypal.me/frankfelixr)**: one-time donations in any amount.
 - Starring the repo and sharing it also helps.
 
 ## Contributing
