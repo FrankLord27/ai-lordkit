@@ -94,7 +94,6 @@
       "Bash(pnpm prisma migrate reset*)"
     ]
   },
-  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -153,19 +152,22 @@
     "prisma@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": false,
+    "hookify@claude-plugins-official": false,
     "claude-md-management@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "sentry@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true,
-    "hostinger@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
+    "sentry@claude-plugins-official": false,
+    "vercel@claude-plugins-official": false,
+    "hostinger@claude-plugins-official": false,
+    "superpowers@claude-plugins-official": false,
     "skill-creator@claude-plugins-official": true,
     "react-best-practices@ai-lordkit": true,
     "composition-patterns@ai-lordkit": true,
     "web-design-guidelines@ai-lordkit": true
   },
-  "alwaysThinkingEnabled": true
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME/.claude/hooks/statusline.sh\""
+  }
 }

@@ -107,7 +107,7 @@ do_verify() {
   (( n >= 1 )) && ok "commands: $n" || warn "sin commands (opcional)"
 
   local h
-  for h in guard.sh format.sh notify.sh; do
+  for h in guard.sh format.sh notify.sh statusline.sh; do
     if [[ -x "$SCRIPT_DIR/hooks/$h" ]]; then
       ok "hooks/$h presente y ejecutable"
     else

@@ -50,21 +50,7 @@ Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS
 
 ## 5. Equipo de agents (13)
 
-| Agent                     | Modelo | Úsalo para                                              |
-| ------------------------- | ------ | ------------------------------------------------------- |
-| `explorer`                | haiku  | Búsqueda read-only, leer >10 archivos                   |
-| `planner`                 | sonnet | Plan de una feature                                     |
-| `backend-architect`       | opus   | `schema.prisma`, módulos NestJS nuevos, auth/RBAC       |
-| `frontend-specialist`     | sonnet | Componentes, páginas, formularios                       |
-| `qa-engineer`             | opus   | E2E críticos (pagos, multi-tenant, RBAC)                |
-| `code-reviewer`           | sonnet | Review pre-merge (puede BLOQUEAR)                       |
-| `security-auditor`        | opus   | Auditoría de seguridad (puede BLOQUEAR releases)        |
-| `readme-writer`           | sonnet | README y docs del proyecto                              |
-| `git-workflow`            | haiku  | Commits, ramas, PRs (único que commitea)                |
-| `debugger`                | sonnet | Causa raíz de bugs                                      |
-| `devops-engineer`         | sonnet | Docker, CI/CD, deploy                                   |
-| `db-migration-specialist` | opus   | Migraciones destructivas o con backfill                 |
-| `perf-optimizer`          | sonnet | "Está lento", N+1, bundle                               |
+Cada agent dice en su descripción cuándo usarlo y trae su modelo (`opus` para `backend-architect`, `qa-engineer`, `security-auditor` y `db-migration-specialist`; `haiku` para `explorer` y `git-workflow`; `sonnet` el resto). `git-workflow` es el único que commitea; `code-reviewer` y `security-auditor` pueden BLOQUEAR.
 
 - Modelos solo por alias (`opus`/`sonnet`/`haiku`). **Prohibido** escribir IDs exactos de modelo en agents, settings o este archivo.
 - Opus cuesta: CRUD de entidades ya modeladas y unit tests rutinarios van en Sonnet, aunque el agent sea Opus por defecto.
@@ -73,12 +59,11 @@ Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS
 
 Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` (`explorer` en paralelo) → `qa-engineer` → `code-reviewer` (+ `security-auditor` si toca auth o datos sensibles) → `git-workflow` → PR. Fix trivial: directo a `git-workflow`. Hotfix: implementador → `qa-engineer` (smoke) → `git-workflow` con label `urgent`.
 
-**Backend Kimi:** `claude --kimi` arranca la sesión contra Kimi con los mismos agents y skills (el remapeo es por alias). El backend se elige al arrancar; `/model` no puede listar Kimi y no hay forma de lograrlo, no insistas. Nunca exportes `ANTHROPIC_BASE_URL`/`ANTHROPIC_API_KEY` en el shell: rompe el login oficial.
+**Backend Kimi:** `claude --kimi` (se elige al arrancar; `/model` no puede listar Kimi, no insistas). Nunca exportes `ANTHROPIC_BASE_URL`/`ANTHROPIC_API_KEY` en el shell.
 
 ## 6. Git
 
-- Rama base única `main`, siempre desplegable. Nunca push directo a main: todo por PR.
-- Ramas `tipo/descripcion-kebab` con `feature/`, `fix/`, `chore/`, `docs/`, `refactor/`, `test/`, `hotfix/`.
+- Rama base única `main`, siempre desplegable; nunca push directo, todo por PR. Ramas `tipo/descripcion-kebab` (`feature/`, `fix/`, `chore/`, `docs/`, `refactor/`, `test/`, `hotfix/`).
 - Conventional Commits en español (`feat(auth): añade validación JWT`), firmados, con trailer `Co-Authored-By: Claude`.
 - Squash merge y borrado automático de rama. `gh` CLI para todo lo de GitHub.
 - Antes de commitear: lint + tsc + tests. Si fallan, no se commitea.
@@ -86,8 +71,7 @@ Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` 
 ## 7. Tokens
 
 - Localiza con Grep/Glob antes de leer. Nunca leas `node_modules`, `.next`, `dist`, `build`, `coverage`, `.turbo`, `.git`.
-- Features de >3 archivos: plan en bullets y espera confirmación.
-- Si necesitas leer >10 archivos, delega al `explorer`.
+- Features de >3 archivos: plan en bullets y espera confirmación. Leer >10 archivos: delega al `explorer`.
 - En repos grandes, si existe `GRAPH_REPORT.md` (graphify), consúltalo antes de explorar a mano.
 
 ## 8. AI-TDD (dinero, efectos en BD, estado multi-tenant)

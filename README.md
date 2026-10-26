@@ -14,7 +14,7 @@ What you get:
 - **A private layer** for everything personal, applied on top, so this repo stays generic.
 - **A one-command installer** for Linux (apt) and macOS (Homebrew) that takes a freshly formatted machine to a working setup.
 
-> Instructions and skills are written in **Spanish**. Issues and PRs in English or Spanish are welcome.
+> Instructions and skills are written in **Spanish**, and `CLAUDE.md` tells Claude to answer in Spanish. To use another language, add a line like "Always answer in English" to your private layer's `CLAUDE.md` (it's appended last, so it wins). Issues and PRs in English or Spanish are welcome.
 
 ## Install
 
@@ -113,11 +113,11 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | ------------------- | --------------------------------------------------------------------- |
 | `CLAUDE.md`         | Global instructions (short on purpose: it loads in every session)     |
 | `WORKFLOW.md`       | Detailed flow for medium/high-risk tasks                              |
-| `settings.json`     | Permissions, hooks, model, plugin marketplaces and enabled plugins    |
+| `settings.json`     | Permissions, hooks, status line, plugin marketplaces and enabled plugins. No model is pinned: set `model` in your private layer |
 | `.claude-plugin/`   | A catalog that points to third-party skills upstream (nothing copied) |
 | `agents/`           | 13 subagents                                                          |
 | `skills/`           | Stack and domain skills (`fullstack`, `nestjs-security-hardening`, `erp-saas-core`…) |
-| `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `test-guard.sh` |
+| `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `notify.sh` (desktop alert), `statusline.sh` (model · folder · branch), `test-guard.sh` |
 | `mcp/servers.json`  | Public MCP servers, tokens as `${VARIABLES}`                          |
 | `private-template/` | Template for your private layer                                       |
 | `scripts/`          | `scan-leaks.sh`, used by `verify`, `sync` and CI                      |
@@ -174,24 +174,36 @@ Private MCP servers (your hosting provider, for example) go in your private laye
 
 The kit doesn't copy other people's skills. `settings.json` declares the marketplaces under `extraKnownMarketplaces` and turns plugins on under `enabledPlugins`, so every machine downloads them from their source and they keep updating (`autoUpdate: true`).
 
+**On by default** (useful for any TypeScript/Prisma project, cheap on context):
+
 | Plugin | Marketplace | What it adds |
 | ------ | ----------- | ------------ |
 | `prisma` | `claude-plugins-official` | Prisma MCP servers (local and Prisma Postgres) |
 | `typescript-lsp` | `claude-plugins-official` | TypeScript language server: go to definition, diagnostics. Needs `typescript-language-server` in your `PATH` |
 | `security-guidance` | `claude-plugins-official` | Hooks that warn about insecure patterns while Claude edits |
-| `pr-review-toolkit` | `claude-plugins-official` | Specialized PR review agents and `/review-pr` |
-| `commit-commands` | `claude-plugins-official` | `/commit`, `/commit-push-pr`, `/clean_gone` |
-| `hookify` | `claude-plugins-official` | Turn "don't do X again" into hooks |
 | `claude-md-management` | `claude-plugins-official` | Audit and improve `CLAUDE.md` files |
 | `playwright` | `claude-plugins-official` | Playwright MCP: drive a real browser |
-| `sentry` | `claude-plugins-official` | Sentry MCP and skills for issues and alerts |
-| `vercel` | `claude-plugins-official` | Vercel MCP, skills and hooks |
-| `hostinger` | `claude-plugins-official` | Hostinger MCP and hosting skills |
-| `superpowers` | `claude-plugins-official` | [obra/superpowers](https://github.com/obra/superpowers): brainstorm, plan, TDD, systematic debugging |
 | `skill-creator` | `claude-plugins-official` | Anthropic's skill for writing and testing skills ([anthropics/skills](https://github.com/anthropics/skills)) |
 | `react-best-practices` | `ai-lordkit` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills): React and Next.js performance rules |
 | `composition-patterns` | `ai-lordkit` | vercel-labs/agent-skills: React composition patterns |
 | `web-design-guidelines` | `ai-lordkit` | vercel-labs/agent-skills: review UI against the Web Interface Guidelines |
+
+**Off by default** (declared as `false`, turn on the ones you use in your private layer):
+
+| Plugin | Why it's off |
+| ------ | ------------ |
+| `sentry`, `vercel`, `hostinger` | Only useful if you use that service, and each one loads its MCP tools in every session |
+| `pr-review-toolkit`, `commit-commands` | They overlap with the kit's `code-reviewer` and `git-workflow` agents |
+| `hookify` | Runs a Python script on every tool call |
+| `superpowers` | It brings its own process (brainstorm before everything, "always use a skill") that fights the kit's `WORKFLOW.md`, and it is injected into every session |
+
+To turn one on, add it to your private layer's `settings.json`:
+
+```json
+{ "enabledPlugins": { "sentry@claude-plugins-official": true } }
+```
+
+If you installed the kit before this change, those plugins are still installed on your machine; `update` now marks them as off. Check what each session loads with `/context`.
 
 Where each one comes from:
 
