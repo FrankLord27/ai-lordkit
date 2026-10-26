@@ -1,6 +1,6 @@
 {
   "name": "ai-lordkit",
-  "description": "Catalog of third-party skills ai-lordkit enables. Each entry points to the upstream repository; nothing is copied here.",
+  "description": "Catalog of third-party skills ai-lordkit enables. Each entry points to the upstream repository; nothing is copied here. Each entry is pinned to a commit (sha): bump it on purpose after reviewing the upstream diff.",
   "owner": {
     "name": "ai-lordkit",
     "url": "https://github.com/FrankLord27/ai-lordkit"
@@ -12,7 +12,8 @@
       "source": {
         "source": "git-subdir",
         "url": "vercel-labs/agent-skills",
-        "path": "skills/react-best-practices"
+        "path": "skills/react-best-practices",
+        "sha": "063bee94c3f4df8453406c830b0a7df0f2860278"
       }
     },
     {
@@ -21,7 +22,8 @@
       "source": {
         "source": "git-subdir",
         "url": "vercel-labs/agent-skills",
-        "path": "skills/composition-patterns"
+        "path": "skills/composition-patterns",
+        "sha": "063bee94c3f4df8453406c830b0a7df0f2860278"
       }
     },
     {
@@ -30,7 +32,8 @@
       "source": {
         "source": "git-subdir",
         "url": "vercel-labs/agent-skills",
-        "path": "skills/web-design-guidelines"
+        "path": "skills/web-design-guidelines",
+        "sha": "063bee94c3f4df8453406c830b0a7df0f2860278"
       }
     }
   ]

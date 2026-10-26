@@ -11,7 +11,8 @@
 #      Para otro subcomando:  curl -fsSL .../get.sh | bash -s -- doctor
 #
 # Variables:
-#   AI_LORDKIT_REF   rama, tag o SHA a instalar (por defecto: main). Un SHA es lo más seguro.
+#   AI_LORDKIT_REF   rama, tag o SHA a instalar (por defecto: el último release; sin releases, main).
+#                    Un SHA es lo más seguro.
 #   AI_LORDKIT_DIR   dónde dejar el kit (por defecto: ~/.ai-lordkit).
 #   AI_LORDKIT_REPO  owner/repo en GitHub (por defecto: FrankLord27/ai-lordkit).
 #   CLAUDE_YES=1     confirma solo la limpieza de `all` (para CI o máquinas sin terminal).
@@ -22,9 +23,8 @@ main() {
   set -euo pipefail
 
   local repo="${AI_LORDKIT_REPO:-FrankLord27/ai-lordkit}"
-  local ref="${AI_LORDKIT_REF:-main}"
+  local ref="${AI_LORDKIT_REF:-}"
   local dir="${AI_LORDKIT_DIR:-$HOME/.ai-lordkit}"
-  local url="https://github.com/$repo/archive/$ref.tar.gz"
 
   say()  { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
   fail() { printf '\033[0;31m[✗]\033[0m %s\n' "$*" >&2; exit 1; }
@@ -35,6 +35,15 @@ main() {
   esac
   command -v curl >/dev/null 2>&1 || fail "Falta curl. Instálalo y vuelve a correr el comando."
   command -v tar  >/dev/null 2>&1 || fail "Falta tar. Instálalo y vuelve a correr el comando."
+
+  # Por defecto, el último release publicado (no lo que haya en main ese día).
+  # Sin releases o sin red hacia la API de GitHub, cae a main.
+  if [[ -z "$ref" ]]; then
+    ref="$(curl -fsSL --retry 2 "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null \
+      | sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1 || true)"
+    ref="${ref:-main}"
+  fi
+  local url="https://github.com/$repo/archive/$ref.tar.gz"
 
   # Un clon de git es tuyo (backup/sync dependen de él): no se pisa.
   if [[ -d "$dir/.git" ]]; then

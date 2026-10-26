@@ -43,7 +43,7 @@ curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/<sha>/get.sh
 
 | Variable          | Default                  | What it does                                              |
 | ----------------- | ------------------------ | --------------------------------------------------------- |
-| `AI_LORDKIT_REF`  | `main`                   | Branch, tag or commit SHA to install                      |
+| `AI_LORDKIT_REF`  | latest release (or `main` if there is none) | Branch, tag or commit SHA to install. Use `main` for the newest unreleased changes |
 | `AI_LORDKIT_DIR`  | `~/.ai-lordkit`          | Where the kit lives. If it is a git clone, it isn't touched |
 | `CLAUDE_YES`      | unset                    | `1` confirms the cleanup step on machines without a terminal |
 
@@ -208,7 +208,7 @@ If you installed the kit before this change, those plugins are still installed o
 Where each one comes from:
 
 - **`claude-plugins-official`** ([anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)) is Anthropic's marketplace. It already lists `superpowers`, `context7` and `skill-creator`, so the kit uses those entries instead of adding `obra/superpowers`, `upstash/context7` or `anthropics/skills` as separate marketplaces.
-- **`ai-lordkit`** is [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) in this repo. `vercel-labs/agent-skills` isn't a Claude Code marketplace, so this catalog points to each skill's folder upstream (a `git-subdir` source). Only that file is cloned (`sparsePaths`).
+- **`ai-lordkit`** is [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) in this repo. `vercel-labs/agent-skills` isn't a Claude Code marketplace, so this catalog points to each skill's folder upstream (a `git-subdir` source). Only that file is cloned (`sparsePaths`). Each entry is pinned to an upstream commit (`sha`), so a change upstream doesn't reach your machine until the kit bumps it on purpose.
 - **Context7** is not enabled as a plugin because `mcp/servers.json` already installs the same server. Two copies would only duplicate tools.
 
 `./install.sh plugins` (also part of `all` and `update`) adds the marketplaces and installs whatever is missing. Claude Code would register the marketplaces by itself at the next interactive session, but not from scripts, so the installer does it. `./install.sh verify` fails if a plugin's marketplace isn't declared or if a plugin repeats another plugin, a bundled skill or an MCP server, and on a machine with Claude Code it warns about plugins that aren't installed, are turned off or failed to load.
