@@ -33,7 +33,7 @@ Antes de leer nada, clasifica la tarea. Esto decide qué skills cargar y si nece
 ### 1.1 Estándar y método del proyecto
 - Carga la skill `fullstack`. Si el proyecto ya usa otra convención (p. ej. Sass/BEM), respétala.
 - Proyecto nuevo → `/new-project` **antes de seguir**. Si el usuario quiere una app y no sabe qué arquitectura o herramientas usar → `crear-app` primero.
-- Método: si existe `docs/METODO.md`, se sigue; si no y es proyecto, módulo o feature grande → `elegir-metodo`. El trabajo avanza por bloques con `desarrollo-por-etapas`: este workflow dice qué cargar y cómo revisar cada tarea; las puertas C1-C5 del bloque dicen cuándo se puede seguir.
+- Método: si existe `docs/METODO.md`, se sigue; si no y es proyecto, módulo o feature grande → `elegir-metodo`. El trabajo avanza por bloques con `desarrollo-por-etapas` (o módulo por módulo con `backend-quality-gate` si el usuario escogió backend primero): este workflow dice qué cargar y cómo revisar cada tarea; las puertas C1-C5 del bloque dicen cuándo se puede seguir.
 
 ### 1.2 Exploración del codebase (NUEVO)
 Antes de planear, scout pass de 2-5 minutos:
