@@ -6,6 +6,8 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Skill `crear-app`: when someone says they want to build an app and doesn't know what to use, an interactive picker (`AskUserQuestion`) asks the type of app, architecture, tools and platforms, recommended option first. The choice goes to `docs/METODO.md` (new `Herramientas:` line) and the project starts with Block 0. `elegir-metodo` asks its question with the same picker.
+
 - Skill `blindar`: security audit of your own code, mandatory at the close of every block (gate C5 of `desarrollo-por-etapas`) and as a full 12-phase audit with `/blindar todo` (hardening stage D). Six checks: input validation, rate limiting per user and IP, error leaks, tokens and sessions, CORS, routes without auth or validation. Findings with `file:line`, fixes with tests, report in `docs/seguridad/`, depth by mode.
 - Work modes `completo`, `intermedio` (default) and `ahorro` as output styles in `output-styles/`. `claude --modo <mode>` sets the style and the effort (`xhigh`, `medium`, `low`), and Sonnet in `ahorro`. Your own `--model` or `--effort` wins.
 - The status line shows the mode, the effort and the estimated session cost.
