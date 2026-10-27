@@ -1,0 +1,41 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      lodash:
+        specifier: 4.17.20
+        version: 4.17.20
+
+packages:
+
+  '@miapp/utils@1.0.0':
+    resolution: {integrity: sha512-aaa}
+
+  evil-pkg@1.0.0:
+    resolution: {integrity: sha512-bbb}
+
+  left-pad@https://codeload.github.com/x/left-pad/tar.gz/abc123:
+    resolution: {tarball: https://codeload.github.com/x/left-pad/tar.gz/abc123}
+    version: 1.3.0
+
+  lodash@4.17.20:
+    resolution: {integrity: sha512-ccc}
+
+  minimist@1.2.5:
+    resolution: {integrity: sha512-ddd}
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-eee}
+
+  '@types/node@24.0.0':
+    resolution: {integrity: sha512-fff}
+
+snapshots:
+
+  lodash@4.17.20: {}

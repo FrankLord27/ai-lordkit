@@ -1,0 +1,3 @@
+# riesgos aceptados
+GHSA-xvch-5gv4-984h  # solo lo usa el script de seed
+MAL-2026-0001  # un MAL no se puede ignorar

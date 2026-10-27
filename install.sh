@@ -103,6 +103,13 @@ do_verify() {
     err "skills/mem-search/scripts/mem-search.sh falta, no es ejecutable o tiene errores de sintaxis"; errors=$((errors+1))
   fi
 
+  # /brechas: reporte de avisos de seguridad de las dependencias (Node, sin dependencias)
+  if [[ -x "$SCRIPT_DIR/skills/brechas/scripts/brechas.mjs" ]]; then
+    ok "brechas ejecutable"
+  else
+    err "skills/brechas/scripts/brechas.mjs falta o no es ejecutable"; errors=$((errors+1))
+  fi
+
   n=$(ls "$SCRIPT_DIR/commands/"*.md 2>/dev/null | wc -l)
   (( n >= 1 )) && ok "commands: $n" || warn "sin commands (opcional)"
 
@@ -117,7 +124,7 @@ do_verify() {
   done
 
   local h
-  for h in guard.sh format.sh notify.sh statusline.sh; do
+  for h in guard.sh supply-guard.sh format.sh notify.sh statusline.sh; do
     if [[ -x "$SCRIPT_DIR/hooks/$h" ]]; then
       ok "hooks/$h presente y ejecutable"
     else
