@@ -13,6 +13,16 @@ Agents, skills, hooks, work modes and MCP servers for building real software wit
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors)](#-support-the-project)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/platforms-dark.svg">
+  <img alt="Supported platforms: Windows (Git Bash), macOS, Linux and WSL, all tested in CI" src="assets/platforms-light.svg" width="760">
+</picture>
+
+[![Windows](https://img.shields.io/badge/Windows-Git_Bash-0078D4?logo=windows&logoColor=white)](#windows)
+[![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#-installation-details)
+[![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)](#-installation-details)
+[![WSL](https://img.shields.io/badge/WSL-Ubuntu-E95420?logo=ubuntu&logoColor=white)](#windows)
+
 **English** · [Español](README.es.md)
 
 <a href="https://github.com/sponsors/FrankLord27"><img alt="Like ai-lordkit? Sponsor it on GitHub, from $3/month or one-time" src="assets/sponsor-banner.svg" width="640"></a>
@@ -22,6 +32,8 @@ Agents, skills, hooks, work modes and MCP servers for building real software wit
 ```bash
 curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh | bash
 ```
+
+> **Windows?** Run it in **Git Bash** (comes with [Git for Windows](https://git-scm.com/download/win)). `deps` installs the rest with `winget`. More in [Windows](#windows).
 
 > **Not an official Anthropic project.** This is a community setup for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It is not affiliated with or endorsed by Anthropic.
 
