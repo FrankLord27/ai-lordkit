@@ -433,14 +433,28 @@ apply_config() {
     ok "hooks instalados (guard.sh activo)"
   fi
 
+  # Migración (antes de copiar, para no instalar dependencias de algo que se va a borrar):
+  # copias viejas que ahora vienen de plugins oficiales (Expo/EAS, Auth0, skill-creator) o que
+  # se unificaron en `fullstack`. Lista cerrada: nunca toca una skill tuya con nombre parecido.
+  local old
+  for old in auth0 skill-creator fullstack-standard fullstack-v2 fullstack-v3 \
+             eas-app-stores eas-hosting eas-observe eas-simulator eas-update eas-update-insights eas-workflows \
+             expo-animation expo-app-clip expo-brownfield expo-data-fetching expo-design-system expo-dev-client \
+             expo-dom expo-examples expo-module expo-native-ui expo-overview expo-project-structure expo-router \
+             expo-skill-feedback expo-tailwind-setup expo-ui expo-upgrade expo-web-to-native; do
+    [[ -d "$CLAUDE_DIR/skills/$old" && ! -d "$SCRIPT_DIR/skills/$old" ]] || continue
+    rm -rf "${CLAUDE_DIR:?}/skills/$old" && warn "copia vieja borrada: $old (ahora viene de un plugin o de fullstack)"
+  done
+
   # Skills → ~/.claude/skills/ (nativo). Cada skill del bundle reemplaza a su versión vieja.
-  local s name
+  local s name n_kit=0
   for s in "$SCRIPT_DIR/skills/"*/; do
     name="$(basename "$s")"
     rm -rf "$CLAUDE_DIR/skills/$name"
     cp -r "$s" "$CLAUDE_DIR/skills/$name"
+    n_kit=$((n_kit+1))
   done
-  ok "skills instaladas en ~/.claude/skills/ ($(ls -d "$CLAUDE_DIR/skills/"*/ | wc -l))"
+  ok "skills del kit instaladas en ~/.claude/skills/ ($n_kit)"
 
   # Skills con motor propio (scripts/package.json, p. ej. mapa-bloque): dependencias fijadas por lockfile
   local pj sk
@@ -467,14 +481,6 @@ apply_config() {
   if [[ -L "$CLAUDE_DIR/docs" ]]; then
     rm -f "$CLAUDE_DIR/docs" && warn "Enlace viejo ~/.claude/docs eliminado (ahora se usa Context7)"
   fi
-
-  # Migración: skills retiradas del bundle (Expo/EAS, Auth0 y skill-creator vienen de plugins
-  # oficiales; fullstack-standard/v2/v3 se unificaron en `fullstack`)
-  local old
-  for old in "$CLAUDE_DIR/skills/"expo-* "$CLAUDE_DIR/skills/"eas-* "$CLAUDE_DIR/skills/auth0" "$CLAUDE_DIR/skills/"fullstack-{standard,v2,v3} "$CLAUDE_DIR/skills/skill-creator"; do
-    [[ -d "$old" && ! -d "$SCRIPT_DIR/skills/$(basename "$old")" ]] || continue
-    rm -rf "$old" && warn "skill retirada: $(basename "$old")"
-  done
 
   # Launcher claude-kimi (Claude Code sobre modelos Kimi). La API key NO viaja en
   # el bundle: vive en ~/.claude/kimi.key (chmod 600, gitignored) o en $KIMI_API_KEY.
@@ -970,7 +976,10 @@ print_summary() {
   echo ""
   echo -e "  ${BOLD}Memoria:${NC} auto-memory + mem-search (historial) + graphify (/graphify .) + memory-bank"
   echo ""
-  echo -e "  ${BOLD}Skills:${NC} $(ls -d "$CLAUDE_DIR/skills/"*/ 2>/dev/null | wc -l) en ~/.claude/skills/ (nativas, sin plugin)"
+  local n_kit n_all
+  n_kit=$(ls -d "$SCRIPT_DIR/skills/"*/ 2>/dev/null | wc -l | tr -d ' ')
+  n_all=$(ls -d "$CLAUDE_DIR/skills/"*/ 2>/dev/null | wc -l | tr -d ' ')
+  echo -e "  ${BOLD}Skills:${NC} $n_kit del kit; $n_all en total en ~/.claude/skills/ (con las tuyas y la capa privada)"
   echo ""
   echo -e "  ${BOLD}Próximos pasos:${NC}"
   echo -e "    1. Nueva terminal (o hash -r)"
