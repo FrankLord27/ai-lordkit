@@ -4,6 +4,10 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
+### Added
+
+- `microservicios` skill: microservices as an alternative architecture, with when not to use it, the pieces (gateway, contracts, events with outbox, compose) and a Block 0 for services. `elegir-metodo` now also records the architecture in `docs/METODO.md`.
+
 ## [0.1.0] - 2026-10-27
 
 First public release.
