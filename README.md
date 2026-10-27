@@ -12,6 +12,8 @@ Agents, skills, hooks, work modes and MCP servers for building real software wit
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors)](#-support-the-project)
 
+**English** · [Español](README.es.md)
+
 </div>
 
 ```bash
@@ -207,7 +209,7 @@ ai-lordkit/
 
 After installing, the same pieces live in `~/.claude/` (agents, skills, hooks, output styles, commands, `CLAUDE.md`, `settings.json`) and the wrapper in `~/.claude/shell-init.sh`, loaded from your `.zshrc` or `.bashrc`.
 
-## ⌨️ Command reference
+## 💻 Command reference
 
 ### In the terminal: `get.sh`
 
@@ -360,7 +362,7 @@ Models are set by alias, never by a pinned ID, so they follow whatever Claude Co
 | `notify.sh` | When Claude needs you | Desktop alert on Linux, macOS and WSL |
 | `statusline.sh` | Always | `Sonnet · ahorro/low · my-repo · main · $0.12` |
 
-## 🎚️ Work modes: completo, intermedio, ahorro
+## 🔋 Work modes: completo, intermedio, ahorro
 
 A mode pairs an [output style](https://code.claude.com/docs/en/output-styles) (how Claude talks and how thorough it is) with an effort level (how much it thinks). Both are native Claude Code features, so nothing is patched.
 
@@ -597,7 +599,7 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
   </tr>
 </table>
 
-## ❤️ Support the project
+## 💖 Support the project
 
 ai-lordkit is free and MIT-licensed, and it will stay that way. I build it in my own time, and donations go straight into building more open tools for developing with AI: new skills, better security checks, and keeping everything up to date as Claude Code changes.
 
