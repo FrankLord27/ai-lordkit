@@ -23,6 +23,8 @@ check "update conserva una variable propia"     '[[ $(s .env.MI_VAR) == 1 ]]'
 check "update conserva un plugin propio"        '[[ $(s ".enabledPlugins[\"mio@otro\"]") == true ]]'
 check "update aplica los permisos del kit"      '[[ $(s ".permissions.allow | index(\"Bash(node *)\")") == null ]]'
 check "update instala el guard"                 '[[ -x $H/.claude/hooks/guard.sh ]]'
+check "update instala los 3 modos"              '[[ -f $H/.claude/output-styles/completo.md && -f $H/.claude/output-styles/intermedio.md && -f $H/.claude/output-styles/ahorro.md ]]'
+check "update deja intermedio por defecto"        '[[ $(s .outputStyle) == intermedio ]]'
 check "update crea ~/.zshrc con shell-init"     'grep -q claude/shell-init.sh "$H/.zshrc"'
 
 sleep 1; run rollback
@@ -35,6 +37,7 @@ check "un segundo rollback lo deshace"          '[[ -x $H/.claude/hooks/guard.sh
 sleep 1; run uninstall
 check "uninstall quita el guard"                '[[ ! -e $H/.claude/hooks/guard.sh ]]'
 check "uninstall quita CLAUDE.md"               '[[ ! -e $H/.claude/CLAUDE.md ]]'
+check "uninstall quita los modos"              '[[ ! -e $H/.claude/output-styles/ahorro.md ]]'
 check "uninstall deja tus claves"               '[[ $(s .theme) == dark && $(s .env.MI_VAR) == 1 ]]'
 check "uninstall quita las claves del kit"      '[[ $(s .hooks) == null && $(s .env.BASH_DEFAULT_TIMEOUT_MS) == null ]]'
 check "uninstall limpia el .zshrc"              '! grep -q claude/shell-init.sh "$H/.zshrc"'
