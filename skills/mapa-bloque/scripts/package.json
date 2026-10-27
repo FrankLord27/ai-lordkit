@@ -1,0 +1,9 @@
+{
+  "name": "mapa-bloque-motor",
+  "private": true,
+  "description": "Motor de análisis de mapa-bloque. Fija TypeScript 6 porque TypeScript 7 ya no trae la API de JavaScript.",
+  "type": "module",
+  "dependencies": {
+    "typescript": "6.0.3"
+  }
+}

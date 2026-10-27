@@ -27,3 +27,10 @@ jobs:
             scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/mem-search/test.sh
       - name: update conserva tus ajustes, rollback y uninstall
         run: ./tests/install/test.sh
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Motor de mapa-bloque
+        run: pnpm install --frozen-lockfile --prod --ignore-scripts --dir skills/mapa-bloque/scripts
+      - name: Test de mapa-bloque
+        run: ./tests/mapa-bloque/test.sh
