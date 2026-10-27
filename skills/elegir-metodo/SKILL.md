@@ -38,6 +38,8 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
    - **Otras opciones:** las 1 o 2 alternativas que también tienen sentido aquí, una línea cada una con cuándo convendrían más.
    - La pregunta: "¿Seguimos con el recomendado o prefieres otro?". El usuario también puede proponer su propia forma de trabajar.
 
+   Si tienes la herramienta `AskUserQuestion`, haz la pregunta con ella: el método recomendado primero con `(Recomendado)` en la etiqueta y sus pros y contras en la descripción, y las alternativas como las otras opciones. Si la arquitectura o las herramientas ya las escogió el usuario con la skill `crear-app`, no las vuelvas a preguntar.
+
    No escribas código ni `docs/METODO.md` hasta que el usuario escoja.
 
 5. **Escribe `docs/METODO.md`** con el método que el usuario escogió, sea o no el recomendado, usando la plantilla de abajo. Si escogió otro, anota tu recomendación y su motivo en una línea, sin insistir. Sigue con `desarrollo-por-etapas`. Si es un spike, la regla del spike va en el archivo: se bota, no se convierte en producción.
@@ -63,7 +65,8 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 
 Decidido: <fecha>
 Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | otro que propuso el usuario>
-Arquitectura: <monolito modular | monolito modular listo para extraer | microservicios (ver docs/ARQUITECTURA.md)>
+Arquitectura: <monolito modular | monolito modular listo para extraer | microservicios (ver docs/ARQUITECTURA.md) | serverless | frontend + backend como servicio>
+Herramientas: <estándar del kit (skill fullstack) | Next.js fullstack | solo API NestJS | otro: ...>
 Escogido por: el usuario (recomendado por la IA: <sí | no, recomendó X porque ...>)
 Por qué: <2 o 3 líneas con lo que respondió el usuario>
 Alternativas consideradas: <las otras opciones que se mostraron>
