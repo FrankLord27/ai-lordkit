@@ -595,7 +595,9 @@ La instalación completa **mueve** tu `~/.claude` actual a `~/.claude-backups/` 
       <a href="https://github.com/FrankLord27"><img src="https://github.com/FrankLord27.png?size=200" width="100" alt="FrankLord27 en GitHub"></a>
     </td>
     <td>
-      <strong>Frank</strong> · <a href="https://github.com/FrankLord27">@FrankLord27</a><br>
+      <strong>Frank Felix Rodriguez Canario</strong><br>
+      <a href="https://github.com/FrankLord27"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-FrankLord27-181717?logo=github"></a>
+      <a href="https://www.linkedin.com/in/frank-f%C3%A9lix-rodr%C3%ADguez-22ab42114/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-Frank%20F%C3%A9lix%20Rodr%C3%ADguez-0A66C2?logo=linkedin&logoColor=white"></a><br>
       Desarrollador fullstack y técnico de IT de 🇩🇴 República Dominicana. Construyo mis propios productos SaaS y sistemas para colegios con NestJS, Next.js, TypeScript, Prisma y PostgreSQL, y uso IA todos los días para construirlos.<br><br>
       ai-lordkit es la configuración que me hubiera gustado tener cuando empecé: un comando, valores seguros por defecto y un método que mantiene a la IA en carril en proyectos grandes.
     </td>

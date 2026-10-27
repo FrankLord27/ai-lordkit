@@ -595,7 +595,9 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
       <a href="https://github.com/FrankLord27"><img src="https://github.com/FrankLord27.png?size=200" width="100" alt="FrankLord27 on GitHub"></a>
     </td>
     <td>
-      <strong>Frank</strong> · <a href="https://github.com/FrankLord27">@FrankLord27</a><br>
+      <strong>Frank Felix Rodriguez Canario</strong><br>
+      <a href="https://github.com/FrankLord27"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-FrankLord27-181717?logo=github"></a>
+      <a href="https://www.linkedin.com/in/frank-f%C3%A9lix-rodr%C3%ADguez-22ab42114/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-Frank%20F%C3%A9lix%20Rodr%C3%ADguez-0A66C2?logo=linkedin&logoColor=white"></a><br>
       Fullstack developer and IT technician from the 🇩🇴 Dominican Republic. I build my own SaaS products and systems for schools with NestJS, Next.js, TypeScript, Prisma and PostgreSQL, and I use AI every day to build them.<br><br>
       ai-lordkit is the setup I wished I had when I started: one command, safe defaults, and a method that keeps the AI on track in big projects.
     </td>

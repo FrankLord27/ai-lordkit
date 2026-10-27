@@ -8,3 +8,5 @@
 : %@gmail\.com$
 : git@github\.com$
 : \.\.\.@sentry\.io$
+# Nombre del autor, público a propósito solo en la sección "Sobre el autor" de los README
+^README(\.es)?\.md: Frank Felix$
