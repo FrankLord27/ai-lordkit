@@ -118,6 +118,7 @@ Puerta del bloque:
 - [ ] Ninguna acción visible que el rol no pueda hacer.
 - [ ] `/mapa-bloque` sin variables sin usar ni ciclos nuevos (o justificados en `ETAPAS.md`).
 - [ ] El bloque se puede usar solo en staging.
+- [ ] `/blindar` del bloque (skill `blindar`) con 0 críticos y 0 altos abiertos; informe en `docs/seguridad/` y link en `ETAPAS.md`.
 
 **Cada 3 o 4 bloques:** ronda de limpieza. `/mapa-bloque` sobre lo construido, refactor de duplicados y de exports muertos, suite completa en verde.
 
@@ -129,6 +130,7 @@ Puerta:
 - [ ] Restauración desde backup probada.
 - [ ] Headers de seguridad en A o superior.
 - [ ] Alerta de caída llega al teléfono.
+- [ ] `/blindar todo` con evaluación final distinta de NO APTO PARA PRODUCCIÓN.
 
 ## E. Piloto
 

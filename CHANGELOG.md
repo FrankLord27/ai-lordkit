@@ -6,6 +6,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Skill `blindar`: security audit of your own code, mandatory at the close of every block (gate C5 of `desarrollo-por-etapas`) and as a full 12-phase audit with `/blindar todo` (hardening stage D). Six checks: input validation, rate limiting per user and IP, error leaks, tokens and sessions, CORS, routes without auth or validation. Findings with `file:line`, fixes with tests, report in `docs/seguridad/`, depth by mode.
 - Work modes `completo`, `intermedio` (default) and `ahorro` as output styles in `output-styles/`. `claude --modo <mode>` sets the style and the effort (`xhigh`, `medium`, `low`), and Sonnet in `ahorro`. Your own `--model` or `--effort` wins.
 - The status line shows the mode, the effort and the estimated session cost.
 - `desarrollo-por-etapas`: C1 now starts with concrete user scenarios, from which come the tasks and the Given/When/Then criteria that become tests. `elegir-metodo` finds blocks from one-line scenarios.
