@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 # Comando: `/new-project`
 
-Todo proyecto nuevo usa la skill `fullstack` (Next.js 16 + Tailwind v4, NestJS 11, Prisma 7, PostgreSQL, Redis, Zod compartido). No hay variantes de stack que elegir.
+Por defecto, todo proyecto nuevo usa la skill `fullstack` (Next.js 16 + Tailwind v4, NestJS 11, Prisma 7, PostgreSQL, Redis, Zod compartido). Si el usuario no sabe qué arquitectura o herramientas usar, o pide escoger, primero pasa por la skill `crear-app` (selector interactivo) y usa lo que escoja: no repitas aquí las preguntas que ya contestó.
 
 ## Paso 1 — Preguntar (en un solo mensaje)
 
@@ -33,6 +33,7 @@ En la raíz del proyecto, crea `CLAUDE.md` empezando con este bloque (los agents
 ## Proyecto
 
 - Tipo: <saas | marketplace | pos | public-admin | api | other>
+- Arquitectura y herramientas: <lo de docs/METODO.md, o "estándar del kit">
 - App móvil: <sí | no>
 - Estándar: skill `fullstack`. Seguridad: skill `nestjs-security-hardening`.
 
