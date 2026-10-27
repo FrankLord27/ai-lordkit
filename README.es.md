@@ -15,7 +15,7 @@ Agents, skills, hooks, modos de trabajo y servidores MCP para construir software
 
 [English](README.md) · **Español**
 
-💖 **[Apoya ai-lordkit en GitHub Sponsors](https://github.com/sponsors/FrankLord27)** — desde $3/mes o una sola vez
+<a href="https://github.com/sponsors/FrankLord27"><img alt="¿Te sirve ai-lordkit? Apóyalo en GitHub Sponsors, desde $3/mes o una sola vez" src="assets/sponsor-banner-es.svg" width="640"></a>
 
 </div>
 
