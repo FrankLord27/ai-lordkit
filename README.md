@@ -15,7 +15,7 @@ Agents, skills, hooks, work modes and MCP servers for building real software wit
 
 **English** · [Español](README.es.md)
 
-💖 **[Sponsor ai-lordkit on GitHub](https://github.com/sponsors/FrankLord27)** — from $3/month or one-time
+<a href="https://github.com/sponsors/FrankLord27"><img alt="Like ai-lordkit? Sponsor it on GitHub, from $3/month or one-time" src="assets/sponsor-banner.svg" width="640"></a>
 
 </div>
 
@@ -38,7 +38,7 @@ curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh 
 - [Skills](#-skills)
 - [Agent team](#-agent-team)
 - [Hooks](#-hooks)
-- [Work modes](#-work-modes-completo-intermedio-ahorro)
+- [Work modes](#-work-modes-full-balanced-saver)
 - [Building by blocks](#-building-by-blocks)
 - [Security model](#-security-model)
 - [Public layer and private layer](#-public-layer-and-private-layer)
@@ -87,7 +87,7 @@ Then just talk to it. A few things to try:
 
 | You say or type | What happens |
 | --------------- | ------------ |
-| "quiero hacer una app para…" | `crear-app` shows a clickable picker for architecture and tools, then starts Block 0 |
+| "I want to build an app for…" | `crear-app` shows a clickable picker for architecture and tools, then starts Block 0 |
 | `/new-project` | Creates a project with the fullstack standard (asks name, type and whether it has a mobile app) |
 | `/mapa-bloque login` | Interactive HTML map of the `login` block in `docs/mapas/` |
 | `/blindar` | Security audit of the block you just finished, with fixes and a report |
@@ -118,7 +118,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    U["You: a request"] --> M["CLAUDE.md + mode<br/>(completo · intermedio · ahorro)"]
+    U["You: a request"] --> M["CLAUDE.md + mode<br/>(full · balanced · saver)"]
     M --> T{"Task risk"}
     T -- "🟢 low" --> X["Do it directly"]
     T -- "🟡 medium / 🔴 high" --> W["WORKFLOW.md<br/>triage → skills → plan → execute → quality gate"]
@@ -187,7 +187,7 @@ ai-lordkit/
 ├── agents/                 # 13 subagents (models by alias: opus, sonnet, haiku)
 ├── skills/                 # Skills: method, security, stack standard, docs, memory
 ├── commands/               # Slash commands: /new-project
-├── output-styles/          # Work modes: completo, intermedio, ahorro
+├── output-styles/          # Work modes: completo (full), intermedio (balanced), ahorro (saver)
 ├── hooks/
 │   ├── guard.sh            # Blocks dangerous commands (PreToolUse on Bash)
 │   ├── supply-guard.sh     # Optional: checks a package before installing it
@@ -211,6 +211,19 @@ ai-lordkit/
 After installing, the same pieces live in `~/.claude/` (agents, skills, hooks, output styles, commands, `CLAUDE.md`, `settings.json`) and the wrapper in `~/.claude/shell-init.sh`, loaded from your `.zshrc` or `.bashrc`.
 
 ## 💻 Command reference
+
+> **Spanish names in English.** The kit is Spanish-first, so commands, skills and modes keep their Spanish names (they are the real names you type). What they mean:
+>
+> | Name | Meaning | | Name | Meaning |
+> | ---- | ------- | - | ---- | ------- |
+> | `--modo` | mode | | `crear-app` | create app |
+> | `completo` | full | | `elegir-metodo` | choose method |
+> | `intermedio` | balanced (default) | | `desarrollo-por-etapas` | development by stages |
+> | `ahorro` | saver | | `mapa-bloque` | block map |
+> | `/blindar` | harden (security audit) | | `microservicios` | microservices |
+> | `/brechas` | breaches (dependency advisories) | | `docs/METODO.md` | the chosen method |
+> | `todo` (in `/blindar todo`) | everything | | `docs/mapas/`, `docs/seguridad/` | maps, security reports |
+> | `noticias` (in `/brechas noticias`) | news | | `.brechas-ignorar` | accepted risks to ignore |
 
 ### In the terminal: `get.sh`
 
@@ -262,7 +275,7 @@ Run from the kit folder (`~/.ai-lordkit`, or your clone).
 | Command | What it does |
 | ------- | ------------ |
 | `claude` | Normal Claude Code with your Anthropic subscription |
-| `claude --modo completo \| intermedio \| ahorro` | Starts in a [work mode](#-work-modes-completo-intermedio-ahorro): output style + effort (+ Sonnet in `ahorro`). Your own `--model` or `--effort` wins |
+| `claude --modo completo \| intermedio \| ahorro` | Starts in a [work mode](#-work-modes-full-balanced-saver): output style + effort (+ Sonnet in `ahorro`). Your own `--model` or `--effort` wins |
 | `claude --kimi` (or `-k`) | Same agents and skills on Kimi models (needs `KIMI_API_KEY` or `~/.claude/kimi.key`). Combines with `--modo` |
 | `claude-kimi --model k3-256k` | Calls the Kimi backend directly with a specific Kimi model |
 | `~/.claude/skills/mem-search/scripts/mem-search.sh -p <repo> "<regex>"` | Searches your past sessions by hand |
@@ -273,7 +286,7 @@ Run from the kit folder (`~/.ai-lordkit`, or your clone).
 
 | Command | What it does |
 | ------- | ------------ |
-| `/new-project` | New project with the fullstack standard. Asks name, type (SaaS, marketplace, POS, site + admin, API…) and mobile app; writes the project's `CLAUDE.md` and loads the right skills. `/new-project my-app saas movil` skips the questions |
+| `/new-project` | New project with the fullstack standard. Asks name, type (SaaS, marketplace, POS, site + admin, API…) and mobile app; writes the project's `CLAUDE.md` and loads the right skills. `/new-project my-app saas movil` (`movil` = with a mobile app) skips the questions |
 | `/mapa-bloque <block> [what to study]` | Interactive map of a block of TypeScript code in `docs/mapas/` (HTML, JSON, Markdown with Mermaid) |
 | `/blindar [block \| folder]` | Security audit of a block: validation, rate limits, error leaks, tokens and sessions, CORS, routes without auth. Fixes with tests, report in `docs/seguridad/` |
 | `/blindar todo` | Full 12-phase security audit of the whole project |
@@ -365,15 +378,15 @@ Models are set by alias, never by a pinned ID, so they follow whatever Claude Co
 | `notify.sh` | When Claude needs you | Desktop alert on Linux, macOS and WSL |
 | `statusline.sh` | Always | `Sonnet · ahorro/low · my-repo · main · $0.12` |
 
-## 🔋 Work modes: completo, intermedio, ahorro
+## 🔋 Work modes: full, balanced, saver
 
 A mode pairs an [output style](https://code.claude.com/docs/en/output-styles) (how Claude talks and how thorough it is) with an effort level (how much it thinks). Both are native Claude Code features, so nothing is patched.
 
 | Mode | Effort | Model | What changes |
 | ---- | ------ | ----- | ------------ |
-| `completo` | `xhigh` | yours | Checks every unfamiliar API with Context7 or the official docs, covers edge cases, permissions and tenants, runs the full suite, uses the agent team, and reports what it could not verify. |
-| `intermedio` | `medium` | yours | Default. The rules in `CLAUDE.md` as they are. |
-| `ahorro` | `low` | Sonnet | Barely talks, no subagents or web research unless needed, comments only for non-obvious business rules, reads only the lines it needs. Never cuts errors, failing tests or security warnings. |
+| `completo` (full) | `xhigh` | yours | Checks every unfamiliar API with Context7 or the official docs, covers edge cases, permissions and tenants, runs the full suite, uses the agent team, and reports what it could not verify. |
+| `intermedio` (balanced) | `medium` | yours | Default. The rules in `CLAUDE.md` as they are. |
+| `ahorro` (saver) | `low` | Sonnet | Barely talks, no subagents or web research unless needed, comments only for non-obvious business rules, reads only the lines it needs. Never cuts errors, failing tests or security warnings. |
 
 ```bash
 claude --modo ahorro              # at startup: output style + effort (+ Sonnet in ahorro)
@@ -620,7 +633,7 @@ If it saves you time, any help is deeply appreciated:
 - **[PayPal](https://www.paypal.me/frankfelixr)**: one-time donations in any amount.
 - **A ⭐ on the repo** and sharing it with other developers helps too, and costs nothing.
 
-¡Gracias! 🙏
+Thank you! 🙏
 
 ## 🤝 Contributing and license
 
