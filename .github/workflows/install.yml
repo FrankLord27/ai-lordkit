@@ -23,14 +23,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-26.04, macos-26]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     env:
       # El commit que se está probando (en un PR, la cabeza de la rama).
       AI_LORDKIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Sintaxis con el bash del sistema (3.2 en macOS)
         run: /bin/bash -n get.sh && /bin/bash -n install.sh && /bin/bash -n hooks/guard.sh
