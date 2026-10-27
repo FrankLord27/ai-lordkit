@@ -293,10 +293,11 @@ La mayoría de las skills no necesitan comando: Claude las carga por su descripc
 | Skill | Qué hace |
 | ----- | -------- |
 | `crear-app` | "Quiero hacer una app" sin nada escogido: selector de tipo de app, arquitectura, herramientas y plataformas, cada opción con su contra. Guarda la elección en `docs/METODO.md` y arranca el Bloque 0 |
-| `elegir-metodo` | Recomienda una forma de trabajar (spike, bloques, spec corto, definición fuerte) con pros y contras; tú escoges y puedes cambiar después. Queda en `docs/METODO.md` |
+| `elegir-metodo` | Recomienda una forma de trabajar (spike, bloques, backend primero, spec corto, definición fuerte) con pros y contras; tú escoges y puedes cambiar después. Queda en `docs/METODO.md` |
 | `desarrollo-por-etapas` | El ciclo por bloques: definición → Bloque 0 → un bloque a la vez (C1–C5) con puerta de calidad que pide evidencia → endurecimiento → piloto. Versiones cortas para features y bugs |
 | `mapa-bloque` | Solo con `/mapa-bloque`: mapa de un bloque calculado por el compilador de TypeScript |
 | `microservicios` | La opción de microservicios: cuándo NO usarla, gateway, una base de datos por servicio, contratos Zod compartidos, eventos con outbox, compose con health checks |
+| `backend-quality-gate` | El método **backend primero**, una alternativa que puedes escoger en `elegir-metodo`: cada módulo de backend (NestJS + Prisma) pasa 5 fases y una puerta de calidad antes de tocar el frontend, así la API probada se reutiliza en cualquier app encima |
 
 **Seguridad**
 

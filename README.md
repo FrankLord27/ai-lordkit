@@ -293,10 +293,11 @@ Most skills don't need a command: Claude loads them by their description when th
 | Skill | What it does |
 | ----- | ------------ |
 | `crear-app` | "I want to build an app" with nothing picked yet: clickable picker for app type, architecture, tools and platforms, each option with its main drawback. Saves the choice in `docs/METODO.md` and starts Block 0 |
-| `elegir-metodo` | Recommends a way of working (spike, blocks, short spec, full definition) with pros and cons; you pick and can switch later. Logged in `docs/METODO.md` |
+| `elegir-metodo` | Recommends a way of working (spike, blocks, backend first, short spec, full definition) with pros and cons; you pick and can switch later. Logged in `docs/METODO.md` |
 | `desarrollo-por-etapas` | The block cycle: definition → Block 0 → one block at a time (C1–C5) with a quality gate that needs evidence → hardening → pilot. Short versions for features and bugs |
 | `mapa-bloque` | Only on `/mapa-bloque`: map of a block computed by the TypeScript compiler |
 | `microservicios` | The microservices option: when NOT to use it, gateway, a database per service, shared Zod contracts, events with an outbox, compose with health checks |
+| `backend-quality-gate` | The **backend first** method, an alternative you can pick in `elegir-metodo`: each backend module (NestJS + Prisma) goes through 5 phases and a quality gate before any frontend work, so the tested API is reused by any app on top |
 
 **Security**
 
