@@ -26,7 +26,7 @@
 # Tras formatear: 1) restaura esta carpeta  2) ./install.sh  3) abre 'claude' y haz login.
 #
 # Bundle en $SCRIPT_DIR (público, sin nada personal):
-#   CLAUDE.md  settings.json  agents/  commands/  skills/  hooks/  bin/  mcp/
+#   CLAUDE.md  settings.json  agents/  commands/  output-styles/  skills/  hooks/  bin/  mcp/
 #
 # Capa privada en $CLAUDE_PRIVATE_DIR (por defecto ~/ai-lordkit-private, tu repo privado):
 #   CLAUDE.md  settings.json  agents/  commands/  skills/  mcp.json  private-terms.txt
@@ -105,6 +105,16 @@ do_verify() {
 
   n=$(ls "$SCRIPT_DIR/commands/"*.md 2>/dev/null | wc -l)
   (( n >= 1 )) && ok "commands: $n" || warn "sin commands (opcional)"
+
+  # Modos: cada output style conserva las instrucciones de código de Claude Code
+  local m
+  for m in completo intermedio ahorro; do
+    if grep -qx 'keep-coding-instructions: true' "$SCRIPT_DIR/output-styles/$m.md" 2>/dev/null; then
+      ok "modo $m"
+    else
+      err "output-styles/$m.md falta o no tiene keep-coding-instructions: true"; errors=$((errors+1))
+    fi
+  done
 
   local h
   for h in guard.sh format.sh notify.sh statusline.sh; do
@@ -225,7 +235,7 @@ do_backup() {
 
   # agents, commands, hooks: archivo por archivo.
   local d f name
-  for d in agents commands hooks; do
+  for d in agents commands output-styles hooks; do
     [[ -d "$CLAUDE_DIR/$d" ]] || continue
     for f in "$CLAUDE_DIR/$d/"*; do
       [[ -f "$f" && ! -L "$f" ]] || continue
@@ -391,7 +401,7 @@ do_deps() {
 
 # ─── apply_config: aplica el bundle a ~/.claude (núcleo de restore/update) ───
 apply_config() {
-  mkdir -p "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/skills" "$CLAUDE_DIR/hooks"
+  mkdir -p "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/output-styles" "$CLAUDE_DIR/skills" "$CLAUDE_DIR/hooks"
 
   for f in CLAUDE.md WORKFLOW.md; do
     cp "$SCRIPT_DIR/$f" "$CLAUDE_DIR/$f" && ok "$f instalado"
@@ -402,6 +412,12 @@ apply_config() {
 
   if ls "$SCRIPT_DIR/commands/"*.md &>/dev/null; then
     cp "$SCRIPT_DIR/commands/"*.md "$CLAUDE_DIR/commands/" && ok "commands: $(ls "$CLAUDE_DIR/commands/" | tr '\n' ' ')"
+  fi
+
+  # Modos de trabajo (completo | intermedio | ahorro): `claude --modo X` o `/output-style X`
+  if ls "$SCRIPT_DIR/output-styles/"*.md &>/dev/null; then
+    cp "$SCRIPT_DIR/output-styles/"*.md "$CLAUDE_DIR/output-styles/" \
+      && ok "modos: $(ls "$SCRIPT_DIR/output-styles/" | sed 's/\.md$//' | tr '\n' ' ')"
   fi
 
   if [[ -d "$SCRIPT_DIR/hooks" ]]; then
@@ -601,7 +617,7 @@ backup_config() {
   for f in CLAUDE.md WORKFLOW.md settings.json; do
     [[ -f "$CLAUDE_DIR/$f" ]] && cp "$CLAUDE_DIR/$f" "$BACKUP_DIR/"
   done
-  for d in agents commands hooks skills; do
+  for d in agents commands output-styles hooks skills; do
     [[ -d "$CLAUDE_DIR/$d" ]] && cp -r "$CLAUDE_DIR/$d" "$BACKUP_DIR/$d"
   done
   ok "Backup listo"
@@ -628,14 +644,14 @@ do_rollback() {
     done
   fi
   [[ -n "$src" && -d "$src" ]] || { err "No hay backups de update en $BACKUP_ROOT"; return 1; }
-  echo -e "  Se restaurará: ${YELLOW}$src${NC} (CLAUDE.md, WORKFLOW.md, settings.json, agents, commands, hooks, skills)"
+  echo -e "  Se restaurará: ${YELLOW}$src${NC} (CLAUDE.md, WORKFLOW.md, settings.json, agents, commands, output-styles, hooks, skills)"
   confirm "¿Confirmar?" || { err "Cancelado"; return 1; }
   backup_config
   local f
   for f in CLAUDE.md WORKFLOW.md settings.json; do
     if [[ -f "$src/$f" ]]; then cp "$src/$f" "$CLAUDE_DIR/$f"; else rm -f "$CLAUDE_DIR/$f"; fi
   done
-  for d in agents commands hooks skills; do
+  for d in agents commands output-styles hooks skills; do
     rm -rf "${CLAUDE_DIR:?}/$d"
     [[ -d "$src/$d" ]] && cp -r "$src/$d" "$CLAUDE_DIR/$d"
   done
@@ -648,13 +664,13 @@ do_rollback() {
 do_uninstall() {
   step "Desinstalar ai-lordkit"
   [[ -d "$CLAUDE_DIR" ]] || { ok "No existe ~/.claude: nada que quitar"; return 0; }
-  echo "  Se quitan los agents, commands, hooks y skills del kit, CLAUDE.md, WORKFLOW.md,"
+  echo "  Se quitan los agents, commands, modos, hooks y skills del kit, CLAUDE.md, WORKFLOW.md,"
   echo "  las claves que el kit pone en settings.json, claude-kimi y la línea de tu .zshrc/.bashrc."
   confirm "¿Confirmar? (todo queda en un backup)" || { err "Cancelado"; return 1; }
   backup_config
 
   local f name d
-  for d in agents commands hooks; do
+  for d in agents commands output-styles hooks; do
     for f in "$SCRIPT_DIR/$d/"*; do
       [[ -f "$f" ]] && rm -f "$CLAUDE_DIR/$d/$(basename "$f")"
     done
@@ -813,7 +829,7 @@ do_sync() {
   step "Sync: ~/.claude → repos"
   do_backup
 
-  local paths=(CLAUDE.md WORKFLOW.md agents commands hooks skills)
+  local paths=(CLAUDE.md WORKFLOW.md agents commands output-styles hooks skills)
   git -C "$SCRIPT_DIR" add -- "${paths[@]}"
   if git -C "$SCRIPT_DIR" diff --cached --quiet; then
     ok "Bundle público sin cambios"

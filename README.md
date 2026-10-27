@@ -118,13 +118,14 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | `settings.json`     | Permissions, hooks, status line, plugin marketplaces and enabled plugins. No model is pinned: set `model` in your private layer |
 | `.claude-plugin/`   | A catalog that points to third-party skills upstream (nothing copied) |
 | `agents/`           | 13 subagents                                                          |
+| `output-styles/`    | Work modes `completo`, `intermedio`, `ahorro` (`claude --modo X`)      |
 | `skills/`           | Stack and domain skills (`fullstack`, `nestjs-security-hardening`, `erp-saas-core`…) |
-| `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `notify.sh` (desktop alert), `statusline.sh` (model · folder · branch), `test-guard.sh` |
+| `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `notify.sh` (desktop alert), `statusline.sh` (model · mode/effort · folder · branch · cost), `test-guard.sh` |
 | `mcp/servers.json`  | Public MCP servers, tokens as `${VARIABLES}`                          |
 | `private-template/` | Template for your private layer                                       |
 | `scripts/`          | `scan-leaks.sh`, used by `verify`, `sync` and CI                      |
 | `tests/`            | Sample project and test for `mapa-bloque`, run in CI                  |
-| `bin/`              | `claude --kimi`: same config on Kimi models                           |
+| `bin/`              | `claude --kimi` (same config on Kimi models) and `claude --modo X`    |
 | `commands/`         | `/new-project`                                                        |
 
 ## Public layer and private layer
@@ -238,6 +239,28 @@ Left out on purpose:
 - **Expo/EAS skills:** they come from the official Expo plugin. Install it from `/plugin` inside Claude Code.
 - **Credentials:** `~/.claude/.credentials.json`, `~/.claude/kimi.key` and any env file are kept out by `.gitignore` and by the scanner.
 
+## Work modes: completo, intermedio, ahorro
+
+A mode pairs an [output style](https://code.claude.com/docs/en/output-styles) (how Claude talks and how thorough it is) with an effort level (how much it thinks). Both are native Claude Code features, so nothing is patched.
+
+| Mode | Effort | Model | What changes |
+| ---- | ------ | ----- | ------------ |
+| `completo` | `xhigh` | yours | Checks every unfamiliar API with Context7 or the official docs, covers edge cases, permissions and tenants, runs the full suite, uses the agent team, and reports what it could not verify. |
+| `intermedio` | `medium` | yours | Default. The rules in `CLAUDE.md` as they are. |
+| `ahorro` | `low` | Sonnet | Barely talks, no subagents or web research unless needed, comments only for non-obvious business rules, reads only the lines it needs. Never cuts errors, failing tests or security warnings. |
+
+Switch modes:
+
+```bash
+claude --modo ahorro              # at startup: output style + effort (+ Sonnet in ahorro)
+claude --modo ahorro --model opus # your own --model or --effort wins
+claude -k --modo completo         # works with the Kimi backend too (model left alone)
+```
+
+Inside a session: `/output-style ahorro` and `/effort low`. Changing the output style keeps the prompt cache. The status line shows the mode, the effort and an estimated session cost, for example `Sonnet · ahorro/low · my-repo · main · $0.12`.
+
+**What actually saves tokens, in order:** the model (Sonnet costs less than Opus), the effort (thinking is billed as output tokens), how many subagents start (each one starts cold), and how much context gets read. Shorter replies and fewer comments help least: chat text is a small part of a session's tokens. We have not measured percentages, so the status line shows the cost and you can compare modes on your own work. Output styles don't reach subagents, which run their own prompt.
+
 ## Building by blocks
 
 AI agents lose the thread when you build a whole layer at a time (all screens, then the whole database, then the whole API). This kit builds **by blocks** instead: a block is one flow a user can finish ("log in", "register a student", "charge an invoice"). Each block goes through UI, data and API, gets an end-to-end test, and is usable before the next one starts.
@@ -245,9 +268,11 @@ AI agents lose the thread when you build a whole layer at a time (all screens, t
 | Skill | What it does |
 | ----- | ------------ |
 | `elegir-metodo` | At the start of a project or big feature, asks a few questions and recommends a method with its pros and cons: a throwaway spike when the idea is uncertain, a full definition plus blocks when requirements are clear, a short spec for large features. It also shows the alternatives. **You pick**, and you can switch later. The decision and every change are saved in `docs/METODO.md`. |
-| `desarrollo-por-etapas` | Definition → Block 0 (the skeleton every block copies) → one block at a time, each with a quality gate that needs evidence → hardening → pilot. Short versions for features and bugs. |
+| `desarrollo-por-etapas` | Definition → Block 0 (the skeleton every block copies) → one block at a time, each with a quality gate that needs evidence → hardening → pilot. Every block starts with **scenarios**. Short versions for features and bugs. |
 | `mapa-bloque` | Only when you call it: `/mapa-bloque login`. Runs the TypeScript compiler over the block's folder and writes an interactive HTML map, a JSON file and a Markdown summary with a Mermaid diagram to `docs/mapas/`. |
 | `microservicios` | The microservices option, for when a project needs it: honest checks for when NOT to use it (and a modular monolith instead), gateway, one database per service, shared Zod contracts, events with an outbox, `docker compose` with health checks, and a Block 0 adapted to services. `elegir-metodo` offers it only when the project shows the signals. |
+
+**Scenarios first.** Before writing code for a block, the AI writes concrete scenarios: "the school accountant needs a table of all of October's income to reconcile with the bank", with the steps she follows. The block's tasks and its Given/When/Then criteria come out of each scenario, and each criterion becomes a test. The mode sets how many: 2 to 4 in `completo` (with an error case and a permissions case), 1 to 3 in `intermedio`, 1 in `ahorro`.
 
 **You choose how to work.** The AI gives its recommendation and the reasons, but it never imposes a method: you can take another option, propose your own, or change method in the middle of the project (just say "let's switch to …"). It won't write code until you've picked, and every switch is logged with its date and reason in the change history of `docs/METODO.md`.
 

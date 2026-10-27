@@ -50,6 +50,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 ## Cómo partir en bloques
 
 - Un bloque es **un flujo que un usuario puede completar**: "iniciar sesión", "registrar estudiante", "cobrar una factura". "Módulo académico" no es un bloque.
+- Para encontrar los bloques, escribe primero los escenarios en una línea: "la contadora necesita ver los ingresos del mes para cuadrar con el banco". Cada escenario (o grupo pequeño) es un bloque. El detalle de cada escenario se escribe en C1 de `desarrollo-por-etapas`, cuando le toca a ese bloque, no todos al principio.
 - Si no se puede probar con un e2e de un flujo, es muy grande: pártelo.
 - **Bloque 0 siempre primero**: repo, auth base, usuario, permisos, multi-tenant si aplica, base de datos, CI, deploy y un dato que viaje de la BD a una pantalla. Deja un módulo de ejemplo que los demás bloques copien.
 - Ordena por dependencias y luego por riesgo: lo más incierto va temprano.
@@ -68,10 +69,10 @@ Por qué: <2 o 3 líneas con lo que respondió el usuario>
 Alternativas consideradas: <las otras opciones que se mostraron>
 
 ## Bloques planeados (el avance se lleva en docs/ETAPAS.md)
-| # | Bloque | Depende de | Carpeta |
-|---|--------|------------|---------|
-| 0 | Esqueleto | — | — |
-| 1 | ... | 0 | src/... |
+| # | Bloque | Escenario en una línea | Depende de | Carpeta |
+|---|--------|------------------------|------------|---------|
+| 0 | Esqueleto | — | — | — |
+| 1 | ... | <quién> necesita <qué> para <para qué> | 0 | src/... |
 
 ## Reglas transversales (las verifica cada puerta)
 - Permisos: ...
