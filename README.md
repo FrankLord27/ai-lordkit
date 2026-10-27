@@ -244,9 +244,11 @@ AI agents lose the thread when you build a whole layer at a time (all screens, t
 
 | Skill | What it does |
 | ----- | ------------ |
-| `elegir-metodo` | At the start of a project or big feature, asks a few questions and recommends **one** method: a throwaway spike when the idea is uncertain, a full definition plus blocks when requirements are clear, a short spec for large features. Saves the decision in `docs/METODO.md`. |
+| `elegir-metodo` | At the start of a project or big feature, asks a few questions and recommends a method with its pros and cons: a throwaway spike when the idea is uncertain, a full definition plus blocks when requirements are clear, a short spec for large features. It also shows the alternatives. **You pick**, and you can switch later. The decision and every change are saved in `docs/METODO.md`. |
 | `desarrollo-por-etapas` | Definition → Block 0 (the skeleton every block copies) → one block at a time, each with a quality gate that needs evidence → hardening → pilot. Short versions for features and bugs. |
 | `mapa-bloque` | Only when you call it: `/mapa-bloque login`. Runs the TypeScript compiler over the block's folder and writes an interactive HTML map, a JSON file and a Markdown summary with a Mermaid diagram to `docs/mapas/`. |
+
+**You choose how to work.** The AI gives its recommendation and the reasons, but it never imposes a method: you can take another option, propose your own, or change method in the middle of the project (just say "let's switch to …"). It won't write code until you've picked, and every switch is logged with its date and reason in the change history of `docs/METODO.md`.
 
 What `/mapa-bloque` shows, all computed by the compiler, not guessed by the AI:
 

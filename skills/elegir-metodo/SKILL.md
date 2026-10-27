@@ -1,15 +1,17 @@
 ---
 name: elegir-metodo
-description: Úsala al arrancar un proyecto nuevo, un módulo o una feature grande, o cuando el usuario pregunte cómo organizar el trabajo. Propone UN método (spike, bloques, spec corto o definición fuerte) según qué tan clara está la idea, y lo deja en docs/METODO.md.
+description: Úsala al arrancar un proyecto nuevo, un módulo o una feature grande, cuando el usuario pregunte cómo organizar el trabajo o cuando quiera cambiar de método. Recomienda un método (spike, bloques, spec corto o definición fuerte) con pros y contras, muestra las alternativas, el usuario escoge y la decisión queda en docs/METODO.md.
 ---
 
 # Elegir el método de trabajo
 
 Con IA no conviene construir por capas completas (toda la UI, después toda la BD, después toda la API): la sesión pierde el hilo, nada funciona hasta el final y los errores de diseño aparecen tarde. La base es construir por **bloques**: cada bloque cruza UI, datos y API, se prueba solo y queda usable. Lo que cambia según el proyecto es cuánto se define antes de empezar.
 
+**Quien decide es el usuario.** La IA recomienda un método y dice por qué, pero muestra las otras opciones, el usuario escoge (aunque no sea la recomendada) y puede cambiar de método cuando quiera. La IA nunca impone un método ni sigue uno que el usuario no aprobó.
+
 ## Pasos
 
-1. **Si existe `docs/METODO.md`, léelo y síguelo.** No vuelvas a preguntar. Solo propón cambiarlo si el proyecto cambió de fase (por ejemplo, el spike ya validó la idea).
+1. **Si existe `docs/METODO.md`, léelo y síguelo.** No vuelvas a preguntar. Si el usuario pide cambiar de método, ve al paso 6. Si ves que el proyecto cambió de fase (por ejemplo, el spike ya validó la idea), sugiérelo en una línea; el cambio lo decide el usuario.
 
 2. **Averigua lo que falte.** Primero mira el repo (¿hay código?, ¿hay `docs/`?). Pregunta solo lo que no puedas deducir, en un solo mensaje:
    - ¿La idea está clara o todavía se está descubriendo?
@@ -17,7 +19,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
    - ¿Hay código existente con patrones que seguir?
    - ¿Cuántos flujos de usuario tiene la primera versión?
 
-3. **Recomienda UN método de esta tabla.** No des una lista neutral.
+3. **Recomienda un método de esta tabla.** Tu recomendación va primero y con argumentos, no como una lista neutral.
 
 | Situación | Método | Por qué |
 |---|---|---|
@@ -28,9 +30,19 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 | Alcance cerrado por contrato o por una norma | **Definición y contrato de datos casi en cascada; implementación por bloques** | El alcance no se descubre sobre la marcha, pero construir por capas igual es mala idea con IA. |
 | Bug | **Reproducir → test en rojo → causa raíz → fix** | Ver la versión para bugs en `desarrollo-por-etapas`. |
 
-4. **Da 2 pros y 2 contras de ese método para ESTE proyecto**, no genéricos. Si dudas entre dos, di cuál escoges y por qué.
+4. **Presenta la decisión al usuario** en un solo mensaje:
+   - **Recomendado:** el método, 2 pros y 2 contras para ESTE proyecto (no genéricos).
+   - **Otras opciones:** las 1 o 2 alternativas que también tienen sentido aquí, una línea cada una con cuándo convendrían más.
+   - La pregunta: "¿Seguimos con el recomendado o prefieres otro?". El usuario también puede proponer su propia forma de trabajar.
 
-5. **Cuando el usuario acepte**, escribe `docs/METODO.md` con la plantilla de abajo y sigue con `desarrollo-por-etapas`. Si es un spike, la regla del spike va en el archivo: se bota, no se convierte en producción.
+   No escribas código ni `docs/METODO.md` hasta que el usuario escoja.
+
+5. **Escribe `docs/METODO.md`** con el método que el usuario escogió, sea o no el recomendado, usando la plantilla de abajo. Si escogió otro, anota tu recomendación y su motivo en una línea, sin insistir. Sigue con `desarrollo-por-etapas`. Si es un spike, la regla del spike va en el archivo: se bota, no se convierte en producción.
+
+6. **Cambiar de método después.** El usuario puede cambiarlo en cualquier momento ("ya no quiero bloques", "el spike ya validó la idea"). Entonces:
+   - Di en corto qué implica el cambio para lo que ya está hecho (por ejemplo, qué bloques quedan a medias).
+   - Actualiza `docs/METODO.md`: el método nuevo arriba y una línea en "Historial de cambios" con fecha, de qué a qué y por qué.
+   - Ajusta `docs/ETAPAS.md` si la lista de bloques o la etapa actual cambian.
 
 ## Cómo partir en bloques
 
@@ -46,8 +58,10 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 # Método — <proyecto>
 
 Decidido: <fecha>
-Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques>
+Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | otro que propuso el usuario>
+Escogido por: el usuario (recomendado por la IA: <sí | no, recomendó X porque ...>)
 Por qué: <2 o 3 líneas con lo que respondió el usuario>
+Alternativas consideradas: <las otras opciones que se mostraron>
 
 ## Bloques planeados (el avance se lleva en docs/ETAPAS.md)
 | # | Bloque | Depende de | Carpeta |
@@ -62,4 +76,8 @@ Por qué: <2 o 3 líneas con lo que respondió el usuario>
 
 ## Cuándo revisar este método
 - <por ejemplo: cuando el spike responda X>
+
+## Historial de cambios
+| Fecha | De | A | Por qué |
+|-------|----|---|---------|
 ```
