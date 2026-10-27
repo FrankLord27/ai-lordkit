@@ -14,6 +14,8 @@ Agents, skills, hooks, work modes and MCP servers for building real software wit
 
 **English** · [Español](README.es.md)
 
+💖 **[Sponsor ai-lordkit on GitHub](https://github.com/sponsors/FrankLord27)** — from $3/month or one-time
+
 </div>
 
 ```bash
@@ -605,7 +607,7 @@ ai-lordkit is free and MIT-licensed, and it will stay that way. I build it in my
 
 If it saves you time, any help is deeply appreciated:
 
-- **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: monthly or one-time, through the Sponsor button at the top of this repo.
+- **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: monthly tiers from $3 (Coffee), $10 (Supporter) and $25 (Backer), a custom amount or a one-time donation. Also the Sponsor button at the top of this repo.
 - **[PayPal](https://www.paypal.me/frankfelixr)**: one-time donations in any amount.
 - **A ⭐ on the repo** and sharing it with other developers helps too, and costs nothing.
 
