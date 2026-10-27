@@ -10,7 +10,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 - `.gitattributes`: bash scripts, hooks and JSON always use LF, even with `core.autocrlf=true` (CRLF broke them when cloned on Windows).
 - `guard.sh` blocks recursive `rm` on a drive root (`C:\`, `C:/`, `/c/`) and on the user folder (`/c/Users/<name>`, `$USERPROFILE`), with tests.
 - `windows` job in `.github/workflows/check.yml` (Git Bash on `windows-latest`).
-- README (en/es): animated platform strip (`assets/platforms-light.svg`, `assets/platforms-dark.svg`) and badges for Windows, macOS, Linux and WSL, plus a Windows note next to the install command. The animation respects `prefers-reduced-motion`.
+- README (en/es): animated platform strip (`assets/platforms-light.svg`, `assets/platforms-dark.svg`) and badges for Windows, macOS, Linux and WSL, plus a Windows note next to the install command. Official logos (Apple, Tux, Ubuntu from [Simple Icons](https://simpleicons.org), CC0; Windows 11 four-pane mark); the names and logos belong to their owners. The animation respects `prefers-reduced-motion`.
 
 ### Changed
 
