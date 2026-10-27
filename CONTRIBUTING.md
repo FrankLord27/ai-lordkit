@@ -11,7 +11,9 @@ Issues and PRs are welcome in English or Spanish. The instructions and skills th
 3. Before opening the PR, run:
    ```bash
    ./install.sh verify      # structure + hook tests + leak scanner
+   ./tests/install/test.sh  # if you touched install.sh
    ```
+   Add a line to `CHANGELOG.md` under `Unreleased`.
 4. Open the PR against `main`. CI runs the `guard.sh` tests and the scanner.
 
 ## Rules
@@ -25,4 +27,4 @@ Issues and PRs are welcome in English or Spanish. The instructions and skills th
 
 ## Reporting a security issue
 
-If you find a token or personal data in the repo or its history, please don't open a public issue. Contact the repo owner through GitHub so it can be rotated first.
+See [SECURITY.md](SECURITY.md): use GitHub's private reporting, not a public issue.

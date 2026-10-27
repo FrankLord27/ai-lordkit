@@ -14,7 +14,6 @@
       "Glob",
       "Grep",
       "Bash(pnpm *)",
-      "Bash(node *)",
       "Bash(git *)",
       "Bash(gh *)",
       "Bash(docker compose *)",
@@ -24,8 +23,6 @@
       "Bash(ls *)",
       "Bash(wc *)",
       "Bash(mkdir *)",
-      "Bash(cp *)",
-      "Bash(mv *)",
       "Bash(cd *)",
       "Bash(tree *)",
       "Bash(~/.claude/skills/mem-search/scripts/mem-search.sh *)",
@@ -57,8 +54,6 @@
       "Bash(curl * | sh)",
       "Bash(wget * | bash)",
       "Bash(wget * | sh)",
-      "Bash(git push * main*)",
-      "Bash(git push * master*)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "Bash(git reset --hard origin/main*)",
@@ -99,7 +94,6 @@
       "Bash(pnpm prisma migrate reset*)"
     ]
   },
-  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -129,7 +123,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "notify-send 'Claude Code' 'Necesita tu atención' 2>/dev/null || osascript -e 'display notification \"Necesita tu atención\" with title \"Claude Code\"' 2>/dev/null || true"
+            "command": "\"$HOME/.claude/hooks/notify.sh\""
           }
         ]
       }
@@ -158,19 +152,22 @@
     "prisma@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": false,
+    "hookify@claude-plugins-official": false,
     "claude-md-management@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "sentry@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true,
-    "hostinger@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
+    "sentry@claude-plugins-official": false,
+    "vercel@claude-plugins-official": false,
+    "hostinger@claude-plugins-official": false,
+    "superpowers@claude-plugins-official": false,
     "skill-creator@claude-plugins-official": true,
     "react-best-practices@ai-lordkit": true,
     "composition-patterns@ai-lordkit": true,
     "web-design-guidelines@ai-lordkit": true
   },
-  "alwaysThinkingEnabled": true
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME/.claude/hooks/statusline.sh\""
+  }
 }

@@ -19,8 +19,14 @@ jobs:
         run: ./tests/mem-search/test.sh
       - name: Escáner de datos sensibles
         run: ./scripts/scan-leaks.sh
-      - name: settings.json y mcp/servers.json son JSON válido
-        run: jq empty settings.json mcp/servers.json private-template/*.json
+      - name: settings.json, mcp/servers.json y el marketplace son JSON válido
+        run: jq empty settings.json mcp/servers.json .claude-plugin/marketplace.json private-template/*.json
+      - name: ShellCheck (errores)
+        run: |
+          shellcheck -S error get.sh install.sh hooks/*.sh bin/claude-kimi bin/shell-init.sh \
+            scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/mem-search/test.sh
+      - name: update conserva tus ajustes, rollback y uninstall
+        run: ./tests/install/test.sh
       - uses: pnpm/action-setup@v4
         with:
           version: 10

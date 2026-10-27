@@ -39,6 +39,19 @@ run block 'printenv'
 run block 'env | grep KEY'
 run block 'docker run --privileged -it ubuntu'
 run block 'docker run -v /:/host ubuntu'
+# Opciones globales de git que escondían el push
+run block 'git -C . push origin main'
+run block 'git -C /tmp/repo push origin HEAD:main'
+run block 'git -c core.editor=true push origin main'
+run block 'git --git-dir=.git push --force origin feature/x'
+# .env leído por cualquier programa, no solo cat/grep
+run block "node -e \"console.log(require('fs').readFileSync('.env','utf8'))\""
+run block 'python3 -c "print(open(\".env\").read())"'
+run block 'cp .env /tmp/x && cat /tmp/x'
+run block 'tac .env'
+run block 'find . -name .env -exec cat {} \;'
+run block 'cat .env > /tmp/copia'
+run block 'git ad''d .env'
 
 # Deben permitirse
 run allow 'rm -rf node_modules'
@@ -52,6 +65,13 @@ run allow 'docker compose --env-file .env up -d'
 run allow 'pnpm test'
 run allow 'printenv NODE_ENV'
 run allow 'env NODE_ENV=test pnpm test'
+run allow 'git -C apps/api status'
+run allow 'git push origin feature/maintenance'
+run allow 'cp .env.example apps/api/.env'
+run allow 'echo "PORT=3000" >> .env'
+run allow '[ -f .env ] || cp .env.example .env'
+run allow 'docker compose --env-file=.env.local up -d'
+run allow 'ls .envrc'
 
 # git push sin refspec estando en main
 repo=$(mktemp -d); git -C "$repo" init -q -b main
@@ -59,6 +79,8 @@ run block 'git push' "$repo"
 run allow 'git push origin feature/x' "$repo"
 git -C "$repo" checkout -q -b feature/x
 run allow 'git push' "$repo"
+git -C "$repo" symbolic-ref HEAD refs/heads/main
+run block "git -C $repo push" /tmp
 rm -rf "$repo"
 
 # Sin jq debe fallar cerrado

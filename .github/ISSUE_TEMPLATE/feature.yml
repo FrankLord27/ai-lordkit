@@ -1,0 +1,22 @@
+name: Idea
+description: A skill, agent, hook or installer change you'd like
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem it solves
+      description: What you do today and why it's slow, costly or unsafe.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+    validations:
+      required: true
+  - type: textarea
+    id: cost
+    attributes:
+      label: Cost
+      description: Everything in the kit loads into every session. If this adds a plugin, skill or MCP server, why is it worth the context?
