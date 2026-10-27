@@ -70,7 +70,7 @@ Anuncia qué skills aplican:
 - Siempre → `fullstack` + `nestjs-security-hardening` + `memory-bank-context`
 - Tipo saas, marketplace o con reglas financieras → `erp-saas-core`
 - Tipo pos → `erp-saas-core` + `skills-bundle`
-- App móvil → además, el plugin oficial de Expo
+- App móvil → además, el plugin oficial de Expo. Si no está instalado, dile al usuario que lo instale desde `/plugin` antes de tocar la app.
 
 ## Paso 6 — Resumen
 
@@ -81,6 +81,6 @@ Anuncia qué skills aplican:
   CLAUDE.md:  creado con la sección Proyecto
   README:     generado por readme-writer
   Skills:     <lista>
-
-¿Qué construimos primero?
 ```
+
+Después del resumen, sigue con la skill `elegir-metodo` (si `crear-app` ya escribió `docs/METODO.md`, léelo y no preguntes de nuevo) y arranca el Bloque 0 de `desarrollo-por-etapas`.

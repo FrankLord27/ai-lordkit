@@ -9,7 +9,7 @@ Regla madre: se construye **por bloques**, no por capas. Un bloque es un flujo q
 
 Por qué no por capas (toda la UI, después toda la BD, después toda la API): con IA la sesión pierde el hilo entre capas enteras, nada funciona hasta el final y un error de diseño se descubre cuando ya hay mucho construido encima.
 
-Si el proyecto tiene una skill propia con etapas, esa manda; esta es la regla general. Si no hay `docs/METODO.md`, usa primero la skill `elegir-metodo`.
+Si el proyecto tiene una skill propia con etapas, esa manda; esta es la regla general. Si `docs/METODO.md` dice "backend primero por módulo", cada módulo sigue `backend-quality-gate` y, ya desbloqueado, sus pantallas siguen C2 y C5 de aquí. Si no hay `docs/METODO.md`, usa primero la skill `elegir-metodo`.
 
 ## Al empezar cualquier trabajo
 
