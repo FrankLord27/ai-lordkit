@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # Mantiene al día las acciones del CI (fijadas por SHA) para que no vuelvan
+  # los avisos de runtime de Node obsoleto. Espera 7 días tras cada release,
+  # igual que el minimumReleaseAge de pnpm.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
