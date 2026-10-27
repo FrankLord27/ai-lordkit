@@ -31,8 +31,7 @@ jobs:
       - name: ShellCheck (errores)
         run: |
           shellcheck -S error get.sh install.sh hooks/*.sh bin/claude-kimi bin/shell-init.sh \
-            scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/mem-search/test.sh tests/modos/test.sh \
-            tests/brechas/test.sh
+            scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/*/test.sh
       - name: zsh para probar el launcher como en macOS
         run: sudo apt-get install -y zsh
       - name: Modos (claude --modo) y statusline
