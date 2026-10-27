@@ -215,7 +215,7 @@ export class AccountingModule {}
 
 ---
 
-## Reglas de import (validables con `architecture-guard`)
+## Reglas de import (validables con dependency-cruiser)
 
 ```js
 // .dependency-cruiser.js (extracto)

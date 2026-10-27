@@ -1,15 +1,14 @@
 ---
 name: backend-quality-gate
 description: >
-  Workflow obligatorio de 5 fases para diseñar, implementar y validar cada módulo
-  backend (NestJS 11 + Prisma 7) antes de permitir trabajo frontend. Quality Gate
-  por módulo/bounded context — cada módulo puede desbloquearse independientemente.
-  ACTIVA ESTA SKILL siempre que el usuario diga "construir un sistema", "diseñar
-  backend", "nuevo módulo", "validar backend", "quality gate", "escenarios de negocio",
-  "primero el backend", "frontend unlocked", "auditar módulo", "build me a...",
-  "necesito un sistema de...", o describa un producto nuevo (POS, ERP, logística,
-  escuela, e-commerce, rental, etc.). NO usar para: scripts aislados, fixes de
-  endpoints existentes, o tareas puramente de frontend.
+  Método "backend primero por módulo", alternativa a los bloques de
+  desarrollo-por-etapas: 5 fases para diseñar, implementar y validar cada módulo
+  backend (NestJS 11 + Prisma 7) antes de construir sus pantallas. Úsala cuando
+  docs/METODO.md diga "backend primero por módulo", cuando el usuario la escoja en
+  elegir-metodo o pida "primero el backend", "validar backend", "quality gate de
+  backend" o "auditar módulo". Si no hay docs/METODO.md, pasa primero por
+  elegir-metodo. NO usar para: scripts aislados, fixes de endpoints existentes o
+  tareas puramente de frontend.
 ---
 
 # Backend Quality Gate
@@ -18,6 +17,10 @@ Proceso estricto de **5 fases** para diseñar, implementar y validar cada módul
 backend. Ningún módulo pasa al frontend sin evidencia de que cumple las reglas
 de negocio. El gate se aplica **por módulo** — puedes desbloquear `auth` mientras
 `inventory` aún está en Fase 2.
+
+**Cuándo es este método.** Es una de las formas de trabajar que ofrece `elegir-metodo`; el usuario la escoge y queda en `docs/METODO.md`. Conviene cuando el mismo backend lo van a usar varios clientes (web, móvil, integraciones de terceros) o cuando las reglas de negocio pesan más que las pantallas (dinero, inventario, normas fiscales): la API probada se reutiliza y solo cambia la aplicación que la consume. El costo: no hay nada que el usuario final pueda ver hasta que el módulo pasa su gate. Si el usuario no escogió este método, el camino por defecto es `desarrollo-por-etapas`.
+
+**Qué se reutiliza del kit.** Los escenarios de la Fase 1 se escriben igual que en C1 de `desarrollo-por-etapas` (quién, necesita, pasos, Dado/Cuando/Entonces). La seguridad del módulo se cierra con `/blindar` en la Fase 5. Con el módulo desbloqueado, sus pantallas se construyen con C2 (experiencia) y C5 (conexión, e2e) de `desarrollo-por-etapas`, y el avance se anota en `docs/ETAPAS.md`.
 
 ---
 
@@ -174,8 +177,9 @@ Prisma en tests E2E es BLOCK.
 1. Producir la **Traceability Matrix** (BSM → código → test → resultado) — ver `references/traceability-matrix-template.md`
 2. Producir la **Audit Matrix** (12 dimensiones) — ver `references/audit-matrix-template.md`
 3. Ejecutar el **Quality Gate Checklist** — ver `references/quality-gate-checklist.md`
-4. Emitir veredicto: **FRONTEND DESBLOQUEADO** o **FRONTEND BLOQUEADO**
-5. Actualizar `docs/module-gates.md`
+4. Correr `/blindar <módulo>` (skill `blindar`): 0 críticos y 0 altos abiertos, informe en `docs/seguridad/`
+5. Emitir veredicto: **FRONTEND DESBLOQUEADO** o **FRONTEND BLOQUEADO**
+6. Actualizar `docs/module-gates.md`
 
 **Si hay BLOCK:** retroceder a la fase correspondiente:
 - BLOCK por contrato/diseño → volver a Fase 2
@@ -216,6 +220,9 @@ como MVP tienen estado `DESBLOQUEADO`. Módulos no-MVP pueden seguir en progreso
 | Prisma 7 (driver adapters, $extends, transacciones) | `prisma7-docs` | Fase 2 y 3 |
 | Reglas financieras (Decimal, partida doble, tenantId) | `erp-saas-core` | Fase 1, 2, 3 y 5 |
 | Estándares generales (lint, git, CI, API REST) | `fullstack` | Toda la vida del proyecto |
+| Seguridad del módulo al cerrar | `blindar` | Fase 5 |
+| Pantallas del módulo ya desbloqueado | `desarrollo-por-etapas` (C2 y C5) | Después de la Fase 5 |
+| Cambiar de método | `elegir-metodo` | Cuando el usuario lo pida |
 
 **Anti-patrón:** Duplicar reglas que ya están en otra skill. Si necesitas las reglas
 de `erp-saas-core` para auditar un módulo financiero, referencia la skill — no copies

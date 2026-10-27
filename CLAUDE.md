@@ -21,7 +21,7 @@ Si otra sección contradice esto, esto gana.
 
 ## 2. Estándar del proyecto
 
-**Método:** se construye por bloques (un flujo de usuario que cruza UI, datos y API y queda usable), nunca por capas completas. Proyecto, módulo o feature grande sin `docs/METODO.md` → skill `elegir-metodo`; el avance sigue `desarrollo-por-etapas`. Antes de construir un bloque, escenarios concretos (quién necesita qué y sus pasos) → tareas → criterios Dado/Cuando/Entonces → tests (C1 de `desarrollo-por-etapas`). Para estudiar un bloque, el usuario llama `/mapa-bloque`. Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS, y Expo si hay app móvil). Proyecto nuevo → `/new-project`; si el usuario dice que quiere hacer una app y no sabe qué arquitectura o herramientas usar → skill `crear-app` (selector con opciones). Proyecto existente que no sigue el estándar (por ejemplo, Sass + BEM): respeta su convención y no migres sin que te lo pida. El tipo de proyecto y sus reglas de negocio están en el `CLAUDE.md` de cada repo.
+**Método:** por defecto se construye por bloques (un flujo de usuario que cruza UI, datos y API y queda usable), nunca por capas de todo el sistema; si el usuario lo escoge, backend primero por módulo (skill `backend-quality-gate`). Proyecto, módulo o feature grande sin `docs/METODO.md` → skill `elegir-metodo`; el avance sigue `desarrollo-por-etapas`. Antes de construir un bloque, escenarios concretos (quién necesita qué y sus pasos) → tareas → criterios Dado/Cuando/Entonces → tests (C1 de `desarrollo-por-etapas`). Para estudiar un bloque, el usuario llama `/mapa-bloque`. Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS, y Expo si hay app móvil). Proyecto nuevo → `/new-project`; si el usuario dice que quiere hacer una app y no sabe qué arquitectura o herramientas usar → skill `crear-app` (selector con opciones). Proyecto existente que no sigue el estándar (por ejemplo, Sass + BEM): respeta su convención y no migres sin que te lo pida. El tipo de proyecto y sus reglas de negocio están en el `CLAUDE.md` de cada repo.
 
 ## 3. Stack base (común a todos)
 
@@ -57,7 +57,7 @@ Cada agent dice en su descripción cuándo usarlo y trae su modelo (`opus` para 
 - No delegues: aclaraciones, explicar código, tareas de <5 líneas, fixes de una línea, o "modo directo".
 - El agent que termina indica el siguiente ("→ Próximo paso: `qa-engineer`").
 
-Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` (`explorer` en paralelo) → `qa-engineer` → `code-reviewer` (+ `security-auditor` si toca auth o datos sensibles) → `git-workflow` → PR. Fix trivial: directo a `git-workflow`. Hotfix: implementador → `qa-engineer` (smoke) → `git-workflow` con label `urgent`.
+Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` (`explorer` en paralelo) → `qa-engineer` → `code-reviewer` (+ `security-auditor` si toca auth o datos sensibles) → `git-workflow` → PR. Fix trivial: directo a `git-workflow`. Hotfix: implementador → `qa-engineer` (smoke) → `git-workflow` con label `urgent`. Según el caso: `debugger` (bug), `perf-optimizer` (lentitud), `db-migration-specialist` (migración destructiva), `devops-engineer` (Docker, CI, deploy); `readme-writer` lo llama `/new-project`.
 
 **Backend Kimi:** `claude --kimi` (se elige al arrancar; `/model` no puede listar Kimi, no insistas). Nunca exportes `ANTHROPIC_BASE_URL`/`ANTHROPIC_API_KEY` en el shell.
 

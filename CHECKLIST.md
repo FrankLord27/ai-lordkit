@@ -169,8 +169,8 @@ Esto cachea la passphrase 8 horas (28800 segundos) tras el primer uso.
 ## 5. pnpm (para tu stack Turborepo)
 
 ```bash
-# Si no lo tienes
-npm install -g pnpm
+# Si no lo tienes (Corepack viene con Node 24)
+corepack enable pnpm
 
 # Verifica
 pnpm --version

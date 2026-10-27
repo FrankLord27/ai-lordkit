@@ -119,7 +119,6 @@ pnpm test:integration               # con DB de test
 # Lint / Arquitectura
 pnpm lint
 pnpm dep:check                      # dependency-cruiser
-pnpm arch:score                     # architecture-guard
 
 # Build / Deploy
 pnpm build

@@ -5,7 +5,7 @@ description: Úsala al arrancar un proyecto nuevo, un módulo o una feature gran
 
 # Elegir el método de trabajo
 
-Con IA no conviene construir por capas completas (toda la UI, después toda la BD, después toda la API): la sesión pierde el hilo, nada funciona hasta el final y los errores de diseño aparecen tarde. La base es construir por **bloques**: cada bloque cruza UI, datos y API, se prueba solo y queda usable. Lo que cambia según el proyecto es cuánto se define antes de empezar.
+Con IA no conviene construir por capas completas (toda la UI, después toda la BD, después toda la API): la sesión pierde el hilo, nada funciona hasta el final y los errores de diseño aparecen tarde. La base es construir por **bloques**: cada bloque cruza UI, datos y API, se prueba solo y queda usable. Lo que cambia según el proyecto es cuánto se define antes de empezar. La alternativa es **backend primero por módulo** (skill `backend-quality-gate`): no es por capas de todo el sistema, sino módulo por módulo, cerrando y probando la API antes de sus pantallas.
 
 **Quien decide es el usuario.** La IA recomienda un método y dice por qué, pero muestra las otras opciones, el usuario escoge (aunque no sea la recomendada) y puede cambiar de método cuando quiera. La IA nunca impone un método ni sigue uno que el usuario no aprobó.
 
@@ -28,6 +28,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 | Requisitos claros, proyecto nuevo | **Definición completa → Bloque 0 → bloques con puerta** (skill `desarrollo-por-etapas`) | La definición sí paga aquí, pero se construye por bloques para ver avance y verificar cada paso. |
 | Feature en un sistema que ya existe | **Un bloque** con la versión corta de `desarrollo-por-etapas` | El esqueleto ya existe: se siguen sus patrones. |
 | Feature grande que toca muchos módulos | **Entrevista → `SPEC.md` de una página → partir en bloques** | Spec liviano: un archivo, no veinte. |
+| Un backend que van a usar varios clientes (web, móvil, terceros) o reglas de negocio que pesan más que las pantallas | **Backend primero por módulo** (skill `backend-quality-gate`) | Cada módulo cierra su API con escenarios, tests y `/blindar` antes de la UI, y esa API se reutiliza en cualquier cliente. En contra: nada visible para el usuario final hasta que el módulo pasa su gate. |
 | Alcance cerrado por contrato o por una norma | **Definición y contrato de datos casi en cascada; implementación por bloques** | El alcance no se descubre sobre la marcha, pero construir por capas igual es mala idea con IA. |
 | Bug | **Reproducir → test en rojo → causa raíz → fix** | Ver la versión para bugs en `desarrollo-por-etapas`. |
 
@@ -42,7 +43,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 
    No escribas código ni `docs/METODO.md` hasta que el usuario escoja.
 
-5. **Escribe `docs/METODO.md`** con el método que el usuario escogió, sea o no el recomendado, usando la plantilla de abajo. Si escogió otro, anota tu recomendación y su motivo en una línea, sin insistir. Sigue con `desarrollo-por-etapas`. Si es un spike, la regla del spike va en el archivo: se bota, no se convierte en producción.
+5. **Escribe `docs/METODO.md`** con el método que el usuario escogió, sea o no el recomendado, usando la plantilla de abajo. Si escogió otro, anota tu recomendación y su motivo en una línea, sin insistir. Sigue con `desarrollo-por-etapas`, o con `backend-quality-gate` si escogió backend primero por módulo. Si es un spike, la regla del spike va en el archivo: se bota, no se convierte en producción.
 
 6. **Cambiar de método después.** El usuario puede cambiarlo en cualquier momento ("ya no quiero bloques", "el spike ya validó la idea"). Entonces:
    - Di en corto qué implica el cambio para lo que ya está hecho (por ejemplo, qué bloques quedan a medias).
@@ -64,7 +65,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 # Método — <proyecto>
 
 Decidido: <fecha>
-Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | otro que propuso el usuario>
+Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | backend primero por módulo | otro que propuso el usuario>
 Arquitectura: <monolito modular | monolito modular listo para extraer | microservicios (ver docs/ARQUITECTURA.md) | serverless | frontend + backend como servicio>
 Herramientas: <estándar del kit (skill fullstack) | Next.js fullstack | solo API NestJS | otro: ...>
 Escogido por: el usuario (recomendado por la IA: <sí | no, recomendó X porque ...>)
