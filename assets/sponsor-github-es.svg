@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="64" viewBox="0 0 300 64" role="img" aria-label="GitHub Sponsors">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#db2777"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.25"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="300" height="64" rx="32" fill="url(#b)"/>
+<g transform="translate(22 16)"><path d="M16 29 C16 29 2 20.5 2 11.5 C2 6.5 5.8 3 10 3 C12.8 3 15 4.6 16 6.8 C17 4.6 19.2 3 22 3 C26.2 3 30 6.5 30 11.5 C30 20.5 16 29 16 29 Z" fill="#fff"/></g>
+<text x="66" y="30" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="800" fill="#fff">GitHub Sponsors</text>
+<text x="66" y="48" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" font-weight="500" fill="#fff" fill-opacity="0.85">$3 · $10 · $25 / mes · única</text>
+</svg>
