@@ -56,7 +56,7 @@ Claude Code es potente desde el primer día, pero que trabaje **bien** requiere 
 
 ai-lordkit nació como la configuración personal de un desarrollador fullstack que construye productos SaaS y sistemas para colegios con IA. Creció hasta ser un kit que cualquiera instala con un comando. Sus objetivos:
 
-1. **Un comando, cualquier máquina.** Un Linux o macOS recién formateado (o Windows con WSL) queda con Claude Code y toda la configuración en minutos. Correr el mismo comando otra vez lo actualiza.
+1. **Un comando, cualquier máquina.** Un Linux o macOS recién formateado (o Windows, nativo con Git Bash o con WSL) queda con Claude Code y toda la configuración en minutos. Correr el mismo comando otra vez lo actualiza.
 2. **Seguro por defecto.** Claude Code puede ejecutar comandos en tu máquina. El kit bloquea los peligrosos (borrar tu carpeta personal, leer archivos `.env`, hacer push a `main`, `curl | sh`), endurece pnpm contra ataques de cadena de suministro y revisa tus dependencias contra avisos públicos.
 3. **Productivo, no solo configurado.** Un equipo de 13 agents especializados, skills para un stack TypeScript moderno y un método que evita que la IA pierda el hilo en proyectos grandes.
 4. **Barato cuando se puede.** Tres modos de trabajo cambian profundidad por tokens, y la línea de estado muestra cuánto cuesta cada sesión.
@@ -72,7 +72,7 @@ ai-lordkit nació como la configuración personal de un desarrollador fullstack 
 ## 🚀 Inicio rápido
 
 ```bash
-# 1. Instalar (Linux, macOS, o Ubuntu dentro de WSL en Windows)
+# 1. Instalar (Linux, macOS, Git Bash o Ubuntu dentro de WSL en Windows)
 curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh | bash
 
 # 2. Abre una terminal nueva e inicia sesión
@@ -192,7 +192,7 @@ ai-lordkit/
 │   ├── guard.sh            # Bloquea comandos peligrosos (PreToolUse en Bash)
 │   ├── supply-guard.sh     # Opcional: revisa un paquete antes de instalarlo
 │   ├── format.sh           # Formatea lo editado con el Prettier del proyecto
-│   ├── notify.sh           # Aviso de escritorio cuando Claude te necesita (Linux, macOS, WSL)
+│   ├── notify.sh           # Aviso de escritorio cuando Claude te necesita (Linux, macOS, WSL, Git Bash)
 │   ├── statusline.sh       # modelo · modo/effort · carpeta · rama · costo
 │   └── test-guard.sh       # Tests de guard.sh
 ├── bin/
@@ -362,7 +362,7 @@ Los modelos van por alias, nunca por un ID fijo, así que siguen lo que sirva Cl
 | `guard.sh` | Antes de cada comando Bash | Bloquea borrar `/` o `$HOME`, tocar archivos de entorno o llaves, `printenv` completo, `curl \| sh`, contenedores privilegiados, force push y push a `main`. Si falta `jq`, bloquea |
 | `supply-guard.sh` | Antes de `pnpm add`, `npm install`, `yarn add`, `npx`, `pnpm dlx`, `bunx` (**apagado por defecto**) | Bloquea una versión marcada como maliciosa y pregunta antes de una publicada hace menos de 7 días |
 | `format.sh` | Después de cada edición | Formatea el archivo con el Prettier del proyecto. Nunca descarga Prettier |
-| `notify.sh` | Cuando Claude te necesita | Aviso de escritorio en Linux, macOS y WSL |
+| `notify.sh` | Cuando Claude te necesita | Aviso de escritorio en Linux, macOS, WSL y Git Bash |
 | `statusline.sh` | Siempre | `Sonnet · ahorro/low · mi-repo · main · $0.12` |
 
 ## 🔋 Modos de trabajo: completo, intermedio, ahorro
@@ -546,13 +546,21 @@ Antes de la primera instalación, [CHECKLIST.md](CHECKLIST.md) lista lo que vale
 
 ### Windows
 
-Usa **WSL** (Windows Subsystem for Linux). Los hooks y el instalador son bash, así que no hay versión nativa de PowerShell.
+Dos caminos, los dos soportados:
+
+**Nativo (Git Bash, recomendado)** — es el shell que usa el propio Claude Code en Windows.
+
+1. Instala [Git for Windows](https://git-scm.com/download/win) (trae Git Bash).
+2. Abre **Git Bash** y corre el comando de instalación de arriba. `deps` usa `winget` (sin admin para jq, gh y uv; Node lo pide una vez): `jq`, `gh`, Node 24 LTS y `uv`. pnpm llega por `corepack` a `~/.local/bin`.
+3. Si instaló programas, cierra y abre Git Bash y corre `./install.sh deps` otra vez para que tome el PATH nuevo.
+
+Lo que el kit resuelve por ti en Windows: los scripts siempre quedan con saltos de línea LF (`.gitattributes`, aun con `core.autocrlf=true`), las rutas `C:\...` que manda Claude Code se convierten para los hooks, se quita el CRLF que escribe `jq.exe`, y `guard.sh` también bloquea `rm -rf` sobre la raíz de una unidad (`C:\`, `/c/`) y sobre tu carpeta de usuario. Las notificaciones salen como globo de Windows. `chmod 600` sobre `kimi.key` no hace nada en NTFS: deja ese archivo solo en tu perfil de usuario.
+
+**WSL** — si prefieres un entorno Linux:
 
 1. En PowerShell como administrador: `wsl --install` (instala Ubuntu) y reinicia.
-2. Abre **Ubuntu** desde el menú Inicio y corre ahí el comando de instalación.
+2. Abre **Ubuntu** desde el menú Inicio y corre el comando de instalación de arriba dentro.
 3. Deja tu código dentro de WSL (`~/code`, no `/mnt/c/...`): el acceso a archivos entre los dos lados es lento.
-
-Las notificaciones salen como globo de Windows (vía `powershell.exe`). Git Bash y MSYS no están soportados.
 
 ### Sesiones en la nube (claude.ai/code)
 

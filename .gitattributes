@@ -1,0 +1,11 @@
+# Los scripts y la config corren en bash: siempre LF, aunque core.autocrlf=true (Windows).
+* text=auto eol=lf
+*.sh text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+bin/* text eol=lf
+hooks/* text eol=lf
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

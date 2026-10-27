@@ -11,6 +11,8 @@ deny() {
 
 # Falla CERRADO: sin jq no podemos inspeccionar el comando, así que no lo dejamos pasar.
 command -v jq >/dev/null 2>&1 || deny "jq no está instalado y el guard no puede validar (sudo apt install jq)"
+# Windows (Git Bash): jq.exe termina las líneas en CRLF; se quita el \r para que `read` y las comparaciones no fallen.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) jq() { command jq "$@" | tr -d '\r'; return "${PIPESTATUS[0]}"; } ;; esac
 
 input=$(cat)
 tool=$(jq -r '.tool_name // empty' <<<"$input")
@@ -18,6 +20,9 @@ tool=$(jq -r '.tool_name // empty' <<<"$input")
 cmd=$(jq -r '.tool_input.command // empty' <<<"$input")
 cwd=$(jq -r '.cwd // empty' <<<"$input")
 [[ -n "$cmd" ]] || exit 0
+
+# Git Bash en Windows: cwd llega como C:\... y las rutas absolutas empiezan por "C:/", no por "/".
+if command -v cygpath >/dev/null 2>&1 && [[ -n "$cwd" ]]; then cwd=$(cygpath -u "$cwd"); fi
 
 # Opciones globales de git (`git -C dir`, `git -c k=v`, `--git-dir=...`) van antes del
 # subcomando y esconderían `git push`. Se quitan para comparar; el -C se guarda para
@@ -28,6 +33,7 @@ while :; do  # un paso por opción (sed portable: sin \b ni etiquetas, que BSD s
   [[ "$next" == "$cmd" ]] && break
   cmd="$next"
 done
+if [[ -n "$git_dir" ]] && command -v cygpath >/dev/null 2>&1; then git_dir=$(cygpath -u "$git_dir"); fi
 if [[ -n "$git_dir" && "$git_dir" != /* ]]; then git_dir="${cwd:-.}/$git_dir"; fi
 
 block() { grep -Eq -- "$1" <<<"$cmd" && deny "$2"; }
@@ -35,6 +41,9 @@ block() { grep -Eq -- "$1" <<<"$cmd" && deny "$2"; }
 # ── Borrados ────────────────────────────────────────────────────────────────
 if grep -Eq '\brm\b' <<<"$cmd" && grep -Eq '\brm\b[^|;&]*(\s-[a-zA-Z]*[rR]|--recursive)' <<<"$cmd"; then
   block '\brm\b[^|;&]*\s["'"'"']?(/|~|\$HOME|\$\{HOME\})/?\*?["'"'"']?(\s|$)' "rm recursivo sobre / o \$HOME"
+  # Windows (Git Bash): raíz de una unidad (C:\ , C:/ , /c/) y carpeta de usuario (/c/Users/x, $USERPROFILE).
+  block '\brm\b[^|;&]*\s["'"'"']?([A-Za-z]:[/\\]*|/[A-Za-z]/?)\*?["'"'"']?(\s|$)' "rm recursivo sobre la raíz de una unidad"
+  block '\brm\b[^|;&]*\s["'"'"']?(/[A-Za-z]/Users/[^/[:space:]"'"'"']+|[A-Za-z]:[/\\]+Users[/\\]+[^/\\[:space:]"'"'"']+|\$USERPROFILE|\$\{USERPROFILE\}|%USERPROFILE%)[/\\]*\*?["'"'"']?(\s|$)' "rm recursivo sobre tu carpeta de usuario"
 fi
 block '\brm\b[^|;&]*--no-preserve-root'                          "rm --no-preserve-root"
 block '\brm\b[^|;&]*(~|\$HOME|\$\{HOME\})/\.claude/?["'"'"']?(\s|$)' "rm de ~/.claude completo"

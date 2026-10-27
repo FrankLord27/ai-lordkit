@@ -42,6 +42,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Windows (Git Bash): jq.exe termina las líneas en CRLF; se quita el \r para que `read` y las comparaciones no fallen.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) jq() { command jq "$@" | tr -d '\r'; return "${PIPESTATUS[0]}"; } ;; esac
 CLAUDE_DIR="$HOME/.claude"
 CLAUDE_BIN="$HOME/.local/bin/claude"
 CLAUDE_SHARE="$HOME/.local/share/claude"
@@ -50,7 +52,12 @@ TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_ROOT/$TS"
 OS="$(uname -s)"
 # Sugerencia de instalación según el sistema (para mensajes de doctor)
-if [[ "$OS" == Darwin ]]; then PKG_HINT="brew install"; else PKG_HINT="sudo apt install"; fi
+# Windows nativo = Git Bash (MSYS2). Claude Code lo usa como shell en Windows.
+IS_WIN=0
+case "$OS" in MINGW*|MSYS*|CYGWIN*) IS_WIN=1 ;; esac
+if (( IS_WIN )); then PKG_HINT="winget install"
+elif [[ "$OS" == Darwin ]]; then PKG_HINT="brew install"
+else PKG_HINT="sudo apt install"; fi
 PRIVATE_DIR="${CLAUDE_PRIVATE_DIR:-$HOME/ai-lordkit-private}"
 # Línea que separa, dentro de ~/.claude/CLAUDE.md, la parte pública de la privada.
 PRIVATE_MARK="<!-- capa-privada: todo lo de abajo viene de \$CLAUDE_PRIVATE_DIR/CLAUDE.md, no lo edites aquí -->"
@@ -331,9 +338,71 @@ do_install() {
   fi
 }
 
+# ─── deps en Windows (Git Bash): winget, sin sudo ───────────────────────────
+# winget instala en el PATH de Windows; Git Bash lo ve en una terminal NUEVA.
+WIN_NEEDS_RESTART=0
+win_install() { # $1 = comando a comprobar, $2 = id de winget
+  command -v "$1" >/dev/null && return 0
+  warn "Instalando $1 vía winget ($2)"
+  winget install --id "$2" -e --silent --accept-package-agreements --accept-source-agreements \
+    || { warn "winget no pudo instalar $2 — instálalo a mano y reabre la terminal"; return 1; }
+  WIN_NEEDS_RESTART=1
+}
+
+do_deps_windows() {
+  command -v git >/dev/null && ok "git presente" || { err "Falta Git for Windows: https://git-scm.com/download/win"; return 1; }
+  if ! command -v winget >/dev/null; then
+    err "Falta winget (App Installer de Microsoft Store). Instala a mano jq, gh, Node 24 LTS y uv, y reabre la terminal."
+    return 1
+  fi
+
+  win_install jq jqlang.jq  || true
+  win_install gh GitHub.cli || true
+  local nv=0
+  command -v node >/dev/null && nv=$(node --version | sed 's/v//' | cut -d. -f1)
+  if (( nv < 24 )); then
+    warn "Instalando Node 24 LTS (OpenJS.NodeJS.LTS)"
+    if winget install --id OpenJS.NodeJS.LTS -e --silent --accept-package-agreements --accept-source-agreements; then
+      WIN_NEEDS_RESTART=1
+    else
+      warn "Instala Node 24 LTS a mano: https://nodejs.org"
+    fi
+  fi
+  if ! command -v uv >/dev/null; then
+    warn "Instalando uv (instalador oficial de Astral)"
+    if powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 | iex"; then
+      WIN_NEEDS_RESTART=1
+    else
+      warn "uv no se instaló: https://docs.astral.sh/uv/getting-started/installation/"
+    fi
+  fi
+
+  # pnpm vía corepack (viene con Node); en Windows no hace falta sudo
+  export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+  if command -v node >/dev/null && ! command -v pnpm >/dev/null; then
+    # Sin admin: `corepack enable` a secas escribe en C:\Program Files\nodejs y da EPERM.
+    mkdir -p "$HOME/.local/bin"
+    corepack enable --install-directory "$HOME/.local/bin" pnpm 2>/dev/null || npm install -g pnpm >/dev/null 2>&1 || true
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
+  if command -v pnpm >/dev/null; then ok "pnpm: $(pnpm --version 2>/dev/null)"
+  else warn "pnpm pendiente: tras reabrir la terminal corre 'corepack enable pnpm'"; fi
+
+  command -v docker >/dev/null && ok "docker presente" \
+    || warn "docker NO instalado (PostgreSQL/Redis/MinIO locales): https://docs.docker.com/desktop/setup/install/windows-install/"
+  if command -v gh >/dev/null && ! gh auth status &>/dev/null; then warn "gh sin autenticar — ejecuta después: gh auth login"; fi
+
+  if (( WIN_NEEDS_RESTART )); then
+    warn "Se instalaron programas nuevos: cierra y abre Git Bash y vuelve a correr: ./install.sh deps"
+  fi
+  return 0
+}
+
 # ─── deps: bootstrap de máquina recién formateada ────────────────────────────
 do_deps() {
   step "Bootstrap de dependencias del sistema"
+
+  if (( IS_WIN )); then do_deps_windows; return $?; fi
 
   # macOS: Homebrew (sin sudo). Linux: apt (con sudo). Otros: a mano.
   if [[ "$OS" == Darwin ]] && ! command -v brew >/dev/null; then
@@ -535,11 +604,14 @@ write_settings() {
     return 0
   fi
   if [[ -f "$live" ]] && jq -e 'type == "object"' "$live" >/dev/null 2>&1; then
+    # Archivo temporal y no `<(...)`: jq.exe (Windows) no puede abrir /proc/<pid>/fd/N.
+    merged_settings > "$live.kit"
     jq -s 'def m($a; $b): reduce ($b | keys_unsorted[]) as $k ($a;
              if (.[$k] | type) == "object" and ($b[$k] | type) == "object" then .[$k] = m(.[$k]; $b[$k])
              else .[$k] = $b[$k] end);
-           m(.[0]; .[1])' "$live" <(merged_settings) > "$live.tmp" \
+           m(.[0]; .[1])' "$live" "$live.kit" > "$live.tmp" \
       && mv "$live.tmp" "$live" && ok "settings.json actualizado (se conservan tus claves propias)"
+    rm -f "$live.kit"
   else
     [[ -f "$live" ]] && warn "Tu settings.json no era JSON válido: se reemplaza (la copia queda en el backup)"
     merged_settings > "$live.tmp" && mv "$live.tmp" "$live" && ok "settings.json instalado"
