@@ -4,7 +4,9 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
-First public release, not tagged yet.
+## [0.1.0] - 2026-10-27
+
+First public release.
 
 ### Security
 
@@ -36,3 +38,6 @@ First public release, not tagged yet.
 - `settings.json` no longer pins `model` or `alwaysThinkingEnabled`.
 - `CLAUDE.md` trimmed to 100 lines.
 - A fresh Mac gets a `~/.zshrc` so `~/.local/bin` is in `PATH` and `claude --kimi` works.
+
+[Unreleased]: https://github.com/FrankLord27/ai-lordkit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/FrankLord27/ai-lordkit/releases/tag/v0.1.0
