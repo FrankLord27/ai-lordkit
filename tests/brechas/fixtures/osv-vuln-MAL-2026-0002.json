@@ -1,0 +1,2 @@
+{ "id": "MAL-2026-0002", "summary": "Malicious code in some-mcp (npm)", "modified": "2026-10-20T00:00:00Z",
+  "affected": [{ "package": { "ecosystem": "npm", "name": "some-mcp" } }] }

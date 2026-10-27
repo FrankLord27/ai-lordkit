@@ -1,0 +1,8 @@
+{
+  "lodash@4.17.20": [{ "id": "GHSA-35jh-r3h4-6jhm", "modified": "2024-01-01T00:00:00Z" }],
+  "evil-pkg@1.0.0": [{ "id": "MAL-2026-0001", "modified": "2026-10-01T00:00:00Z" }],
+  "minimist@1.2.5": [{ "id": "GHSA-xvch-5gv4-984h", "modified": "2024-01-01T00:00:00Z" }],
+  "zod@3.23.8": [{ "id": "GHSA-aaaa-bbbb-cccc", "modified": "2026-10-01T00:00:00Z" }],
+  "some-mcp": [{ "id": "GHSA-old0-old0-old0", "modified": "2020-01-01T00:00:00Z" }, { "id": "MAL-2026-0002", "modified": "2026-10-20T00:00:00Z" }],
+  "@miapp/utils@1.0.0": [{ "id": "MAL-NO-DEBE-SALIR", "modified": "2026-10-20T00:00:00Z" }]
+}

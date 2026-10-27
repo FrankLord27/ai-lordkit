@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "sin-version": { "command": "npx", "args": ["-y", "some-mcp"], "env": { "TOKEN": "no-se-lee" } },
+    "fijado": { "command": "npx", "args": ["-y", "@x/mcp-server@2.0.0"] },
+    "remoto": { "type": "http", "url": "https://example.com/mcp" }
+  }
+}

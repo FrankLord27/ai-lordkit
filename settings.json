@@ -27,6 +27,8 @@
       "Bash(cd *)",
       "Bash(tree *)",
       "Bash(~/.claude/skills/mem-search/scripts/mem-search.sh *)",
+      "Bash(~/.claude/skills/brechas/scripts/brechas.mjs)",
+      "Bash(~/.claude/skills/brechas/scripts/brechas.mjs *)",
       "Bash(playwright *)",
       "Bash(jest *)",
       "WebFetch(domain:*)",
@@ -103,6 +105,10 @@
           {
             "type": "command",
             "command": "\"$HOME/.claude/hooks/guard.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/supply-guard.sh\""
           }
         ]
       }

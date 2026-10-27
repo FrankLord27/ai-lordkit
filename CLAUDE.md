@@ -39,7 +39,7 @@ Si otra sección contradice esto, esto gana.
 
 - pnpm tiene `minimumReleaseAge` de 7 días. Nunca lo desactives ni lo saltes con `--force` sin preguntarme.
 - No agregues paquetes a `onlyBuiltDependencies` sin explicarme por qué necesitan ejecutar scripts.
-- Antes de agregar una dependencia poco conocida (<100k descargas semanales o sin releases recientes), adviérteme y sugiere la alternativa establecida.
+- Antes de agregar una dependencia poco conocida (<100k descargas semanales o sin releases recientes), adviérteme y sugiere la alternativa establecida. CVEs y paquetes maliciosos del lockfile: `/brechas`.
 - Nunca `curl | bash` de fuentes no oficiales.
 
 ## 4. Seguridad de la sesión
