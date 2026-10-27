@@ -4,6 +4,10 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
+### Added
+
+- Skill `blindar`: security audit of your own code, mandatory at the close of every block (gate C5 of `desarrollo-por-etapas`) and as a full 12-phase audit with `/blindar todo` (hardening stage D). Six checks: input validation, rate limiting per user and IP, error leaks, tokens and sessions, CORS, routes without auth or validation. Findings with `file:line`, fixes with tests, report in `docs/seguridad/`, depth by mode.
+
 ## [0.1.0] - 2026-10-27
 
 First public release.

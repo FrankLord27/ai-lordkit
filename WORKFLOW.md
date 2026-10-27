@@ -158,6 +158,7 @@ Esto no es "revisar que esté bien". Es un gate con checks concretos.
 - [ ] Authz validado (no solo authn) — el usuario puede hacer lo que intenta hacer
 - [ ] Inputs validados con Zod (`nestjs-zod`); class-validator solo en código legado
 - [ ] Si tocaste backend 🔴: checklist de `nestjs-security-hardening` sin FALTA ni RIESGO
+- [ ] Si cierra un bloque o módulo: `/blindar` sin críticos ni altos abiertos
 - [ ] No se exponen secretos en logs ni en respuestas de error
 
 ### 4.3 Checks de UI (si aplica)
