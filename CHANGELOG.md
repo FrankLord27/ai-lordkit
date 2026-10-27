@@ -20,6 +20,8 @@ First public release, not tagged yet.
 - One-command installer `get.sh` for Linux and macOS (and Windows through WSL).
 - Plugin marketplaces and enabled plugins in `settings.json`; `./install.sh plugins`.
 - Native memory plus the `mem-search` skill, replacing claude-mem.
+- Block-based development (vertical slices): skills `elegir-metodo`, `desarrollo-por-etapas` and `mapa-bloque` (interactive HTML map of a block, built from the TypeScript compiler).
+- `.github/FUNDING.yml`: Sponsor button (GitHub Sponsors and PayPal).
 - `./install.sh rollback`: puts back the config from before the last `update`.
 - `./install.sh uninstall`: removes what the kit installed, with a backup.
 - `hooks/notify.sh`: desktop alerts on Linux, macOS and WSL.

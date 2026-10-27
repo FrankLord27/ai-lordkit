@@ -21,7 +21,7 @@ Si otra sección contradice esto, esto gana.
 
 ## 2. Estándar del proyecto
 
-Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS, y Expo si hay app móvil). Proyecto nuevo → `/new-project`. Proyecto existente que no sigue el estándar (por ejemplo, Sass + BEM): respeta su convención y no migres sin que te lo pida. El tipo de proyecto y sus reglas de negocio están en el `CLAUDE.md` de cada repo.
+**Método:** se construye por bloques (un flujo de usuario que cruza UI, datos y API y queda usable), nunca por capas completas. Proyecto, módulo o feature grande sin `docs/METODO.md` → skill `elegir-metodo`; el avance sigue `desarrollo-por-etapas`. Para estudiar un bloque, el usuario llama `/mapa-bloque`. Un solo estándar: la skill **`fullstack`** (web con Tailwind v4, backend NestJS, y Expo si hay app móvil). Proyecto nuevo → `/new-project`. Proyecto existente que no sigue el estándar (por ejemplo, Sass + BEM): respeta su convención y no migres sin que te lo pida. El tipo de proyecto y sus reglas de negocio están en el `CLAUDE.md` de cada repo.
 
 ## 3. Stack base (común a todos)
 
