@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="150" viewBox="0 0 880 150" role="img" aria-label="Supported platforms: Windows (Git Bash), macOS, Linux, WSL"><defs><linearGradient id="g0" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#6366f1"/></linearGradient><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#ea580c"/></linearGradient><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient><filter id="sh" x="-10%" y="-10%" width="120%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/></filter></defs>
+<style>
+.float{animation:float 4.5s ease-in-out infinite}
+.shine{animation:shine 5.5s ease-in-out infinite}
+.ok{transform-box:fill-box;transform-origin:center;animation:ok 2.2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes shine{0%,60%{transform:translateX(0) skewX(-20deg)}100%{transform:translateX(330px) skewX(-20deg)}}
+@keyframes ok{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.55}}
+@media (prefers-reduced-motion:reduce){.float,.shine,.ok{animation:none}}
+</style><g transform="translate(10 12)"><g class="float" style="animation-delay:0.00s"><g filter="url(#sh)">
+<rect width="200" height="116" rx="18" fill="#111827" stroke="#334155"/>
+<clipPath id="c0"><rect width="200" height="116" rx="18"/></clipPath>
+<rect width="200" height="5" fill="url(#g0)" clip-path="url(#c0)"/>
+<rect class="shine" x="-60" y="0" width="40" height="116" fill="#fff" opacity=".10" transform="skewX(-20)" clip-path="url(#c0)" style="animation-delay:0.00s"/>
+<g transform="translate(20 26)"><rect width="52" height="52" rx="15" fill="url(#g0)"/><g transform="translate(2 2)"><g fill="#fff"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="25" y="9" width="14" height="13" rx="2" fill-opacity=".85"/><rect x="9" y="25" width="13" height="14" rx="2" fill-opacity=".85"/><rect x="25" y="25" width="14" height="14" rx="2" fill-opacity=".7"/></g></g></g>
+<text x="86" y="52" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="800" fill="#f8fafc">Windows</text>
+<text x="86" y="74" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" fill="#94a3b8">Git Bash · native</text>
+<g transform="translate(20 96)"><circle class="ok" cx="6" cy="0" r="5" fill="#34d399"/><text x="18" y="4" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">Supported · CI tested</text></g>
+</g></g></g><g transform="translate(230 12)"><g class="float" style="animation-delay:0.35s"><g filter="url(#sh)">
+<rect width="200" height="116" rx="18" fill="#111827" stroke="#334155"/>
+<clipPath id="c1"><rect width="200" height="116" rx="18"/></clipPath>
+<rect width="200" height="5" fill="url(#g1)" clip-path="url(#c1)"/>
+<rect class="shine" x="-60" y="0" width="40" height="116" fill="#fff" opacity=".10" transform="skewX(-20)" clip-path="url(#c1)" style="animation-delay:0.60s"/>
+<g transform="translate(20 26)"><rect width="52" height="52" rx="15" fill="url(#g1)"/><g transform="translate(2 2)"><g fill="#fff"><circle cx="19.5" cy="27" r="9"/><circle cx="29" cy="27" r="9"/><rect x="19" y="18" width="10" height="9"/><ellipse cx="27" cy="12" rx="2.6" ry="5" transform="rotate(35 27 12)"/></g><circle cx="39" cy="24" r="4.6" fill="url(#g1)"/></g></g>
+<text x="86" y="52" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="800" fill="#f8fafc">macOS</text>
+<text x="86" y="74" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" fill="#94a3b8">Apple · Intel</text>
+<g transform="translate(20 96)"><circle class="ok" cx="6" cy="0" r="5" fill="#34d399"/><text x="18" y="4" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">Supported · CI tested</text></g>
+</g></g></g><g transform="translate(450 12)"><g class="float" style="animation-delay:0.70s"><g filter="url(#sh)">
+<rect width="200" height="116" rx="18" fill="#111827" stroke="#334155"/>
+<clipPath id="c2"><rect width="200" height="116" rx="18"/></clipPath>
+<rect width="200" height="5" fill="url(#g2)" clip-path="url(#c2)"/>
+<rect class="shine" x="-60" y="0" width="40" height="116" fill="#fff" opacity=".10" transform="skewX(-20)" clip-path="url(#c2)" style="animation-delay:1.20s"/>
+<g transform="translate(20 26)"><rect width="52" height="52" rx="15" fill="url(#g2)"/><g transform="translate(2 2)"><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 16l9 8-9 8"/><path d="M26 33h10"/></g></g></g>
+<text x="86" y="52" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="800" fill="#f8fafc">Linux</text>
+<text x="86" y="74" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" fill="#94a3b8">Ubuntu · Debian</text>
+<g transform="translate(20 96)"><circle class="ok" cx="6" cy="0" r="5" fill="#34d399"/><text x="18" y="4" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">Supported · CI tested</text></g>
+</g></g></g><g transform="translate(670 12)"><g class="float" style="animation-delay:1.05s"><g filter="url(#sh)">
+<rect width="200" height="116" rx="18" fill="#111827" stroke="#334155"/>
+<clipPath id="c3"><rect width="200" height="116" rx="18"/></clipPath>
+<rect width="200" height="5" fill="url(#g3)" clip-path="url(#c3)"/>
+<rect class="shine" x="-60" y="0" width="40" height="116" fill="#fff" opacity=".10" transform="skewX(-20)" clip-path="url(#c3)" style="animation-delay:1.80s"/>
+<g transform="translate(20 26)"><rect width="52" height="52" rx="15" fill="url(#g3)"/><g transform="translate(2 2)"><g fill="#fff"><rect x="8" y="10" width="32" height="22" rx="4" fill-opacity=".22"/><path d="M14 17l7 5-7 5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="25" y="25" width="9" height="3" rx="1.5"/><rect x="16" y="35" width="16" height="3.5" rx="1.75" fill-opacity=".8"/></g></g></g>
+<text x="86" y="52" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="21" font-weight="800" fill="#f8fafc">WSL</text>
+<text x="86" y="74" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" fill="#94a3b8">Ubuntu · WSL2</text>
+<g transform="translate(20 96)"><circle class="ok" cx="6" cy="0" r="5" fill="#34d399"/><text x="18" y="4" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">Supported · CI tested</text></g>
+</g></g></g></svg>
