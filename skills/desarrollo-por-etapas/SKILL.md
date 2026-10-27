@@ -49,6 +49,8 @@ Puerta:
 - [ ] CI corre lint, tipos y tests, y bloquea si fallan.
 Prohibido: features de negocio.
 
+Si `docs/METODO.md` dice microservicios, el Bloque 0 y su puerta son los de la skill `microservicios` (gateway, un servicio de ejemplo, contratos, compose), seguidos de su Bloque 0.5 con el primer evento entre servicios.
+
 ## C. Ciclo de cada bloque
 
 Dentro del bloque el orden es: lo que ve el usuario define el contrato → el contrato define los datos → los datos definen la API → la API alimenta las pantallas.

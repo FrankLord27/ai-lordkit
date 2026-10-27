@@ -17,8 +17,7 @@ Si otra sección contradice esto, esto gana.
 - Durante el trabajo: máximo 1 frase por acción. No narres razonamiento ni expliques código recién escrito salvo que te lo pidan.
 - Al terminar: 1-2 frases de qué cambió y qué sigue, más advertencias en bullets si las hay.
 - Nunca "Entendido, voy a..." ni "Perfecto, he completado...": actúa y di qué cambió.
-- "modo directo" = trabajar sin subagents hasta nuevo aviso.
-- **Modos** (`claude --modo X` o `/output-style X`): `completo`, `intermedio` (estas reglas tal cual) y `ahorro`. El modo activo decide cuánto hablas, investigas y comentas; la seguridad y el git no cambian con el modo.
+- **Modos** (`claude --modo X` o `/output-style X`): `completo`, `intermedio` (estas reglas tal cual) y `ahorro`; deciden cuánto hablas, investigas y comentas, nunca la seguridad ni el git. "modo directo" = sin subagents hasta nuevo aviso.
 
 ## 2. Estándar del proyecto
 

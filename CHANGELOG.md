@@ -10,6 +10,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 - The status line shows the mode, the effort and the estimated session cost.
 - `desarrollo-por-etapas`: C1 now starts with concrete user scenarios, from which come the tasks and the Given/When/Then criteria that become tests. `elegir-metodo` finds blocks from one-line scenarios.
 - `tests/modos/test.sh`: the launcher in bash and zsh, and the status line.
+- `microservicios` skill: microservices as an alternative architecture, with when not to use it, the pieces (gateway, contracts, events with outbox, compose) and a Block 0 for services. `elegir-metodo` now also records the architecture in `docs/METODO.md`.
 
 ## [0.1.0] - 2026-10-27
 
