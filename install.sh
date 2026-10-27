@@ -417,6 +417,20 @@ apply_config() {
   done
   ok "skills instaladas en ~/.claude/skills/ ($(ls -d "$CLAUDE_DIR/skills/"*/ | wc -l))"
 
+  # Skills con motor propio (scripts/package.json, p. ej. mapa-bloque): dependencias fijadas por lockfile
+  local pj sk
+  for pj in "$CLAUDE_DIR/skills/"*/scripts/package.json; do
+    [[ -f "$pj" ]] || continue
+    sk="$(basename "$(dirname "$(dirname "$pj")")")"
+    if ! command -v pnpm &>/dev/null; then
+      warn "sin pnpm: la skill $sk necesita 'pnpm install' en $(dirname "$pj")"
+    elif (cd "$(dirname "$pj")" && pnpm install --frozen-lockfile --prod --ignore-scripts --silent); then
+      ok "dependencias de la skill $sk instaladas"
+    else
+      warn "no pude instalar las dependencias de la skill $sk (corre 'pnpm install' en $(dirname "$pj"))"
+    fi
+  done
+
   # Migración: elimina el viejo plugin job-skills (las skills ya son nativas)
   if [[ -d "$CLAUDE_DIR/plugins/cache/local/job-skills" ]]; then
     rm -rf "$CLAUDE_DIR/plugins/cache/local/job-skills"

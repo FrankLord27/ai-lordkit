@@ -9,6 +9,8 @@ What you get:
 - **Global instructions** (`CLAUDE.md`) and a risk-based workflow (`WORKFLOW.md`).
 - **13 subagents**: planner, backend architect, frontend specialist, QA, code reviewer, security auditor, debugger, DevOps and more. Models by alias, never pinned IDs.
 - **Skills** for a NestJS + Next.js + Prisma + PostgreSQL + Redis stack, plus security hardening, HTTP QUERY, Memory Bank and ERP/POS rules.
+- **A block-based method for building with AI**: the AI proposes how to work on each project, then builds one usable, tested block at a time instead of layer by layer.
+- **`/mapa-bloque`**: an interactive map of any block of your TypeScript code, with unused variables, dead exports and import cycles marked in red.
 - **Safety hooks**: `guard.sh` blocks destructive commands, reading env files and keys, `curl | sh`, force pushes and pushes to `main`.
 - **MCP servers** defined in the repo, with tokens read from environment variables.
 - **A private layer** for everything personal, applied on top, so this repo stays generic.
@@ -94,6 +96,7 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | `mcp/servers.json`  | Public MCP servers, tokens as `${VARIABLES}`                          |
 | `private-template/` | Template for your private layer                                       |
 | `scripts/`          | `scan-leaks.sh`, used by `verify`, `sync` and CI                      |
+| `tests/`            | Sample project and test for `mapa-bloque`, run in CI                  |
 | `bin/`              | `claude --kimi`: same config on Kimi models                           |
 | `commands/`         | `/new-project`                                                        |
 
@@ -193,6 +196,32 @@ Left out on purpose:
 - **Official docs:** served by the Context7 MCP, always current.
 - **Expo/EAS skills:** they come from the official Expo plugin. Install it from `/plugin` inside Claude Code.
 - **Credentials:** `~/.claude/.credentials.json`, `~/.claude/kimi.key` and any env file are kept out by `.gitignore` and by the scanner.
+
+## Building by blocks
+
+AI agents lose the thread when you build a whole layer at a time (all screens, then the whole database, then the whole API). This kit builds **by blocks** instead: a block is one flow a user can finish ("log in", "register a student", "charge an invoice"). Each block goes through UI, data and API, gets an end-to-end test, and is usable before the next one starts.
+
+| Skill | What it does |
+| ----- | ------------ |
+| `elegir-metodo` | At the start of a project or big feature, asks a few questions and recommends **one** method: a throwaway spike when the idea is uncertain, a full definition plus blocks when requirements are clear, a short spec for large features. Saves the decision in `docs/METODO.md`. |
+| `desarrollo-por-etapas` | Definition → Block 0 (the skeleton every block copies) → one block at a time, each with a quality gate that needs evidence → hardening → pilot. Short versions for features and bugs. |
+| `mapa-bloque` | Only when you call it: `/mapa-bloque login`. Runs the TypeScript compiler over the block's folder and writes an interactive HTML map, a JSON file and a Markdown summary with a Mermaid diagram to `docs/mapas/`. |
+
+What `/mapa-bloque` shows, all computed by the compiler, not guessed by the AI:
+
+- Which files are in the block, their role (module, controller, service, DTO, component, hook…) and who outside the block uses them.
+- Every top-level declaration in each file and whether it is used.
+- Variables, imports and parameters that are never read, exports nothing imports, files nobody imports, code only the tests use, and circular imports.
+
+The map works offline. It bundles its own TypeScript 6 (TypeScript 7 no longer ships the JavaScript API it needs); `./install.sh update` installs it.
+
+## Support the project
+
+ai-lordkit is free and MIT-licensed. If it saves you time, you can help keep it going:
+
+- **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: the Sponsor button at the top of this repo.
+- **[PayPal](https://www.paypal.me/frankfelixr)**: one-time donations in any amount.
+- Starring the repo and sharing it also helps.
 
 ## Contributing
 
