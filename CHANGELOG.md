@@ -26,6 +26,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 - `backend-quality-gate` is now the "backend first, module by module" method: `elegir-metodo` offers it as an alternative to blocks, and it only runs when you pick it.
 - `WORKFLOW.md` links the block method skills; `/new-project` ends in `elegir-metodo` and Block 0; `CLAUDE.md` says when to use each agent.
 - CI: actions on Node 24 pinned by SHA, fixed runner versions (`ubuntu-26.04`, `macos-26`), monthly Dependabot with a 7-day cooldown, ShellCheck over every test.
+- `fullstack` CI templates: actions on Node 24 pinned by SHA, Node 24, pnpm from `packageManager`, `setup-buildx-action` for the build cache, and a Dependabot section.
 
 ### Fixed
 
