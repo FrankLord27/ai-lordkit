@@ -9,6 +9,8 @@
 
 [[ "${AI_LORDKIT_SUPPLY_GUARD:-0}" == 1 ]] || exit 0
 command -v jq >/dev/null 2>&1 || exit 0
+# Windows (Git Bash): jq.exe termina las líneas en CRLF; se quita el \r para que `read` y las comparaciones no fallen.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) jq() { command jq "$@" | tr -d '\r'; return "${PIPESTATUS[0]}"; } ;; esac
 [[ -n "${SUPPLY_GUARD_FIXTURES:-}" ]] || command -v curl >/dev/null 2>&1 || exit 0
 
 dias="${AI_LORDKIT_SUPPLY_DAYS:-7}"

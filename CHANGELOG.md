@@ -4,6 +4,20 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
+### Added
+
+- Native Windows support through Git Bash (`get.sh` and `install.sh` accept `MINGW*`/`MSYS*`). `./install.sh deps` installs `jq`, `gh`, Node 24 LTS, `uv` with `winget` and pnpm through `corepack` into `~/.local/bin` (no admin needed). WSL keeps working.
+- `.gitattributes`: bash scripts, hooks and JSON always use LF, even with `core.autocrlf=true` (CRLF broke them when cloned on Windows).
+- `guard.sh` blocks recursive `rm` on a drive root (`C:\`, `C:/`, `/c/`) and on the user folder (`/c/Users/<name>`, `$USERPROFILE`), with tests.
+- `windows` job in `.github/workflows/check.yml` (Git Bash on `windows-latest`).
+
+### Changed
+
+- Hooks convert `C:\...` paths from Claude Code (`cygpath`) in `guard.sh` and `format.sh`; `notify.sh` shows a balloon from Git Bash too.
+- `jq.exe` ends lines with CRLF: a wrapper strips the `\r` in the hooks, `install.sh` and `mem-search.sh`.
+- `write_settings` uses a temp file instead of `<(...)`, which `jq.exe` cannot open.
+- Tests run with a `PATH` that also holds `jq` and `git` (they do not live in `/usr/bin` on Windows).
+
 ## [0.2.0] - 2026-10-27
 
 ### Added
@@ -48,7 +62,7 @@ First public release.
 
 ### Added
 
-- One-command installer `get.sh` for Linux and macOS (and Windows through WSL).
+- One-command installer `get.sh` for Linux and macOS (and Windows: native Git Bash or WSL).
 - Plugin marketplaces and enabled plugins in `settings.json`; `./install.sh plugins`.
 - Native memory plus the `mem-search` skill, replacing claude-mem.
 - Block-based development (vertical slices): skills `elegir-metodo`, `desarrollo-por-etapas` and `mapa-bloque` (interactive HTML map of a block, built from the TypeScript compiler).

@@ -30,8 +30,8 @@ main() {
   fail() { printf '\033[0;31m[✗]\033[0m %s\n' "$*" >&2; exit 1; }
 
   case "$(uname -s)" in
-    Linux|Darwin) ;;
-    *) fail "Sistema no soportado: $(uname -s). ai-lordkit funciona en Linux y macOS. En Windows usa WSL: https://github.com/$repo#windows" ;;
+    Linux|Darwin|MINGW*|MSYS*) ;;  # MINGW/MSYS = Git Bash en Windows
+    *) fail "Sistema no soportado: $(uname -s). ai-lordkit funciona en Linux, macOS y Windows (Git Bash). En Windows abre Git Bash o WSL: https://github.com/$repo#windows" ;;
   esac
   command -v curl >/dev/null 2>&1 || fail "Falta curl. Instálalo y vuelve a correr el comando."
   command -v tar  >/dev/null 2>&1 || fail "Falta tar. Instálalo y vuelve a correr el comando."

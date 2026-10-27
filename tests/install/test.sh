@@ -5,8 +5,9 @@ set -u
 KIT="$(cd "$(dirname "$0")/../.." && pwd)"
 H="$(mktemp -d)"; trap 'rm -rf "$H"' EXIT
 fail=0
+JQDIR="$(dirname "$(command -v jq)"):$(dirname "$(command -v git)")"  # en Windows jq y git no viven en /usr/bin
 check() { if eval "$2"; then echo "ok   $1"; else echo "FALLA $1"; fail=1; fi; }
-run() { HOME="$H" SHELL=/bin/zsh CLAUDE_YES=1 CLAUDE_PRIVATE_DIR="$H/sin-capa" PATH="/usr/bin:/bin" \
+run() { HOME="$H" SHELL=/bin/zsh CLAUDE_YES=1 CLAUDE_PRIVATE_DIR="$H/sin-capa" PATH="/usr/bin:/bin:$JQDIR" \
           bash "$KIT/install.sh" "$@" >"$H/log" 2>&1 || { echo "--- install.sh $* falló:"; cat "$H/log"; fail=1; }; }
 s() { jq -r "$1" "$H/.claude/settings.json"; }
 

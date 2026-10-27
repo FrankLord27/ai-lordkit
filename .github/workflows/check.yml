@@ -45,3 +45,27 @@ jobs:
         run: pnpm install --frozen-lockfile --prod --ignore-scripts --dir skills/mapa-bloque/scripts
       - name: Test de mapa-bloque
         run: ./tests/mapa-bloque/test.sh
+
+  # Windows nativo: Git Bash (el shell que Claude Code usa en Windows). Sin WSL.
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Los .sh llegan con LF aunque core.autocrlf=true (.gitattributes)
+        run: |
+          if grep -rIl $'\r' install.sh get.sh hooks bin; then echo "hay CRLF en scripts bash"; exit 1; fi
+      - name: Sintaxis
+        run: bash -n get.sh && bash -n install.sh && bash -n hooks/guard.sh
+      - name: Tests del hook guard.sh
+        run: ./hooks/test-guard.sh
+      - name: Tests de mem-search
+        run: ./tests/mem-search/test.sh
+      - name: Modos (claude --modo) y statusline
+        run: ./tests/modos/test.sh
+      - name: update conserva tus ajustes, rollback y uninstall
+        run: ./tests/install/test.sh
+      - name: Escáner de datos sensibles
+        run: ./scripts/scan-leaks.sh

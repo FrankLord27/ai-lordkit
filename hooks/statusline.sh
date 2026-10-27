@@ -4,6 +4,8 @@
 # El costo es una estimación a precio de lista (sirve para comparar modos, no es tu factura).
 
 input=$(cat)
+# Windows (Git Bash): jq.exe termina las líneas en CRLF; se quita el \r para que `read` y las comparaciones no fallen.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) jq() { command jq "$@" | tr -d '\r'; return "${PIPESTATUS[0]}"; } ;; esac
 if command -v jq >/dev/null 2>&1; then
   IFS=$'\x1f' read -r model style effort dir cost < <(jq -r '[
       (.model.display_name // ""),

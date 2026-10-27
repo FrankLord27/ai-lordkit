@@ -56,7 +56,7 @@ Claude Code is powerful out of the box, but getting it to work **well** takes a 
 
 ai-lordkit started as the personal setup of a fullstack developer building SaaS products and school systems with AI. It grew into a kit anyone can install with one command. Its goals:
 
-1. **One command, any machine.** A freshly formatted Linux or macOS machine (or Windows through WSL) gets Claude Code plus the whole configuration in minutes. Running the command again updates it.
+1. **One command, any machine.** A freshly formatted Linux or macOS machine (or Windows, native with Git Bash or through WSL) gets Claude Code plus the whole configuration in minutes. Running the command again updates it.
 2. **Safe by default.** Claude Code can run commands on your machine. The kit blocks the dangerous ones (deleting your home folder, reading `.env` files, pushing to `main`, `curl | sh`), hardens pnpm against supply-chain attacks and checks your dependencies against public advisories.
 3. **Productive, not just configured.** A team of 13 specialized agents, skills for a modern TypeScript stack and a method that keeps the AI from losing the thread on big projects.
 4. **Cheap when it can be.** Three work modes trade depth for tokens, and the status line shows what each session costs.
@@ -72,7 +72,7 @@ ai-lordkit started as the personal setup of a fullstack developer building SaaS 
 ## 🚀 Quick start
 
 ```bash
-# 1. Install (Linux, macOS, or Ubuntu inside WSL on Windows)
+# 1. Install (Linux, macOS, Git Bash or Ubuntu inside WSL on Windows)
 curl -fsSL https://raw.githubusercontent.com/FrankLord27/ai-lordkit/main/get.sh | bash
 
 # 2. Open a new terminal and log in
@@ -192,7 +192,7 @@ ai-lordkit/
 │   ├── guard.sh            # Blocks dangerous commands (PreToolUse on Bash)
 │   ├── supply-guard.sh     # Optional: checks a package before installing it
 │   ├── format.sh           # Formats edited files with the project's own Prettier
-│   ├── notify.sh           # Desktop alert when Claude needs you (Linux, macOS, WSL)
+│   ├── notify.sh           # Desktop alert when Claude needs you (Linux, macOS, WSL, Git Bash)
 │   ├── statusline.sh       # model · mode/effort · folder · branch · cost
 │   └── test-guard.sh       # Tests for guard.sh
 ├── bin/
@@ -375,7 +375,7 @@ Models are set by alias, never by a pinned ID, so they follow whatever Claude Co
 | `guard.sh` | Before every Bash command | Blocks deleting `/` or `$HOME`, touching env files or keys, full `printenv`, `curl \| sh`, privileged containers, force pushes and pushes to `main`. Fails closed without `jq` |
 | `supply-guard.sh` | Before `pnpm add`, `npm install`, `yarn add`, `npx`, `pnpm dlx`, `bunx` (**off by default**) | Blocks a version flagged as malicious, asks before one published less than 7 days ago |
 | `format.sh` | After every edit | Formats the file with the project's own Prettier. Never downloads Prettier |
-| `notify.sh` | When Claude needs you | Desktop alert on Linux, macOS and WSL |
+| `notify.sh` | When Claude needs you | Desktop alert on Linux, macOS, WSL and Git Bash |
 | `statusline.sh` | Always | `Sonnet · ahorro/low · my-repo · main · $0.12` |
 
 ## 🔋 Work modes: full, balanced, saver
@@ -559,13 +559,21 @@ Before the first install, [CHECKLIST.md](CHECKLIST.md) lists what is worth setti
 
 ### Windows
 
-Use **WSL** (Windows Subsystem for Linux). The hooks and the installer are bash, so there is no native PowerShell version.
+Two ways, both supported:
+
+**Native (Git Bash, recommended)** — what Claude Code itself uses as its shell on Windows.
+
+1. Install [Git for Windows](https://git-scm.com/download/win) (it brings Git Bash).
+2. Open **Git Bash** and run the install command above. `deps` uses `winget` (no admin for jq, gh, uv; Node asks for it once): `jq`, `gh`, Node 24 LTS, `uv`. pnpm comes through `corepack` into `~/.local/bin`.
+3. If it installed programs, close and reopen Git Bash and run `./install.sh deps` again so the new PATH is picked up.
+
+Windows details the kit handles for you: scripts always keep LF line endings (`.gitattributes`, even with `core.autocrlf=true`), `C:\...` paths from Claude Code are converted for the hooks, `jq.exe`'s CRLF output is stripped, and `guard.sh` also blocks `rm -rf` on a drive root (`C:\`, `/c/`) and on your user folder. Notifications show as a Windows balloon. `chmod 600` on `kimi.key` has no effect on NTFS: keep that file in your user profile only.
+
+**WSL** — if you prefer a Linux environment:
 
 1. In PowerShell as administrator: `wsl --install` (installs Ubuntu), then restart.
 2. Open **Ubuntu** from the Start menu and run the install command above inside it.
 3. Keep your code inside WSL (`~/code`, not `/mnt/c/...`): file access across the boundary is slow.
-
-Notifications show up as a Windows balloon (through `powershell.exe`). Git Bash and MSYS are not supported.
 
 ### Cloud sessions (claude.ai/code)
 

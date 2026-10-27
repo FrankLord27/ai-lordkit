@@ -4,6 +4,8 @@
 # lo que respondió Claude: ignora resultados de tools (pueden traer datos sensibles) y thinking.
 # Sin dependencias aparte de jq. Compatible con bash 3.2 (macOS).
 set -euo pipefail
+# Windows (Git Bash): jq.exe termina las líneas en CRLF; se quita el \r para que `read` y las comparaciones no fallen.
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) jq() { command jq "$@" | tr -d '\r'; return "${PIPESTATUS[0]}"; } ;; esac
 
 usage() {
   cat <<'USO'
