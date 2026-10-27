@@ -30,9 +30,10 @@ Antes de leer nada, clasifica la tarea. Esto decide qué skills cargar y si nece
 
 ## FASE 1: Carga de contexto (¡CRÍTICO!)
 
-### 1.1 Estándar del proyecto
+### 1.1 Estándar y método del proyecto
 - Carga la skill `fullstack`. Si el proyecto ya usa otra convención (p. ej. Sass/BEM), respétala.
-- Proyecto nuevo → `/new-project` **antes de seguir**.
+- Proyecto nuevo → `/new-project` **antes de seguir**. Si el usuario quiere una app y no sabe qué arquitectura o herramientas usar → `crear-app` primero.
+- Método: si existe `docs/METODO.md`, se sigue; si no y es proyecto, módulo o feature grande → `elegir-metodo`. El trabajo avanza por bloques con `desarrollo-por-etapas`: este workflow dice qué cargar y cómo revisar cada tarea; las puertas C1-C5 del bloque dicen cuándo se puede seguir.
 
 ### 1.2 Exploración del codebase (NUEVO)
 Antes de planear, scout pass de 2-5 minutos:
@@ -65,6 +66,10 @@ Antes de planear, scout pass de 2-5 minutos:
 | **API de una librería que no dominas** | MCP Context7 (`resolve-library-id` → `query-docs`) |
 | **Proyecto fullstack** | `fullstack` |
 | **ERP / SaaS / multi-tenant** | `erp-saas-core` |
+| **Microservicios / sistema distribuido** | `microservicios` |
+| **Cerrar un bloque o módulo (seguridad)** | `blindar` |
+| **Estudiar un bloque (conexiones, código muerto)** | `/mapa-bloque` |
+| **Algo de una sesión anterior** | `mem-search` |
 | **Grafos / knowledge graph** | `graphify` |
 | **Diseño de prompts** | `prompt-master` |
 | **Crear / mantener skills** | `skill-creator` |

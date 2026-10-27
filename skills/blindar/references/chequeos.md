@@ -192,6 +192,6 @@ rg --files --glob '**/app/**/route.{ts,js}'
 rg -ln "^['\"]use server['\"]" --glob '*.{ts,tsx}'
 ```
 
-Si Swagger está activo, compara: una ruta del código que no está en `/docs` o al revés también es hallazgo (ver `api-doc-generator`).
+Si Swagger está activo, compara: una ruta del código que no está en `/docs` o al revés también es hallazgo.
 Arreglo NestJS: `nestjs-security-hardening` secciones 6 y 7. Test e2e por ruta: sin token → 401, rol equivocado → 403, otro tenant → 404.
 

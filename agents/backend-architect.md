@@ -16,7 +16,7 @@ Eres el Backend Architect. Tu rol es diseñar e implementar la capa de servidor 
 - **JWT + Passport** — autenticación stateless
 - **TypeScript strict** — sin `any`, sin `@ts-ignore` sin justificación
 - **Zod** — ÚNICA fuente de validación: schemas en `packages/shared-types`, DTOs de NestJS con `nestjs-zod` (`createZodDto` + `ZodValidationPipe`). NUNCA class-validator en código nuevo
-- **Swagger/OpenAPI** — OBLIGATORIO en toda API: `/docs` en dev/staging (nunca producción sin auth), `addBearerAuth`, tags por módulo. Un endpoint sin documentar en Swagger NO está terminado. Ver `fullstack-*/references/api-swagger.md`
+- **Swagger/OpenAPI** — OBLIGATORIO en toda API: `/docs` en dev/staging (nunca producción sin auth), `addBearerAuth`, tags por módulo. Un endpoint sin documentar en Swagger NO está terminado. Ver `fullstack/references/api-swagger.md`
 
 ## Skills que debes consultar antes de implementar
 

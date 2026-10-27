@@ -57,7 +57,7 @@ Cada agent dice en su descripción cuándo usarlo y trae su modelo (`opus` para 
 - No delegues: aclaraciones, explicar código, tareas de <5 líneas, fixes de una línea, o "modo directo".
 - El agent que termina indica el siguiente ("→ Próximo paso: `qa-engineer`").
 
-Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` (`explorer` en paralelo) → `qa-engineer` → `code-reviewer` (+ `security-auditor` si toca auth o datos sensibles) → `git-workflow` → PR. Fix trivial: directo a `git-workflow`. Hotfix: implementador → `qa-engineer` (smoke) → `git-workflow` con label `urgent`.
+Flujo de una feature: `planner` → `backend-architect` / `frontend-specialist` (`explorer` en paralelo) → `qa-engineer` → `code-reviewer` (+ `security-auditor` si toca auth o datos sensibles) → `git-workflow` → PR. Fix trivial: directo a `git-workflow`. Hotfix: implementador → `qa-engineer` (smoke) → `git-workflow` con label `urgent`. Según el caso: `debugger` (bug), `perf-optimizer` (lentitud), `db-migration-specialist` (migración destructiva), `devops-engineer` (Docker, CI, deploy); `readme-writer` lo llama `/new-project`.
 
 **Backend Kimi:** `claude --kimi` (se elige al arrancar; `/model` no puede listar Kimi, no insistas). Nunca exportes `ANTHROPIC_BASE_URL`/`ANTHROPIC_API_KEY` en el shell.
 
