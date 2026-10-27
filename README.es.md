@@ -1,8 +1,9 @@
 <div align="center">
 
-# ⚡ ai-lordkit
-
-**Un comando convierte una máquina recién formateada en una instalación de Claude Code completa, segura y productiva.**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-es-dark.svg">
+  <img alt="ai-lordkit: un comando convierte una máquina nueva en una instalación de Claude Code completa y segura" src="assets/banner-es-light.svg" width="100%">
+</picture>
 
 Agents, skills, hooks, modos de trabajo y servidores MCP para construir software real con IA, un bloque usable a la vez.
 
@@ -63,12 +64,10 @@ ai-lordkit nació como la configuración personal de un desarrollador fullstack 
 
 ## ✨ Qué lo hace diferente
 
-| | |
-| --- | --- |
-| 🧱 **Método por bloques + mapa del bloque** | La IA construye un flujo de usuario a la vez ("iniciar sesión", "cobrar una factura") cruzando UI, datos y API, con escenarios, tests y auditoría de seguridad al cerrar cada bloque. `/mapa-bloque` dibuja cualquier bloque con el compilador de TypeScript: código sin usar, exports muertos y ciclos de imports en rojo. |
-| 🔐 **Capas pública y privada con escáner de fugas** | Un kit público y genérico; tu repo privado encima. `sync` devuelve cada cambio a su capa y se niega a subir tokens, emails, rutas personales o palabras de tu `private-terms.txt`. |
-| 🌎 **En español, stack de LatAm** | Instrucciones en español para NestJS 11 + Next.js 16 + Prisma 7 + PostgreSQL + Redis, con reglas para SaaS multi-tenant, ERP/POS, contabilidad de partida doble y facturación electrónica de la DGII. |
-| 🛡️ **Seguridad en tres momentos** | Antes de que corra un comando (`guard.sh`), antes de instalar un paquete (`supply-guard.sh`, opcional) y al cerrar un bloque (`/blindar`, `/brechas`). |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/features-es-dark.svg">
+  <img alt="Método por bloques y mapa; capa pública y privada con escáner de fugas; en español con stack de LatAm; seguridad en tres momentos" src="assets/features-es-light.svg" width="100%">
+</picture>
 
 ## 🚀 Inicio rápido
 
@@ -606,6 +605,12 @@ La instalación completa **mueve** tu `~/.claude` actual a `~/.claude-backups/` 
 ai-lordkit es gratis y con licencia MIT, y así se va a quedar. Lo construyo en mi tiempo libre, y las donaciones van directo a construir más herramientas abiertas para desarrollar con IA: skills nuevas, mejores chequeos de seguridad y mantener todo al día mientras Claude Code cambia.
 
 Si te ahorra tiempo, cualquier ayuda se agradece de corazón:
+
+<p align="center">
+  <a href="https://github.com/sponsors/FrankLord27"><img alt="GitHub Sponsors" src="assets/sponsor-github-es.svg" height="56"></a>
+  &nbsp;
+  <a href="https://www.paypal.me/frankfelixr"><img alt="PayPal" src="assets/donate-paypal-es.svg" height="56"></a>
+</p>
 
 - **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: niveles mensuales de $3 (Coffee), $10 (Supporter) y $25 (Backer), un monto a tu gusto o una donación única. También con el botón Sponsor arriba en este repo.
 - **[PayPal](https://www.paypal.me/frankfelixr)**: donaciones únicas de cualquier monto.

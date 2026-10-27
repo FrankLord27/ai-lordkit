@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="64" viewBox="0 0 260 64" role="img" aria-label="PayPal">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0070e0"/><stop offset="1" stop-color="#003087"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.25"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="260" height="64" rx="32" fill="url(#b)"/>
+<g transform="translate(22 16)"><path d="M3 8 H23 V18 C23 24 18.5 28 13 28 C7.5 28 3 24 3 18 Z" fill="#fff"/><path d="M23 11 H26 C28.8 11 30 13 30 15.5 C30 18 28.5 20 26 20 H23" fill="none" stroke="#fff" stroke-width="3"/><path d="M9 1 C8 3 10 4 9 6 M14 1 C13 3 15 4 14 6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+<text x="66" y="30" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="800" fill="#fff">PayPal</text>
+<text x="66" y="48" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="12.5" font-weight="500" fill="#fff" fill-opacity="0.85">Única, cualquier monto</text>
+</svg>

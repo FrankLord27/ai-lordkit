@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-label="ai-lordkit">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="0.55" stop-color="#eef2ff"/><stop offset="1" stop-color="#fdf4ff"/></linearGradient>
+<linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset="0.5" stop-color="#f59e0b"/><stop offset="1" stop-color="#ea580c"/></linearGradient>
+<linearGradient id="ttl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#4338ca"/></linearGradient>
+<radialGradient id="g1"><stop offset="0" stop-color="#a78bfa" stop-opacity="0.55"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2"><stop offset="0" stop-color="#fbbf24" stop-opacity="0.35"/><stop offset="1" stop-color="#fbbf24" stop-opacity="0"/></radialGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#312e81" stroke-opacity="0.06"/></pattern>
+<clipPath id="card"><rect width="1280" height="360" rx="24"/></clipPath>
+<filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity="0.18"/></filter>
+</defs>
+<g clip-path="url(#card)">
+<rect width="1280" height="360" fill="url(#bg)"/>
+<rect width="1280" height="360" fill="url(#grid)"/>
+<circle cx="1060" cy="40" r="300" fill="url(#g1)"/>
+<circle cx="140" cy="380" r="260" fill="url(#g2)"/>
+</g>
+<g transform="translate(72 64)">
+<rect width="76" height="76" rx="20" fill="url(#bolt)"/>
+<path d="M44 10 L20 42 H36 L30 66 L56 32 H40 Z" fill="#ffffff"/>
+</g>
+<text x="172" y="128" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="70" font-weight="800" letter-spacing="-2" fill="url(#ttl)">ai-lordkit</text>
+<text x="72" y="196" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" font-weight="500" fill="#4338ca">Un comando convierte una máquina nueva en una</text>
+<text x="72" y="228" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="23" font-weight="700" fill="#0f172a">instalación de Claude Code completa y segura.</text>
+<rect x="72" y="262" width="101" height="34" rx="17" fill="#ffffff" fill-opacity="0.9" stroke="#c7d2fe" stroke-opacity="0.6"/><text x="122.5" y="284" text-anchor="middle" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#3730a3">13 agents</text><rect x="183" y="262" width="116" height="34" rx="17" fill="#ffffff" fill-opacity="0.9" stroke="#c7d2fe" stroke-opacity="0.6"/><text x="241.0" y="284" text-anchor="middle" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#3730a3">Por bloques</text><rect x="309" y="262" width="172" height="34" rx="17" fill="#ffffff" fill-opacity="0.9" stroke="#c7d2fe" stroke-opacity="0.6"/><text x="395.0" y="284" text-anchor="middle" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#3730a3">Hooks de seguridad</text><rect x="491" y="262" width="203" height="34" rx="17" fill="#ffffff" fill-opacity="0.9" stroke="#c7d2fe" stroke-opacity="0.6"/><text x="592.5" y="284" text-anchor="middle" font-family="'Inter','Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="14" font-weight="600" fill="#3730a3">Capa pública + privada</text>
+<g transform="translate(760 70)" filter="url(#sh)">
+<rect width="452" height="220" rx="14" fill="#0f172a" stroke="#1e293b"/>
+<rect width="452" height="34" rx="14" fill="#1e293b"/><rect y="20" width="452" height="14" fill="#1e293b"/>
+<circle cx="22" cy="17" r="6" fill="#f87171"/><circle cx="42" cy="17" r="6" fill="#fbbf24"/><circle cx="62" cy="17" r="6" fill="#4ade80"/>
+<text x="226" y="22" text-anchor="middle" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="12" fill="#94a3b8">~/ai-lordkit</text>
+<g transform="translate(22 30)">
+<text x="0" y="40" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#e2e8f0"><tspan fill="#fbbf24">$</tspan> curl -fsSL …/get.sh | bash</text>
+<text x="0" y="78" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#e2e8f0"><tspan fill="#4ade80">✓</tspan> Claude Code instalado</text><text x="0" y="108" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#e2e8f0"><tspan fill="#4ade80">✓</tspan> agents · skills · hooks</text><text x="0" y="138" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#e2e8f0"><tspan fill="#4ade80">✓</tspan> guard.sh vigila cada comando</text><text x="0" y="168" font-family="'JetBrains Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#e2e8f0"><tspan fill="#4ade80">✓</tspan> listo:  claude --modo completo</text>
+</g>
+</g>
+</svg>

@@ -6,7 +6,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
-- README rewritten: why the kit exists and its goals, what makes it different, Mermaid diagrams (install, session, agent team, block cycle, public/private layers), repository tree, full command reference (`get.sh`, every `install.sh` command, the `claude` wrapper, slash commands), every skill, agent and hook, author section and donations. Full Spanish version in `README.es.md`.
+- README rewritten: why the kit exists and its goals, what makes it different, Mermaid diagrams (install, session, agent team, block cycle, public/private layers), repository tree, full command reference (`get.sh`, every `install.sh` command, the `claude` wrapper, slash commands), every skill, agent and hook, author section and donations. Full Spanish version in `README.es.md`. Hand-made SVG banner, feature cards and donation buttons in `assets/`, with light and dark versions.
 - Skill `crear-app`: when someone says they want to build an app and doesn't know what to use, an interactive picker (`AskUserQuestion`) asks the type of app, architecture, tools and platforms, recommended option first. The choice goes to `docs/METODO.md` (new `Herramientas:` line) and the project starts with Block 0. `elegir-metodo` asks its question with the same picker.
 
 - Skill `blindar`: security audit of your own code, mandatory at the close of every block (gate C5 of `desarrollo-por-etapas`) and as a full 12-phase audit with `/blindar todo` (hardening stage D). Six checks: input validation, rate limiting per user and IP, error leaks, tokens and sessions, CORS, routes without auth or validation. Findings with `file:line`, fixes with tests, report in `docs/seguridad/`, depth by mode.

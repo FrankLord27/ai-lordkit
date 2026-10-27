@@ -1,8 +1,9 @@
 <div align="center">
 
-# ⚡ ai-lordkit
-
-**One command turns a fresh machine into a complete, safe and productive Claude Code setup.**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <img alt="ai-lordkit: one command turns a fresh machine into a complete, safe Claude Code setup" src="assets/banner-light.svg" width="100%">
+</picture>
 
 Agents, skills, hooks, work modes and MCP servers for building real software with AI, one usable block at a time.
 
@@ -63,12 +64,10 @@ ai-lordkit started as the personal setup of a fullstack developer building SaaS 
 
 ## ✨ What makes it different
 
-| | |
-| --- | --- |
-| 🧱 **Block method + block map** | The AI builds one user flow at a time ("log in", "charge an invoice") through UI, data and API, with scenarios, tests and a security audit at each block's close. `/mapa-bloque` draws any block from the TypeScript compiler: unused code, dead exports and import cycles in red. |
-| 🔐 **Public / private layers with a leak scanner** | One public, generic kit; your private repo on top. `sync` sends each change back to the right layer and refuses to push tokens, emails, home paths or words from your `private-terms.txt`. |
-| 🌎 **Spanish-first, LatAm stack** | Instructions in Spanish for NestJS 11 + Next.js 16 + Prisma 7 + PostgreSQL + Redis, with rules for multi-tenant SaaS, ERP/POS, double-entry accounting and Dominican electronic invoicing (DGII). |
-| 🛡️ **Security at three moments** | Before a command runs (`guard.sh`), before a package is installed (`supply-guard.sh`, optional) and when a block closes (`/blindar`, `/brechas`). |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/features-dark.svg">
+  <img alt="Block method and block map; public and private layers with a leak scanner; Spanish-first LatAm stack; security at three moments" src="assets/features-light.svg" width="100%">
+</picture>
 
 ## 🚀 Quick start
 
@@ -606,6 +605,12 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 ai-lordkit is free and MIT-licensed, and it will stay that way. I build it in my own time, and donations go straight into building more open tools for developing with AI: new skills, better security checks, and keeping everything up to date as Claude Code changes.
 
 If it saves you time, any help is deeply appreciated:
+
+<p align="center">
+  <a href="https://github.com/sponsors/FrankLord27"><img alt="GitHub Sponsors" src="assets/sponsor-github.svg" height="56"></a>
+  &nbsp;
+  <a href="https://www.paypal.me/frankfelixr"><img alt="PayPal" src="assets/donate-paypal.svg" height="56"></a>
+</p>
 
 - **[GitHub Sponsors](https://github.com/sponsors/FrankLord27)**: monthly tiers from $3 (Coffee), $10 (Supporter) and $25 (Backer), a custom amount or a one-time donation. Also the Sponsor button at the top of this repo.
 - **[PayPal](https://www.paypal.me/frankfelixr)**: one-time donations in any amount.
