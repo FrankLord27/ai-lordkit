@@ -18,6 +18,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
    - ¿Hay un cliente con alcance cerrado o una norma externa (facturación fiscal, pagos, ministerio)?
    - ¿Hay código existente con patrones que seguir?
    - ¿Cuántos flujos de usuario tiene la primera versión?
+   - ¿Cuántas personas van a trabajar en el código? ¿Hay alguna parte con carga o tecnología muy distinta al resto (búsqueda, tiempo real, procesamiento pesado)? Solo si hace falta para decidir la arquitectura (ver abajo).
 
 3. **Recomienda un método de esta tabla.** Tu recomendación va primero y con argumentos, no como una lista neutral.
 
@@ -29,6 +30,8 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 | Feature grande que toca muchos módulos | **Entrevista → `SPEC.md` de una página → partir en bloques** | Spec liviano: un archivo, no veinte. |
 | Alcance cerrado por contrato o por una norma | **Definición y contrato de datos casi en cascada; implementación por bloques** | El alcance no se descubre sobre la marcha, pero construir por capas igual es mala idea con IA. |
 | Bug | **Reproducir → test en rojo → causa raíz → fix** | Ver la versión para bugs en `desarrollo-por-etapas`. |
+
+   **Arquitectura.** Junto con el método, di en una línea qué arquitectura recomiendas. Por defecto es un **monolito modular** (skill `fullstack`). Si hay dos o más señales de la skill `microservicios` (equipos que se pisan, un área con carga o tecnología muy distinta, despliegues independientes, aislar fallas como requisito), ofrece microservicios como opción y usa esa skill para el diseño. Si el usuario pide microservicios sin esas señales, dile el costo en corto: la decisión es suya. La arquitectura también la escoge el usuario y se anota en `docs/METODO.md`.
 
 4. **Presenta la decisión al usuario** en un solo mensaje:
    - **Recomendado:** el método, 2 pros y 2 contras para ESTE proyecto (no genéricos).
@@ -47,6 +50,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 ## Cómo partir en bloques
 
 - Un bloque es **un flujo que un usuario puede completar**: "iniciar sesión", "registrar estudiante", "cobrar una factura". "Módulo académico" no es un bloque.
+- Para encontrar los bloques, escribe primero los escenarios en una línea: "la contadora necesita ver los ingresos del mes para cuadrar con el banco". Cada escenario (o grupo pequeño) es un bloque. El detalle de cada escenario se escribe en C1 de `desarrollo-por-etapas`, cuando le toca a ese bloque, no todos al principio.
 - Si no se puede probar con un e2e de un flujo, es muy grande: pártelo.
 - **Bloque 0 siempre primero**: repo, auth base, usuario, permisos, multi-tenant si aplica, base de datos, CI, deploy y un dato que viaje de la BD a una pantalla. Deja un módulo de ejemplo que los demás bloques copien.
 - Ordena por dependencias y luego por riesgo: lo más incierto va temprano.
@@ -59,15 +63,16 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 
 Decidido: <fecha>
 Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | otro que propuso el usuario>
+Arquitectura: <monolito modular | monolito modular listo para extraer | microservicios (ver docs/ARQUITECTURA.md)>
 Escogido por: el usuario (recomendado por la IA: <sí | no, recomendó X porque ...>)
 Por qué: <2 o 3 líneas con lo que respondió el usuario>
 Alternativas consideradas: <las otras opciones que se mostraron>
 
 ## Bloques planeados (el avance se lleva en docs/ETAPAS.md)
-| # | Bloque | Depende de | Carpeta |
-|---|--------|------------|---------|
-| 0 | Esqueleto | — | — |
-| 1 | ... | 0 | src/... |
+| # | Bloque | Escenario en una línea | Depende de | Carpeta |
+|---|--------|------------------------|------------|---------|
+| 0 | Esqueleto | — | — | — |
+| 1 | ... | <quién> necesita <qué> para <para qué> | 0 | src/... |
 
 ## Reglas transversales (las verifica cada puerta)
 - Permisos: ...
