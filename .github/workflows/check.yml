@@ -17,6 +17,13 @@ jobs:
         run: ./hooks/test-guard.sh
       - name: Tests de mem-search
         run: ./tests/mem-search/test.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Tests de brechas y supply-guard (con fixtures y contra OSV, KEV, EPSS y deps.dev reales)
+        run: ./tests/brechas/test.sh
+        env:
+          BRECHAS_RED: "1"
       - name: Escáner de datos sensibles
         run: ./scripts/scan-leaks.sh
       - name: settings.json, mcp/servers.json y el marketplace son JSON válido
@@ -24,7 +31,8 @@ jobs:
       - name: ShellCheck (errores)
         run: |
           shellcheck -S error get.sh install.sh hooks/*.sh bin/claude-kimi bin/shell-init.sh \
-            scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/mem-search/test.sh tests/modos/test.sh
+            scripts/*.sh skills/mem-search/scripts/mem-search.sh tests/mem-search/test.sh tests/modos/test.sh \
+            tests/brechas/test.sh
       - name: zsh para probar el launcher como en macOS
         run: sudo apt-get install -y zsh
       - name: Modos (claude --modo) y statusline

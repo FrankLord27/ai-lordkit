@@ -6,6 +6,8 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Skill `brechas`: checks `pnpm-lock.yaml` or `package-lock.json`, the MCP servers in the kit, the private layer and `.mcp.json`, and the Claude Code version against OSV.dev (GitHub Advisory Database and OpenSSF malicious packages), CISA KEV and EPSS. Report with links and fixed versions in `docs/seguridad/`, accepted risks in `.brechas-ignorar`, optional recent news with sources. Node 24, no dependencies, no API keys. `blindar todo` delegates the dependency phase to it.
+- Optional hook `supply-guard.sh` (off by default, `AI_LORDKIT_SUPPLY_GUARD=1`): blocks installing or running a package version flagged as malicious and asks before one published less than 7 days ago.
 - Skill `blindar`: security audit of your own code, mandatory at the close of every block (gate C5 of `desarrollo-por-etapas`) and as a full 12-phase audit with `/blindar todo` (hardening stage D). Six checks: input validation, rate limiting per user and IP, error leaks, tokens and sessions, CORS, routes without auth or validation. Findings with `file:line`, fixes with tests, report in `docs/seguridad/`, depth by mode.
 - Work modes `completo`, `intermedio` (default) and `ahorro` as output styles in `output-styles/`. `claude --modo <mode>` sets the style and the effort (`xhigh`, `medium`, `low`), and Sonnet in `ahorro`. Your own `--model` or `--effort` wins.
 - The status line shows the mode, the effort and the estimated session cost.

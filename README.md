@@ -12,6 +12,7 @@ What you get:
 - **A block-based method for building with AI**: the AI proposes how to work on each project, then builds one usable, tested block at a time instead of layer by layer.
 - **`/mapa-bloque`**: an interactive map of any block of your TypeScript code, with unused variables, dead exports and import cycles marked in red.
 - **Safety hooks**: `guard.sh` blocks destructive commands, reading env files and keys, `curl | sh`, force pushes and pushes to `main`.
+- **`/brechas`**: checks your lockfile, MCP servers and Claude Code version against free public advisories (OSV.dev with the GitHub Advisory Database and known malicious packages, CISA KEV, EPSS) and writes a report with links. An optional hook blocks installing a package flagged as malicious.
 - **MCP servers** defined in the repo, with tokens read from environment variables.
 - **A private layer** for everything personal, applied on top, so this repo stays generic.
 - **A one-command installer** for Linux (apt) and macOS (Homebrew) that takes a freshly formatted machine to a working setup.
@@ -120,11 +121,11 @@ The full setup **moves** your current `~/.claude` to `~/.claude-backups/` first 
 | `agents/`           | 13 subagents                                                          |
 | `output-styles/`    | Work modes `completo`, `intermedio`, `ahorro` (`claude --modo X`)      |
 | `skills/`           | Stack and domain skills (`fullstack`, `nestjs-security-hardening`, `erp-saas-core`…) |
-| `hooks/`            | `guard.sh` (blocking), `format.sh` (project-local Prettier), `notify.sh` (desktop alert), `statusline.sh` (model · mode/effort · folder · branch · cost), `test-guard.sh` |
+| `hooks/`            | `guard.sh` (blocking), `supply-guard.sh` (optional, checks packages before installing), `format.sh` (project-local Prettier), `notify.sh` (desktop alert), `statusline.sh` (model · mode/effort · folder · branch · cost), `test-guard.sh` |
 | `mcp/servers.json`  | Public MCP servers, tokens as `${VARIABLES}`                          |
 | `private-template/` | Template for your private layer                                       |
 | `scripts/`          | `scan-leaks.sh`, used by `verify`, `sync` and CI                      |
-| `tests/`            | Sample project and test for `mapa-bloque`, run in CI                  |
+| `tests/`            | Tests for `mapa-bloque`, `brechas`, `mem-search`, the modes and the installer, run in CI |
 | `bin/`              | `claude --kimi` (same config on Kimi models) and `claude --modo X`    |
 | `commands/`         | `/new-project`                                                        |
 
@@ -228,6 +229,10 @@ Claude Code runs in `auto` mode, so there are three layers:
 1. **`permissions.allow`:** only specific dev commands (`pnpm`, `git`, `gh`, `docker compose`, `npx prisma`…). Nothing generic that reads arbitrary files (`cat`, `grep`), runs arbitrary code (`node *`, `python *`), copies files (`cp *`, `mv *`) or runs downloaded packages (`npx *`, `docker *`).
 2. **`permissions.ask`:** always asks before `curl`, `docker run`, `pnpm dlx`, `rm -rf`, `git reset --hard`, `prisma migrate reset`.
 3. **`hooks/guard.sh`:** the last net, which blocks even if something was approved: deleting `/` or `$HOME`, any mention of an env file (whatever program reads it: `cat`, `node -e`, `python -c`…; writing one, `-f .env` and `--env-file` stay allowed), reading or sending keys, full `printenv`, `curl | sh`, `docker run --privileged`, force pushes and pushes to `main` (including a bare `git push` while on main, and `git -C <dir> push`). It fails closed if `jq` is missing.
+
+4. **`hooks/supply-guard.sh` (optional, off by default):** before Claude runs `pnpm add`, `npm install`, `yarn add`, `npx`, `pnpm dlx` or `bunx`, it looks up each package: a version that OSV.dev flags as malicious is blocked, and one published less than 7 days ago asks you first. Without network it lets the command through (pnpm's `minimumReleaseAge` still applies). Turn it on with `"env": { "AI_LORDKIT_SUPPLY_GUARD": "1" }` in your private layer's `settings.json`.
+
+For the packages you already have, run `/brechas`: it checks the whole lockfile (direct and transitive), your MCP servers and your Claude Code version against OSV.dev, CISA KEV and EPSS, ranks findings as critical (malicious or exploited in the wild), high, medium and low, and writes `docs/seguridad/brechas-<date>.md` with the fixed version of each one. Only public package names and versions leave your machine; your own workspace packages are skipped. Accepted risks go in `.brechas-ignorar` with a reason, and still show up in the report. `/brechas noticias` adds recent incidents about MCP servers, prompt injection and npm supply chain, each with its source link and marked as news, not as verified findings.
 
 If you change `guard.sh`, run `./hooks/test-guard.sh`. `./install.sh verify` runs it too.
 
