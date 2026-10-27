@@ -293,11 +293,11 @@ Most skills don't need a command: Claude loads them by their description when th
 | Skill | What it does |
 | ----- | ------------ |
 | `crear-app` | "I want to build an app" with nothing picked yet: clickable picker for app type, architecture, tools and platforms, each option with its main drawback. Saves the choice in `docs/METODO.md` and starts Block 0 |
-| `elegir-metodo` | Recommends a way of working (spike, blocks, backend first, short spec, full definition) with pros and cons; you pick and can switch later. Logged in `docs/METODO.md` |
+| `elegir-metodo` | Recommends a way of working (spike, blocks, backend first by module, short spec, full definition) with pros and cons; you pick and can switch later. Logged in `docs/METODO.md` |
 | `desarrollo-por-etapas` | The block cycle: definition → Block 0 → one block at a time (C1–C5) with a quality gate that needs evidence → hardening → pilot. Short versions for features and bugs |
 | `mapa-bloque` | Only on `/mapa-bloque`: map of a block computed by the TypeScript compiler |
 | `microservicios` | The microservices option: when NOT to use it, gateway, a database per service, shared Zod contracts, events with an outbox, compose with health checks |
-| `backend-quality-gate` | The **backend first** method, an alternative you can pick in `elegir-metodo`: each backend module (NestJS + Prisma) goes through 5 phases and a quality gate before any frontend work, so the tested API is reused by any app on top |
+| `backend-quality-gate` | The **backend first, by module** method, an alternative you can pick in `elegir-metodo`. It works per module, not one layer for the whole system: each module closes its API first (scenarios, tests, `/blindar`), then its screens follow C2 and C5. The tested API is reused by any app on top |
 
 **Security**
 
@@ -313,6 +313,7 @@ Most skills don't need a command: Claude loads them by their description when th
 | ----- | ------------ |
 | `fullstack` | The standard: Next.js 16 + Tailwind v4, NestJS 11, Prisma 7, PostgreSQL 16, Redis, shared Zod, Turborepo + pnpm, Expo when there's a mobile app. 40 reference files (API, security, testing, CI/CD, performance, mobile…) |
 | `erp-saas-core` | Rules for ERP, multi-tenant SaaS and POS: clean architecture, tenant isolation, double-entry accounting, money precision, idempotency, queues, offline-first, DGII electronic invoicing |
+| `skills-bundle` | Shortcut that loads `erp-saas-core` and `memory-bank-context` together; `/new-project` uses it for POS projects |
 | `http-query-docs` | The HTTP `QUERY` method (RFC 10008) for complex searches, instead of `POST /search` |
 | `ui-ux-polish` | Turns flat interfaces into ones with hierarchy, depth, micro-interactions and motion |
 

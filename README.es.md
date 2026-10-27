@@ -293,11 +293,11 @@ La mayoría de las skills no necesitan comando: Claude las carga por su descripc
 | Skill | Qué hace |
 | ----- | -------- |
 | `crear-app` | "Quiero hacer una app" sin nada escogido: selector de tipo de app, arquitectura, herramientas y plataformas, cada opción con su contra. Guarda la elección en `docs/METODO.md` y arranca el Bloque 0 |
-| `elegir-metodo` | Recomienda una forma de trabajar (spike, bloques, backend primero, spec corto, definición fuerte) con pros y contras; tú escoges y puedes cambiar después. Queda en `docs/METODO.md` |
+| `elegir-metodo` | Recomienda una forma de trabajar (spike, bloques, backend primero por módulo, spec corto, definición fuerte) con pros y contras; tú escoges y puedes cambiar después. Queda en `docs/METODO.md` |
 | `desarrollo-por-etapas` | El ciclo por bloques: definición → Bloque 0 → un bloque a la vez (C1–C5) con puerta de calidad que pide evidencia → endurecimiento → piloto. Versiones cortas para features y bugs |
 | `mapa-bloque` | Solo con `/mapa-bloque`: mapa de un bloque calculado por el compilador de TypeScript |
 | `microservicios` | La opción de microservicios: cuándo NO usarla, gateway, una base de datos por servicio, contratos Zod compartidos, eventos con outbox, compose con health checks |
-| `backend-quality-gate` | El método **backend primero**, una alternativa que puedes escoger en `elegir-metodo`: cada módulo de backend (NestJS + Prisma) pasa 5 fases y una puerta de calidad antes de tocar el frontend, así la API probada se reutiliza en cualquier app encima |
+| `backend-quality-gate` | El método **backend primero por módulo**, una alternativa que puedes escoger en `elegir-metodo`. Va por módulo, no por capas de todo el sistema: cada módulo cierra primero su API (escenarios, tests, `/blindar`) y después sus pantallas siguen C2 y C5. La API probada se reutiliza en cualquier app encima |
 
 **Seguridad**
 
@@ -313,6 +313,7 @@ La mayoría de las skills no necesitan comando: Claude las carga por su descripc
 | ----- | -------- |
 | `fullstack` | El estándar: Next.js 16 + Tailwind v4, NestJS 11, Prisma 7, PostgreSQL 16, Redis, Zod compartido, Turborepo + pnpm, Expo cuando hay app móvil. 40 archivos de referencia (API, seguridad, testing, CI/CD, rendimiento, móvil…) |
 | `erp-saas-core` | Reglas para ERP, SaaS multi-tenant y POS: arquitectura limpia, aislamiento de tenants, partida doble, precisión del dinero, idempotencia, colas, offline-first, facturación electrónica DGII |
+| `skills-bundle` | Atajo que carga `erp-saas-core` y `memory-bank-context` juntos; `/new-project` lo usa en proyectos POS |
 | `http-query-docs` | El método HTTP `QUERY` (RFC 10008) para búsquedas complejas, en vez de `POST /search` |
 | `ui-ux-polish` | Convierte interfaces planas en otras con jerarquía, profundidad, micro-interacciones y movimiento |
 
