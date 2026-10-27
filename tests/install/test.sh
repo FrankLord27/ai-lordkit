@@ -16,8 +16,15 @@ cat > "$H/.claude/settings.json" <<'JSON'
   "permissions": { "allow": ["Bash(node *)"] },
   "enabledPlugins": { "mio@otro": true } }
 JSON
+# Copias viejas de la versión anterior del kit + una skill propia con nombre parecido
+mkdir -p "$H/.claude/skills/eas-workflows/scripts" "$H/.claude/skills/expo-router" "$H/.claude/skills/expo-mia"
+echo '{}' > "$H/.claude/skills/eas-workflows/scripts/package.json"
 
 run update
+check "update borra las copias viejas de Expo/EAS" '[[ ! -e $H/.claude/skills/eas-workflows && ! -e $H/.claude/skills/expo-router ]]'
+check "update no toca una skill propia parecida"   '[[ -d $H/.claude/skills/expo-mia ]]'
+check "update no instala deps de lo que borra"     '! grep -q "skill eas-workflows" "$H/log"'
+check "update cuenta solo las skills del kit"      'grep -q "skills del kit instaladas en ~/.claude/skills/ ($(ls -d "$KIT"/skills/*/ | wc -l))" "$H/log"'
 check "update conserva una clave propia"        '[[ $(s .theme) == dark ]]'
 check "update conserva una variable propia"     '[[ $(s .env.MI_VAR) == 1 ]]'
 check "update conserva un plugin propio"        '[[ $(s ".enabledPlugins[\"mio@otro\"]") == true ]]'
