@@ -4,6 +4,8 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-27
+
 ### Added
 
 - README rewritten: why the kit exists and its goals, what makes it different, Mermaid diagrams (install, session, agent team, block cycle, public/private layers), repository tree, full command reference (`get.sh`, every `install.sh` command, the `claude` wrapper, slash commands), every skill, agent and hook, author section and donations. Full Spanish version in `README.es.md`. Hand-made SVG banner, feature cards and donation buttons in `assets/`, with light and dark versions.
@@ -17,6 +19,18 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 - `desarrollo-por-etapas`: C1 now starts with concrete user scenarios, from which come the tasks and the Given/When/Then criteria that become tests. `elegir-metodo` finds blocks from one-line scenarios.
 - `tests/modos/test.sh`: the launcher in bash and zsh, and the status line.
 - `microservicios` skill: microservices as an alternative architecture, with when not to use it, the pieces (gateway, contracts, events with outbox, compose) and a Block 0 for services. `elegir-metodo` now also records the architecture in `docs/METODO.md`.
+
+### Changed
+
+- `elegir-metodo` recommends with pros and cons, shows the alternatives, waits for your choice and records method changes in `docs/METODO.md`.
+- `backend-quality-gate` is now the "backend first, module by module" method: `elegir-metodo` offers it as an alternative to blocks, and it only runs when you pick it.
+- `WORKFLOW.md` links the block method skills; `/new-project` ends in `elegir-metodo` and Block 0; `CLAUDE.md` says when to use each agent.
+- CI: actions on Node 24 pinned by SHA, fixed runner versions (`ubuntu-26.04`, `macos-26`), monthly Dependabot with a 7-day cooldown, ShellCheck over every test.
+
+### Fixed
+
+- Broken references: `backend-architect` pointed to an old path, and `erp-saas-core`, `memory-bank-context` and `blindar` cited skills the kit doesn't ship.
+- `CHECKLIST.md` installs pnpm with Corepack instead of npm.
 
 ## [0.1.0] - 2026-10-27
 
@@ -53,5 +67,6 @@ First public release.
 - `CLAUDE.md` trimmed to 100 lines.
 - A fresh Mac gets a `~/.zshrc` so `~/.local/bin` is in `PATH` and `claude --kimi` works.
 
-[Unreleased]: https://github.com/FrankLord27/ai-lordkit/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/FrankLord27/ai-lordkit/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/FrankLord27/ai-lordkit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/FrankLord27/ai-lordkit/releases/tag/v0.1.0
