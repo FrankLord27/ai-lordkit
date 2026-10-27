@@ -18,6 +18,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
    - ¿Hay un cliente con alcance cerrado o una norma externa (facturación fiscal, pagos, ministerio)?
    - ¿Hay código existente con patrones que seguir?
    - ¿Cuántos flujos de usuario tiene la primera versión?
+   - ¿Cuántas personas van a trabajar en el código? ¿Hay alguna parte con carga o tecnología muy distinta al resto (búsqueda, tiempo real, procesamiento pesado)? Solo si hace falta para decidir la arquitectura (ver abajo).
 
 3. **Recomienda un método de esta tabla.** Tu recomendación va primero y con argumentos, no como una lista neutral.
 
@@ -29,6 +30,8 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 | Feature grande que toca muchos módulos | **Entrevista → `SPEC.md` de una página → partir en bloques** | Spec liviano: un archivo, no veinte. |
 | Alcance cerrado por contrato o por una norma | **Definición y contrato de datos casi en cascada; implementación por bloques** | El alcance no se descubre sobre la marcha, pero construir por capas igual es mala idea con IA. |
 | Bug | **Reproducir → test en rojo → causa raíz → fix** | Ver la versión para bugs en `desarrollo-por-etapas`. |
+
+   **Arquitectura.** Junto con el método, di en una línea qué arquitectura recomiendas. Por defecto es un **monolito modular** (skill `fullstack`). Si hay dos o más señales de la skill `microservicios` (equipos que se pisan, un área con carga o tecnología muy distinta, despliegues independientes, aislar fallas como requisito), ofrece microservicios como opción y usa esa skill para el diseño. Si el usuario pide microservicios sin esas señales, dile el costo en corto: la decisión es suya. La arquitectura también la escoge el usuario y se anota en `docs/METODO.md`.
 
 4. **Presenta la decisión al usuario** en un solo mensaje:
    - **Recomendado:** el método, 2 pros y 2 contras para ESTE proyecto (no genéricos).
@@ -59,6 +62,7 @@ Con IA no conviene construir por capas completas (toda la UI, después toda la B
 
 Decidido: <fecha>
 Método: <spike | bloques con definición completa | bloque único | spec corto + bloques | definición cerrada + bloques | otro que propuso el usuario>
+Arquitectura: <monolito modular | monolito modular listo para extraer | microservicios (ver docs/ARQUITECTURA.md)>
 Escogido por: el usuario (recomendado por la IA: <sí | no, recomendó X porque ...>)
 Por qué: <2 o 3 líneas con lo que respondió el usuario>
 Alternativas consideradas: <las otras opciones que se mostraron>
