@@ -6,6 +6,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Skill `testing-actions`: layered testing strategy and GitHub Actions pipelines in stages (`needs:`) with one icon per category (🧹 Lint, 🔎 Type Check, 🧪 Unit, 🔗 Integration, 🏗️ Build, 🎭 E2E, 💨 Smoke, ♿ Accessibility, 🏁 Pipeline Summary). The summary job reads the real results of every stage into `$GITHUB_STEP_SUMMARY` and fails if any stage failed. Rules against hiding failures, minimal permissions, and notes for self-hosted runners (cleanup between runs, ports, no sudo, security). Includes the full audit prompt and a workflow template in `references/`.
 - Native Windows support through Git Bash (`get.sh` and `install.sh` accept `MINGW*`/`MSYS*`). `./install.sh deps` installs `jq`, `gh`, Node 24 LTS, `uv` with `winget` and pnpm through `corepack` into `~/.local/bin` (no admin needed). WSL keeps working.
 - `.gitattributes`: bash scripts, hooks and JSON always use LF, even with `core.autocrlf=true` (CRLF broke them when cloned on Windows).
 - `guard.sh` blocks recursive `rm` on a drive root (`C:\`, `C:/`, `/c/`) and on the user folder (`/c/Users/<name>`, `$USERPROFILE`), with tests.
