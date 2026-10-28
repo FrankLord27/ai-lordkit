@@ -324,6 +324,12 @@ Most skills don't need a command: Claude loads them by their description when th
 | `microservicios` | The microservices option: when NOT to use it, gateway, a database per service, shared Zod contracts, events with an outbox, compose with health checks |
 | `backend-quality-gate` | The **backend first, by module** method, an alternative you can pick in `elegir-metodo`. It works per module, not one layer for the whole system: each module closes its API first (scenarios, tests, `/blindar`), then its screens follow C2 and C5. The tested API is reused by any app on top |
 
+**Tests and CI**
+
+| Skill | What it does |
+| ----- | ------------ |
+| `testing-actions` | Layered tests (unit, integration, E2E, API, auth, security…) and GitHub Actions in stages with icons (🧹 🔎 🧪 🏗️ 🎭 🏁), a final summary with real results and rules for self-hosted runners. Kicks in whenever tests, CI or workflows come up |
+
 **Security**
 
 | Skill | What it does |

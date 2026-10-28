@@ -1,0 +1,183 @@
+# Plantilla de CI por etapas con íconos (skill testing-actions).
+# NO se copia tal cual: cada comando debe existir en el package.json del proyecto. Borra los jobs que no apliquen
+# (por ejemplo, ♿ si no hay interfaz) en vez de dejarlos vacíos, y cambia `runs-on` si usas un runner propio.
+name: 🚀 CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: 🧹 Lint & Format
+    runs-on: ubuntu-24.04 # runner propio: [self-hosted, <etiqueta>]
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 📝 Check formatting
+        run: pnpm format:check # verifica que exista el script
+      - name: 🧹 Run lint
+        run: pnpm lint
+
+  typecheck:
+    name: 🔎 Type Check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 🔎 Run type checking
+        run: pnpm typecheck
+
+  unit-tests:
+    name: 🧪 Unit Tests
+    needs: [lint, typecheck]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 🧪 Run unit tests
+        run: pnpm test -- --coverage
+      - name: 📊 Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: '**/coverage/'
+          if-no-files-found: ignore
+
+  integration-tests:
+    name: 🔗 Integration Tests
+    needs: unit-tests
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports: ['5432:5432'] # runner propio: un puerto distinto por job si corren en paralelo
+        options: >-
+          --health-cmd "pg_isready -U test" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 🔗 Run integration tests
+        run: pnpm test:integration
+
+  build:
+    name: 🏗️ Build
+    needs: unit-tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 🏗️ Build
+        run: pnpm build
+
+  e2e-tests:
+    name: 🎭 E2E Tests
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: 🎭 Install browser
+        run: pnpm exec playwright install --with-deps chromium # runner propio: sin --with-deps
+      - name: 🎭 Run E2E tests
+        run: pnpm test:e2e
+      - name: 📋 Upload E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: '**/playwright-report/'
+          if-no-files-found: ignore
+
+  summary:
+    name: 🏁 Pipeline Summary
+    if: always()
+    needs: [lint, typecheck, unit-tests, integration-tests, build, e2e-tests]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📋 Publish pipeline summary
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          icon() { case "$1" in success) echo "✅";; failure) echo "❌";; cancelled) echo "⚠️";; skipped) echo "⏭️";; *) echo "⏳";; esac; }
+          {
+            echo "## 📋 Resultado del pipeline"
+            echo ""
+            echo "| Etapa | Estado | Resultado |"
+            echo "|---|---|---|"
+            for job in lint typecheck unit-tests integration-tests build e2e-tests; do
+              result=$(echo "$RESULTS" | jq -r --arg j "$job" '.[$j].result')
+              echo "| \`$job\` | $(icon "$result") | $result |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      # El resumen no tapa nada: si alguna etapa falló o se canceló, este job también falla.
+      - name: 🏁 Fail if any stage failed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1

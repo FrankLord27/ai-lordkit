@@ -311,6 +311,12 @@ La mayoría de las skills no necesitan comando: Claude las carga por su descripc
 | `microservicios` | La opción de microservicios: cuándo NO usarla, gateway, una base de datos por servicio, contratos Zod compartidos, eventos con outbox, compose con health checks |
 | `backend-quality-gate` | El método **backend primero por módulo**, una alternativa que puedes escoger en `elegir-metodo`. Va por módulo, no por capas de todo el sistema: cada módulo cierra primero su API (escenarios, tests, `/blindar`) y después sus pantallas siguen C2 y C5. La API probada se reutiliza en cualquier app encima |
 
+**Pruebas y CI**
+
+| Skill | Qué hace |
+| ----- | -------- |
+| `testing-actions` | Pruebas por capas (unit, integración, E2E, API, auth, seguridad…) y GitHub Actions por etapas con íconos (🧹 🔎 🧪 🏗️ 🎭 🏁), resumen final con resultados reales y reglas para runners propios. Se activa siempre que se hable de tests, CI o workflows |
+
 **Seguridad**
 
 | Skill | Qué hace |
