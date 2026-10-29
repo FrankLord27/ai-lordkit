@@ -168,10 +168,17 @@
     "vercel@claude-plugins-official": false,
     "hostinger@claude-plugins-official": false,
     "superpowers@claude-plugins-official": false,
+    "figma@claude-plugins-official": false,
     "skill-creator@claude-plugins-official": true,
     "react-best-practices@ai-lordkit": true,
     "composition-patterns@ai-lordkit": true,
-    "web-design-guidelines@ai-lordkit": true
+    "web-design-guidelines@ai-lordkit": true,
+    "emil-design-eng@ai-lordkit": true,
+    "review-animations@ai-lordkit": true,
+    "improve-animations@ai-lordkit": true,
+    "animation-performance@ai-lordkit": true,
+    "impeccable@ai-lordkit": true,
+    "taste-skill@ai-lordkit": true
   },
   "statusLine": {
     "type": "command",

@@ -1,14 +1,14 @@
 ---
 name: ui-ux-polish
 description: >
-  Convierte interfaces planas, aburridas o "guacala" en experiencias con profundidad,
-  jerarquía visual, micro-interacciones y movimiento, dentro del stack fullstack
-  (Next.js 16 App Router + React 19 + TypeScript strict + Tailwind CSS v4). Úsala SIEMPRE
-  que el usuario diga que algo "se ve plano", "muy básico", "soso", "aburrido", "sin vida",
-  "guacala", "le falta diseño", "mejorar el UI/UX", "darle profundidad", "agregar animaciones",
-  o cuando pida pulir/rediseñar una vista, pantalla, card, formulario, dashboard o landing.
-  También aplica al revisar un componente que solo tiene fondos planos, bordes duros, cero
-  sombras o cero transiciones. NO uses SCSS, BEM ni styled-components: todo es Tailwind v4.
+  Puerta de entrada de TODO trabajo de diseño de UI en el stack fullstack (Next.js 16 App Router
+  + React 19 + TypeScript strict + Tailwind CSS v4): cárgala PRIMERO, antes que impeccable,
+  taste-skill, emil-design-eng o web-design-guidelines. Dice cuál de ellas toca según el caso y
+  fija las reglas del stack que valen sobre todas. Úsala SIEMPRE que el usuario diga que algo
+  "se ve plano", "muy básico", "soso", "aburrido", "sin vida", "guacala", "le falta diseño",
+  "mejorar el UI/UX", "darle profundidad", "agregar animaciones", o pida diseñar, pulir,
+  rediseñar, auditar o criticar una vista, pantalla, card, formulario, dashboard o landing.
+  NO uses SCSS, BEM ni styled-components: todo es Tailwind v4.
 ---
 
 # UI/UX Polish — fullstack (Tailwind v4)
@@ -16,6 +16,27 @@ description: >
 Rol: Ingeniero Frontend senior, experto en UI/UX y diseño de sistemas. Tu trabajo es
 **despancar** interfaces: quitar la planitud, crear capas, dirigir la vista hacia los CTAs
 y dar sensación de calidad sin caer en exceso ni romper el rendimiento del App Router.
+
+## Qué skill cargar
+
+El kit trae varias skills de diseño de terceros que se pisan entre sí. Escoge **una** según el
+caso y carga solo esa; no cargues dos para la misma tarea.
+
+| Caso | Skill |
+|------|-------|
+| Página pública nueva o rediseño desde cero (landing, marketing, portfolio, producto) o la primera pantalla de una app sin dirección visual | `taste-skill:design-taste-frontend` |
+| UI que ya existe: pulir, auditar, criticar, simplificar, endurecer estados, hacerla más audaz o más tranquila, documentar el design system | `impeccable:impeccable` (sus comandos: `/impeccable polish`, `audit`, `critique`…) |
+| Decidir una animación o micro-interacción: si va, qué easing, cuánto dura | `emil-design-eng:emil-design-eng` |
+| Revisar el código de animación de un diff (la llama el usuario) | `/review-animations:review-animations` (comando: solo se invoca a mano) |
+| Auditar todo el movimiento de un repo y planear mejoras | `improve-animations:improve-animations` |
+| Una animación se traba o pierde frames | `animation-performance:animation-performance` |
+| Revisar la UI contra las Web Interface Guidelines (a11y, formularios, foco) | `web-design-guidelines:web-design-guidelines` |
+| Retoque rápido de un componente en Tailwind (profundidad, jerarquía, estados) | esta skill, sección "Los 5 ejes" |
+
+Desempate: si la tarea es solo de movimiento, `emil-design-eng`; si el movimiento es parte de pulir una vista, `impeccable`. Si una skill no está instalada, sigue con esta. Sin importar cuál cargues, las **Reglas duras
+del stack** de abajo ganan sobre lo que diga la otra: si propone CSS suelto, otro framework,
+SCSS o valores fijos, tradúcelo a utilidades Tailwind v4 y tokens en `@theme`. Las reglas del
+`CLAUDE.md` del proyecto ganan sobre todas.
 
 ## Reglas duras del stack
 

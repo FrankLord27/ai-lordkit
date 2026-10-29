@@ -6,6 +6,8 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- Design plugins in the `ai-lordkit` catalog, on by default and pinned to an upstream commit: `emil-design-eng`, `review-animations`, `improve-animations` and `animation-performance` ([emilkowalski/skills](https://github.com/emilkowalski/skills), MIT), `impeccable` ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), Apache-2.0, full plugin with its agents and hooks) and `taste-skill` ([Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), MIT).
+- `figma@claude-plugins-official` (Figma's official MCP) declared and off by default; turn it on in your private layer.
 - Skill `testing-actions`: layered testing strategy and GitHub Actions pipelines in stages (`needs:`) with one icon per category (🧹 Lint, 🔎 Type Check, 🧪 Unit, 🔗 Integration, 🏗️ Build, 🎭 E2E, 💨 Smoke, ♿ Accessibility, 🏁 Pipeline Summary). The summary job reads the real results of every stage into `$GITHUB_STEP_SUMMARY` and fails if any stage failed. Rules against hiding failures, minimal permissions, and notes for self-hosted runners (cleanup between runs, ports, no sudo, security). Includes the full audit prompt and a workflow template in `references/`.
 - Native Windows support through Git Bash (`get.sh` and `install.sh` accept `MINGW*`/`MSYS*`). `./install.sh deps` installs `jq`, `gh`, Node 24 LTS, `uv` with `winget` and pnpm through `corepack` into `~/.local/bin` (no admin needed). WSL keeps working.
 - `.gitattributes`: bash scripts, hooks and JSON always use LF, even with `core.autocrlf=true` (CRLF broke them when cloned on Windows).
@@ -15,6 +17,8 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Changed
 
+- `ui-ux-polish` is now the entry point for UI design: a table says which design skill to load (`taste-skill` for new pages, `impeccable` for existing UI, `emil-design-eng` and its animation skills for motion, `web-design-guidelines` for guideline reviews), and its Tailwind v4 rules win over theirs. `CLAUDE.md`, `WORKFLOW.md` and `frontend-specialist` point there first.
+- `./install.sh plugins` refreshes marketplaces that are already registered, so `update` installs plugins newly added to a catalog without manual steps.
 - Hooks convert `C:\...` paths from Claude Code (`cygpath`) in `guard.sh` and `format.sh`; `notify.sh` shows a balloon from Git Bash too.
 - `jq.exe` ends lines with CRLF: a wrapper strips the `\r` in the hooks, `install.sh` and `mem-search.sh`.
 - `write_settings` uses a temp file instead of `<(...)`, which `jq.exe` cannot open.

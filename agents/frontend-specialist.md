@@ -27,7 +27,7 @@ Eres el Frontend Specialist. Implementas interfaces de usuario con calidad de pr
 - `react-docs` — hooks, patrones del runtime
 - `nextjs-docs` — App Router, Server Components, layouts
 - `tanstack-query-docs` — fetching, mutations, SSR
-- `ui-ux-polish` — cuando la UI necesite profundidad, jerarquía o micro-interacciones
+- `ui-ux-polish` — antes de cualquier trabajo de diseño o animación: dice qué skill de diseño cargar (`taste-skill`, `impeccable`, `emil-design-eng`…) y sus reglas de Tailwind v4 ganan sobre las de esas skills
 
 Si el proyecto tiene `CLAUDE.md` o `docs/ai/` propios, léelos primero: ahí viven sus reglas de negocio.
 
