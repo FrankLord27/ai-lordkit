@@ -35,6 +35,66 @@
         "path": "skills/web-design-guidelines",
         "sha": "063bee94c3f4df8453406c830b0a7df0f2860278"
       }
+    },
+    {
+      "name": "emil-design-eng",
+      "description": "Emil Kowalski's design engineering: UI polish, component design and animation decisions (emilkowalski/skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "emilkowalski/skills",
+        "path": "skills/emil-design-eng",
+        "sha": "a81dbca07f2217b7103e510c0f13f8d5b017afc9"
+      }
+    },
+    {
+      "name": "review-animations",
+      "description": "Review animation and motion code against Emil Kowalski's craft bar, invoked by hand (emilkowalski/skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "emilkowalski/skills",
+        "path": "skills/review-animations",
+        "sha": "a81dbca07f2217b7103e510c0f13f8d5b017afc9"
+      }
+    },
+    {
+      "name": "improve-animations",
+      "description": "Read-only audit of a codebase's motion with prioritized implementation plans (emilkowalski/skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "emilkowalski/skills",
+        "path": "skills/improve-animations",
+        "sha": "a81dbca07f2217b7103e510c0f13f8d5b017afc9"
+      }
+    },
+    {
+      "name": "animation-performance",
+      "description": "Keep web animations inside the frame budget and find why they drop frames (emilkowalski/skills)",
+      "source": {
+        "source": "git-subdir",
+        "url": "emilkowalski/skills",
+        "path": "skills/animation-performance",
+        "sha": "a81dbca07f2217b7103e510c0f13f8d5b017afc9"
+      }
+    },
+    {
+      "name": "impeccable",
+      "description": "Paul Bakaus' design skill with 24 /impeccable commands, 4 agents and hooks that check UI edits (pbakaus/impeccable)",
+      "source": {
+        "source": "git-subdir",
+        "url": "pbakaus/impeccable",
+        "path": "plugin",
+        "sha": "02523aec3e4c4580102d996d1b6a71fbe062e03f"
+      }
+    },
+    {
+      "name": "taste-skill",
+      "description": "Art direction for websites and app screens with a library of researched directions and a real-browser inspector (Leonxlnx/taste-skill)",
+      "source": {
+        "source": "git-subdir",
+        "url": "Leonxlnx/taste-skill",
+        "path": "skills/taste-skill",
+        "sha": "12af471f627f866411b4bd785b19646d3672784c"
+      }
     }
   ]
 }

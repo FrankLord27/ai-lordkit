@@ -877,7 +877,15 @@ do_plugins() {
   settings="$(merged_settings)"
   known="$(claude plugin marketplace list --json 2>/dev/null | jq -r '.[].name' || true)"
   while IFS=$'\t' read -r name repo sparse; do
-    if grep -qx "$name" <<<"$known"; then ok "marketplace $name ya estaba"; continue; fi
+    # Ya registrado: se refresca, o los plugins nuevos de su catálogo no se encuentran al instalar
+    if grep -qx "$name" <<<"$known"; then
+      if claude plugin marketplace update "$name" >/dev/null 2>&1; then
+        ok "marketplace $name actualizado"
+      else
+        warn "No se pudo actualizar el marketplace $name — reintenta: claude plugin marketplace update $name"
+      fi
+      continue
+    fi
     # shellcheck disable=SC2086  # sparse: lista de carpetas separadas por espacio
     if claude plugin marketplace add "$repo" ${sparse:+--sparse $sparse} >/dev/null 2>&1; then
       ok "marketplace $name agregado ($repo)"

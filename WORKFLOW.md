@@ -60,7 +60,7 @@ Antes de planear, scout pass de 2-5 minutos:
 | **Estilos** | `tailwind-docs` (proyecto legado con Sass/BEM → `fullstack/references/legacy-sass-bem.md`) |
 | **Estado cliente (server state)** | `tanstack-query-docs` |
 | **Estado cliente (UI state)** | `zustand-docs` |
-| **UI/UX polish / consistencia visual** | `ui-ux-polish` |
+| **Diseño de UI (crear, pulir, auditar, animar)** | `ui-ux-polish` primero: dice si sigue `taste-skill`, `impeccable`, `emil-design-eng` o `web-design-guidelines` |
 | **Expo / React Native / EAS** | `fullstack` (sección móvil) + plugin oficial de Expo (`expo:expo-overview` enruta al resto) |
 | **Docker / contenedorización** | `docker-docs` |
 | **API de una librería que no dominas** | MCP Context7 (`resolve-library-id` → `query-docs`) |

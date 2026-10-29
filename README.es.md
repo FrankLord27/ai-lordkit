@@ -333,7 +333,7 @@ La mayoría de las skills no necesitan comando: Claude las carga por su descripc
 | `erp-saas-core` | Reglas para ERP, SaaS multi-tenant y POS: arquitectura limpia, aislamiento de tenants, partida doble, precisión del dinero, idempotencia, colas, offline-first, facturación electrónica DGII |
 | `skills-bundle` | Atajo que carga `erp-saas-core` y `memory-bank-context` juntos; `/new-project` lo usa en proyectos POS |
 | `http-query-docs` | El método HTTP `QUERY` (RFC 10008) para búsquedas complejas, en vez de `POST /search` |
-| `ui-ux-polish` | Convierte interfaces planas en otras con jerarquía, profundidad, micro-interacciones y movimiento |
+| `ui-ux-polish` | Puerta de entrada al diseño de UI: dice qué skill de diseño usar (`taste-skill`, `impeccable`, `emil-design-eng`, `web-design-guidelines`) y fija las reglas de Tailwind v4 que valen sobre todas. Para retoques rápidos convierte interfaces planas en otras con jerarquía, profundidad y movimiento |
 
 **Referencias de librerías al día** (versiones que usa el kit)
 
@@ -517,12 +517,18 @@ El kit no copia skills ajenas. `settings.json` declara los marketplaces en `extr
 | `react-best-practices` | `ai-lordkit` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills): reglas de rendimiento de React y Next.js |
 | `composition-patterns` | `ai-lordkit` | vercel-labs/agent-skills: patrones de composición de React |
 | `web-design-guidelines` | `ai-lordkit` | vercel-labs/agent-skills: revisa la UI contra las Web Interface Guidelines |
+| `emil-design-eng` | `ai-lordkit` | [emilkowalski/skills](https://github.com/emilkowalski/skills): el criterio de Emil Kowalski para pulir UI, componentes y animaciones |
+| `review-animations` | `ai-lordkit` | emilkowalski/skills: revisa código de animación contra ese criterio (se llama a mano) |
+| `improve-animations` | `ai-lordkit` | emilkowalski/skills: auditoría de solo lectura del movimiento de un repo, con planes priorizados |
+| `animation-performance` | `ai-lordkit` | emilkowalski/skills: animaciones dentro del presupuesto de frames y por qué se traban |
+| `impeccable` | `ai-lordkit` | [pbakaus/impeccable](https://github.com/pbakaus/impeccable): 24 comandos `/impeccable` (polish, audit, critique…), 4 agents y hooks que revisan cada edición de UI con un binario nativo que se baja y verifica por checksum |
+| `taste-skill` | `ai-lordkit` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill): dirección de arte para webs y pantallas de app, con biblioteca de direcciones e inspector en navegador real (sus scripts usan Node y red para bajar fotos) |
 
 **Apagados por defecto** (declarados como `false`; activa los que uses en tu capa privada):
 
 | Plugin | Por qué está apagado |
 | ------ | -------------------- |
-| `sentry`, `vercel`, `hostinger` | Solo sirven si usas ese servicio, y cada uno carga sus herramientas MCP en cada sesión |
+| `sentry`, `vercel`, `hostinger`, `figma` | Solo sirven si usas ese servicio, y cada uno carga sus herramientas MCP en cada sesión. `figma` es el MCP oficial de Figma (lee diseños, tokens y Code Connect) y se conecta con OAuth a tu cuenta |
 | `pr-review-toolkit`, `commit-commands` | Se solapan con los agents `code-reviewer` y `git-workflow` del kit |
 | `hookify` | Corre un script de Python en cada llamada a una herramienta |
 | `superpowers` | Trae su propio proceso (brainstorm antes de todo, "usa siempre una skill") que choca con el `WORKFLOW.md` del kit, y se inyecta en cada sesión |
@@ -538,7 +544,7 @@ Si instalaste el kit antes de este cambio, esos plugins siguen instalados en tu 
 De dónde viene cada uno:
 
 - **`claude-plugins-official`** ([anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)) es el marketplace de Anthropic. Ya lista `superpowers`, `context7` y `skill-creator`, así que el kit usa esas entradas en vez de agregar `obra/superpowers`, `upstash/context7` o `anthropics/skills` como marketplaces aparte.
-- **`ai-lordkit`** es [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) en este repo. `vercel-labs/agent-skills` no es un marketplace de Claude Code, así que este catálogo apunta a la carpeta de cada skill en su origen (fuente `git-subdir`). Solo se clona ese archivo (`sparsePaths`). Cada entrada está fijada a un commit de origen (`sha`), así un cambio allá no llega a tu máquina hasta que el kit lo sube a propósito.
+- **`ai-lordkit`** es [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) en este repo. `vercel-labs/agent-skills` y `emilkowalski/skills` no son marketplaces de Claude Code, y `impeccable` y `taste-skill` sí lo son pero sin fijar versión, así que este catálogo apunta a la carpeta de cada skill en su origen (fuente `git-subdir`). Solo se clona ese archivo (`sparsePaths`). Cada entrada está fijada a un commit de origen (`sha`), así un cambio allá no llega a tu máquina hasta que el kit lo sube a propósito.
 - **Context7** no está activo como plugin porque `mcp/servers.json` ya instala el mismo servidor. Dos copias solo duplicarían herramientas.
 
 `./install.sh plugins` (también parte de `all` y `update`) agrega los marketplaces e instala lo que falte. Claude Code registraría los marketplaces solo en la siguiente sesión interactiva, pero no desde scripts, así que lo hace el instalador. `./install.sh verify` falla si el marketplace de un plugin no está declarado o si un plugin repite otro plugin, una skill del kit o un servidor MCP, y en una máquina con Claude Code avisa de plugins que no están instalados, están apagados o fallaron al cargar.
