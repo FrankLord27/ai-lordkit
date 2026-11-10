@@ -429,6 +429,21 @@ do_deps() {
     ok "git, gh, jq, curl presentes"
   fi
 
+  # Si ya hay un gestor de versiones de Node (nvm, fnm, volta), se carga antes de mirar:
+  # un script no interactivo no lee .zshrc, y sin esto se instalaría un segundo Node de sistema.
+  if ! command -v node >/dev/null; then
+    if [[ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]]; then
+      # shellcheck disable=SC1091
+      . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" >/dev/null 2>&1 || true
+      nvm use default >/dev/null 2>&1 || true
+    elif command -v fnm >/dev/null; then
+      eval "$(fnm env 2>/dev/null)" || true
+    elif [[ -d "$HOME/.volta/bin" ]]; then
+      export PATH="$HOME/.volta/bin:$PATH"
+    fi
+    hash -r 2>/dev/null || true
+  fi
+
   # Node 24 LTS: brew en macOS, NodeSource oficial en Linux con apt
   local nv=0
   command -v node >/dev/null && nv=$(node --version | sed 's/v//' | cut -d. -f1)

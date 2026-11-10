@@ -4,6 +4,15 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ## [Unreleased]
 
+### Security
+
+- `guard.sh` rewritten: it now splits the command the way the shell does (quotes, `;`, `&&`, pipes, `$(...)`, `<(...)`, backticks, here-docs, `bash -c`, `eval`) and applies each rule to the program and its unquoted arguments instead of matching regexes against the raw text. On a 160-case adversarial battery the old guard let 124 of 126 dangerous commands through and blocked 21 of 34 legitimate ones; the new one lets 12 through (documented limits: no variable or alias expansion) and blocks 1 (`env | grep`, on purpose). New rules for `gh`, `docker compose down -v`, `docker compose config`, mounted host paths, `find -delete`, `git -c alias`, `git push --mirror`, `prisma migrate reset`, `redis-cli FLUSHALL` and pnpm's `minimumReleaseAge`. The battery is now part of `hooks/test-guard.sh` (219 cases).
+- `settings.json`: `Bash(git *)`, `Bash(gh *)`, `Bash(pnpm *)`, `Bash(docker compose *)`, `Bash(prisma *)` and `Bash(docker exec * psql *)` replaced by specific subcommands; in auto mode a command matched by an allow rule skipped the classifier. `autoMode.classifyAllShell` is on. New `deny` rules for `Edit` on the hooks, `settings.json`, shell profiles, `~/.ssh` and env files, and for `pnpm config set/delete`. `Bash(rm -rf /*)` (it matched every absolute path) is now `Bash(rm -rf /)`. More destructive commands moved to `ask`.
+
+### Fixed
+
+- `install.sh deps` loads nvm, fnm or volta before checking for Node. A non-interactive shell does not read `.zshrc`, so on a machine with Node from nvm it installed a second system Node 24 from NodeSource.
+
 ### Added
 
 - Design plugins in the `ai-lordkit` catalog, on by default and pinned to an upstream commit: `emil-design-eng`, `review-animations`, `improve-animations` and `animation-performance` ([emilkowalski/skills](https://github.com/emilkowalski/skills), MIT), `impeccable` ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), Apache-2.0, full plugin with its agents and hooks) and `taste-skill` ([Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), MIT).
