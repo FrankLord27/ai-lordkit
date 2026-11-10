@@ -100,6 +100,7 @@ FASE 5  Escala          Solo con un problema medido que lo justifique
 | Seguridad web, auth, base de datos, servidor | `references/security-web.md`, `security-auth.md`, `security-database.md`, `security-server.md` |
 | Testing: Jest backend, RTL + MSW frontend, Playwright E2E | `references/testing-backend.md`, `testing-frontend.md`, `testing-e2e.md` |
 | CI/CD: GitHub Actions, Docker, deploy a VPS, monitoreo post-deploy | `references/cicd-github-actions.md`, `cicd-docker.md`, `cicd-deployment.md`, `cicd-monitoring.md` |
+| Rendimiento desde el desarrollo (31 reglas, leer primero) | `references/performance-checklist.md` |
 | Performance: base de datos, caché, backend, frontend | `references/performance-database.md`, `performance-cache.md`, `performance-backend.md`, `performance-frontend.md` |
 | APIs REST: URLs y verbos, contratos y paginación, Swagger, versionado | `references/api-endpoints.md`, `api-contracts.md`, `api-swagger.md`, `api-versioning.md` |
 | Calidad: linting, Git, code review, clean code | `references/quality-linting.md`, `quality-git.md`, `quality-code-review.md`, `quality-clean-code.md` |

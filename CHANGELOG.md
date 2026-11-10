@@ -6,6 +6,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Added
 
+- `skills/fullstack/references/performance-checklist.md`: 31 performance rules to apply while writing code (pagination, `select`, N+1, indexes, connection pool, timeouts, queues, Redis cache, streaming, tracing; skeletons, debounce, optimistic UI, images, fonts, third-party scripts, code splitting, virtualization, browser cache, RUM, slow-network testing). `CLAUDE.md` makes it part of "done", `backend-architect` and `frontend-specialist` report against it, and `code-reviewer` blocks on its critical rules.
 - Design plugins in the `ai-lordkit` catalog, on by default and pinned to an upstream commit: `emil-design-eng`, `review-animations`, `improve-animations` and `animation-performance` ([emilkowalski/skills](https://github.com/emilkowalski/skills), MIT), `impeccable` ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), Apache-2.0, full plugin with its agents and hooks) and `taste-skill` ([Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), MIT).
 - `figma@claude-plugins-official` (Figma's official MCP) declared and off by default; turn it on in your private layer.
 - Skill `testing-actions`: layered testing strategy and GitHub Actions pipelines in stages (`needs:`) with one icon per category (🧹 Lint, 🔎 Type Check, 🧪 Unit, 🔗 Integration, 🏗️ Build, 🎭 E2E, 💨 Smoke, ♿ Accessibility, 🏁 Pipeline Summary). The summary job reads the real results of every stage into `$GITHUB_STEP_SUMMARY` and fails if any stage failed. Rules against hiding failures, minimal permissions, and notes for self-hosted runners (cleanup between runs, ports, no sudo, security). Includes the full audit prompt and a workflow template in `references/`.
@@ -17,6 +18,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Changed
 
+- `performance-database.md` shows the Prisma 7 pool (`PrismaPg` with `max` and timeouts; `?connection_limit` no longer applies) and `performance-frontend.md` uses `preload` instead of the deprecated `priority` on `next/image`.
 - `ui-ux-polish` is now the entry point for UI design: a table says which design skill to load (`taste-skill` for new pages, `impeccable` for existing UI, `emil-design-eng` and its animation skills for motion, `web-design-guidelines` for guideline reviews), and its Tailwind v4 rules win over theirs. `CLAUDE.md`, `WORKFLOW.md` and `frontend-specialist` point there first.
 - `./install.sh plugins` refreshes marketplaces that are already registered, so `update` installs plugins newly added to a catalog without manual steps.
 - Hooks convert `C:\...` paths from Claude Code (`cygpath`) in `guard.sh` and `format.sh`; `notify.sh` shows a balloon from Git Bash too.

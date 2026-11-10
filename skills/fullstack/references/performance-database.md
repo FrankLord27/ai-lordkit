@@ -246,29 +246,28 @@ async findAllCursor(cursor?: string, limit = 20) {
 ## Connection pooling — nunca abrir demasiadas conexiones
 
 ```typescript
-// PostgreSQL tiene un límite de conexiones (default: 100)
-// Cada instancia de la app abre un pool de conexiones
+// PostgreSQL tiene un límite de conexiones (default: 100).
+// En Prisma 7 el pool es el del driver (pg), no el de la URL:
+// `?connection_limit` y `?pool_timeout` ya no aplican.
 
-// prisma.service.ts — configurar el pool
+// prisma.service.ts
+import { PrismaPg } from '@prisma/adapter-pg';
+
 export class PrismaService extends PrismaClient {
   constructor() {
     super({
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
-          // ?connection_limit=10 — máximo 10 conexiones por instancia
-          // Si tienes 3 instancias de la app → 30 conexiones usadas de 100
-        },
-      },
+      adapter: new PrismaPg({
+        connectionString: process.env.DATABASE_URL,
+        max: 10,                        // por instancia: 3 instancias → 30 de 100
+        connectionTimeoutMillis: 5_000, // pg trae 0 = espera infinita
+        idleTimeoutMillis: 30_000,
+      }),
     });
   }
 }
 ```
 
-```env
-# En la URL de conexión
-DATABASE_URL=postgresql://user:pass@host:5432/db?connection_limit=10&pool_timeout=10
-```
+Regla: `instancias × max` (API + workers de BullMQ) ≤ `max_connections` − 10.
 
 ### PgBouncer — connection pooler externo (cuando escala)
 

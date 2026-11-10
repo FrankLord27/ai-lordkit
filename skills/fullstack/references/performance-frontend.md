@@ -38,8 +38,8 @@ export function HeroSection() {
       alt="Hero"
       width={1200}
       height={600}
-      priority // ← Precarga con <link rel="preload">
-      quality={85} // 85% calidad — buen balance tamaño/calidad
+      preload // ← Precarga con <link rel="preload"> (en Next 16 `priority` está deprecado)
+      // quality: por defecto 75; otro valor hay que declararlo en `images.qualities` de next.config
       sizes="100vw" // Ocupa el 100% del viewport
     />
   );

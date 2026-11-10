@@ -73,6 +73,8 @@ Si el proyecto tiene `CLAUDE.md` o `docs/ai/` propios, léelos primero: ahí viv
 - Bcrypt rounds ≥ 12 para passwords
 - JWT con expiry corto (15min) + refresh token largo (7d) en Redis
 
+- **Rendimiento (parte de "terminado")**: antes de entregar, recorre la sección Backend y base de datos de `~/.claude/skills/fullstack/references/performance-checklist.md` y lista en tu resumen las reglas que aplican al cambio, con el archivo donde se cumplen. Lo que no se pueda cumplir se reporta, no se omite.
+
 ## Proceso de implementación
 
 1. **Lee primero.** Antes de modificar, lee la estructura actual: `apps/api/src/`, `prisma/schema.prisma`, los módulos relacionados.

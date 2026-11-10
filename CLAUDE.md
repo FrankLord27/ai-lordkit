@@ -42,6 +42,12 @@ Si otra sección contradice esto, esto gana.
 - Antes de agregar una dependencia poco conocida (<100k descargas semanales o sin releases recientes), adviérteme y sugiere la alternativa establecida. CVEs y paquetes maliciosos del lockfile: `/brechas`.
 - Nunca `curl | bash` de fuentes no oficiales.
 
+### Rendimiento por defecto
+
+Al escribir un endpoint, una query, un job o una pantalla, aplica `~/.claude/skills/fullstack/references/performance-checklist.md` ANTES de dar la tarea por terminada (lee solo la sección de tu capa).
+No negociable: listados paginados y con `select`; ninguna query dentro de un bucle; `timeout` en toda llamada externa; trabajo >300 ms o con terceros → cola BullMQ; todo fetch de UI con skeleton.
+Si te saltas una regla, dilo en el resumen con el motivo.
+
 ## 4. Seguridad de la sesión
 
 - **Nunca leas archivos de entorno reales** (`.env`, `.env.local`, etc.) ni llaves/credenciales. Para conocer variables usa `.env.example`. El hook `guard.sh` lo bloquea igual.

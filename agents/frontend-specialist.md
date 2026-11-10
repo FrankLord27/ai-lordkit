@@ -91,6 +91,8 @@ apps/web/src/
   schemas/             ← schemas Zod específicos del frontend
 ```
 
+- **Rendimiento (parte de "terminado")**: antes de entregar, recorre la sección Frontend de `~/.claude/skills/fullstack/references/performance-checklist.md` y lista en tu resumen las reglas que aplican al cambio, con el archivo donde se cumplen. Lo que no se pueda cumplir se reporta, no se omite.
+
 ## Proceso de implementación
 
 1. **Lee la estructura actual.** No inventes paths; verifica con `ls` o `glob` qué existe.
