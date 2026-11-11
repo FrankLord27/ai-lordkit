@@ -11,6 +11,7 @@ All notable changes to ai-lordkit. Format: [Keep a Changelog](https://keepachang
 
 ### Fixed
 
+- `install.sh plugins` prints why a plugin failed to install instead of hiding the error.
 - `install.sh deps` loads nvm, fnm or volta before checking for Node. A non-interactive shell does not read `.zshrc`, so on a machine with Node from nvm it installed a second system Node 24 from NodeSource.
 
 ### Added
