@@ -71,11 +71,9 @@ NestJS 11 + Prisma 7 + PostgreSQL 16 + Redis + JWT + Next.js 16 + Tailwind v4 + 
    - XSS en outputs no escapados
    - CSRF en endpoints state-changing
    - Auth/authz: ¿el usuario actual puede hacer esta acción?
-6. **Verifica performance:**
-   - N+1 queries en Prisma (falta de `include` o `select`)
-   - Listados sin paginación
-   - Re-renders innecesarios en React (objetos/arrays como props sin memo)
-   - Bundle size: imports completos cuando se necesita uno solo
+6. **Verifica performance** con `~/.claude/skills/fullstack/references/performance-checklist.md`:
+   - ❌ Bloqueante: listado sin paginar o sin `select`; query dentro de bucle (N+1); llamada HTTP externa sin timeout; trabajo lento o con terceros dentro del request (debe ir a BullMQ); filtro/orden nuevo sin índice; `<img>` sin dimensiones o imagen sin `next/image`.
+   - ⚠️ Advertencia: búsqueda sin debounce; fetch sin skeleton; awaits en serie que son independientes; `"use client"` innecesario; script de terceros sin `next/script`; lista >100 filas sin virtualizar; dependencia nueva sin justificar.
 
 ## Formato de salida
 
