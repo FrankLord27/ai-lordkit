@@ -888,7 +888,7 @@ do_plugins() {
   step "Plugins"
   command -v claude &>/dev/null || { warn "claude no está en PATH — reintenta: ./install.sh plugins"; return 0; }
   command -v jq &>/dev/null || { warn "jq no instalado — reintenta: ./install.sh plugins"; return 0; }
-  local settings known installed name repo sparse id
+  local settings known installed name repo sparse id out
   settings="$(merged_settings)"
   known="$(claude plugin marketplace list --json 2>/dev/null | jq -r '.[].name' || true)"
   while IFS=$'\t' read -r name repo sparse; do
@@ -921,10 +921,13 @@ do_plugins() {
   installed="$(claude plugin list --json 2>/dev/null | jq -r '.[].id' || true)"
   while read -r id; do
     if grep -qx "$id" <<<"$installed"; then ok "$id ya estaba"; continue; fi
-    if claude plugin install "$id" >/dev/null 2>&1; then
+    # Se guarda el motivo: sin él, un fallo de red o de git no se distingue de uno del catálogo.
+    if out="$(claude plugin install "$id" 2>&1)"; then
       ok "$id instalado"
     else
       warn "No se pudo instalar $id — reintenta: claude plugin install $id"
+      out="$(grep -v '^[[:space:]]*$' <<<"$out" | tail -1)"
+      [[ -n "$out" ]] && echo "      motivo: ${out:0:200}"
     fi
   done < <(jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' <<<"$settings")
 }
